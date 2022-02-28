@@ -130,3 +130,7 @@ dmypy.json
 
 # Mac
 .DS_Store
+
+# repo specific
+.idea/
+card_recognizer/reference/data/
