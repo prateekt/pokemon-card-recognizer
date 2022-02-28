@@ -1,1 +1,1 @@
-# pokemon-card-recognizer
+Pokemon Card Recognizer
