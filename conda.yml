@@ -1,0 +1,36 @@
+name: py310
+channels:
+  - defaults
+dependencies:
+  - bzip2=1.0.8=h1de35cc_0
+  - ca-certificates=2021.10.26=hecd8cb5_2
+  - certifi=2020.6.20=pyhd3eb1b0_3
+  - libcxx=12.0.0=h2f01273_0
+  - libffi=3.3=hb1e8313_2
+  - ncurses=6.3=hca72f7f_2
+  - openssl=1.1.1m=hca72f7f_0
+  - python=3.10.0=hdfd78df_3
+  - readline=8.1.2=hca72f7f_1
+  - setuptools=58.0.4=py310hecd8cb5_0
+  - sqlite=3.37.2=h707629a_0
+  - tk=8.6.11=h7bc2e8c_0
+  - tzdata=2021e=hda174b7_0
+  - wheel=0.37.1=pyhd3eb1b0_0
+  - xz=5.2.5=h1de35cc_0
+  - zlib=1.2.11=h4dc903c_4
+  - pip:
+    - charset-normalizer==2.0.12
+    - dacite==1.6.0
+    - idna==3.3
+    - natsort==8.1.0
+    - numpy==1.22.2
+    - opencv-python==4.5.5.62
+    - packaging==21.3
+    - pillow==9.0.1
+    - pip==22.0.3
+    - pokemontcgsdk==3.4.0
+    - pyparsing==3.0.7
+    - pytesseract==0.3.9
+    - requests==2.27.1
+    - urllib3==1.26.8
+prefix: /opt/anaconda3/envs/py310
