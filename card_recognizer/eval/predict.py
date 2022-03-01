@@ -1,7 +1,7 @@
 import os
 import pickle
 
-from card_recognizer.algo.ocr import ocr_cards
+from card_recognizer.ocr.ocr import ocr_cards
 from card_recognizer.algo.text_classify import classify
 
 

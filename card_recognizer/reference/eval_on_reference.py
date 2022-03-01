@@ -2,7 +2,7 @@ import os
 import pickle
 
 from card_recognizer.eval.eval import compute_acc_exclude_alt_art
-from card_recognizer.algo.ocr import ocr_cards
+from card_recognizer.ocr.ocr import ocr_cards
 from card_recognizer.algo.text_classify import classify
 
 
