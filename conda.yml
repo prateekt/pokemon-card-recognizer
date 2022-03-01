@@ -1,17 +1,16 @@
-name: py310
+name: py39_card_rec_prod
 channels:
   - defaults
 dependencies:
-  - bzip2=1.0.8=h1de35cc_0
   - ca-certificates=2021.10.26=hecd8cb5_2
-  - certifi=2020.6.20=pyhd3eb1b0_3
+  - certifi=2021.10.8=py39hecd8cb5_2
   - libcxx=12.0.0=h2f01273_0
   - libffi=3.3=hb1e8313_2
   - ncurses=6.3=hca72f7f_2
   - openssl=1.1.1m=hca72f7f_0
-  - python=3.10.0=hdfd78df_3
+  - python=3.9.7=h88f2d9e_1
   - readline=8.1.2=hca72f7f_1
-  - setuptools=58.0.4=py310hecd8cb5_0
+  - setuptools=58.0.4=py39hecd8cb5_0
   - sqlite=3.37.2=h707629a_0
   - tk=8.6.11=h7bc2e8c_0
   - tzdata=2021e=hda174b7_0
@@ -19,18 +18,28 @@ dependencies:
   - xz=5.2.5=h1de35cc_0
   - zlib=1.2.11=h4dc903c_4
   - pip:
-    - charset-normalizer==2.0.12
     - dacite==1.6.0
-    - idna==3.3
+    - easyocr==1.4.1
+    - imageio==2.9.0
     - natsort==8.1.0
+    - networkx==2.7
     - numpy==1.22.2
     - opencv-python==4.5.5.62
+    - opencv-python-headless==4.5.5.62
     - packaging==21.3
-    - pillow==9.0.1
+    - pillow==8.2.0
     - pip==22.0.3
     - pokemontcgsdk==3.4.0
     - pyparsing==3.0.7
     - pytesseract==0.3.9
-    - requests==2.27.1
-    - urllib3==1.26.8
-prefix: /opt/anaconda3/envs/py310
+    - python-bidi==0.4.2
+    - pywavelets==1.2.0
+    - pyyaml==6.0
+    - scikit-image==0.19.2
+    - scipy==1.8.0
+    - six==1.16.0
+    - tifffile==2022.2.9
+    - torch==1.10.2
+    - torchvision==0.11.3
+    - typing-extensions==4.1.1
+prefix: /opt/anaconda3/envs/py39_card_rec_prod
