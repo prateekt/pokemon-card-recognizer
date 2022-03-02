@@ -11,7 +11,7 @@ setuptools.setup(
     description="Pokemon TCG Card Recognizer",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="N/A",
+    url="https://github.com/prateekt/pokemon-card-recognizer",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

@@ -3,10 +3,11 @@ import os
 from typing import Callable, List
 
 import cv2
+import numpy as np
 from natsort import natsorted
 
-from card_recognizer.ocr import ocr_pipeline
 from card_recognizer.infra.paraloop import paraloop as paraloop
+from card_recognizer.ocr import ocr_pipeline
 
 # init pipelines
 basic_ocr_pipeline = ocr_pipeline.basic_ocr_pipeline()
@@ -14,11 +15,13 @@ black_text_ocr_pipeline = ocr_pipeline.black_text_ocr_pipeline()
 white_text_ocr_pipeline = ocr_pipeline.white_text_ocr_pipeline()
 
 
-def _ocr_bw_text(img) -> str:
+def _ocr_bw_text(img: np.array) -> str:
     """
     OCR black and white text independently, and then return the concatenated result.
 
-    :return: Extracted black and white text
+    param img: Input image
+    return:
+        output: Extracted text
     """
 
     # hyper parameters
@@ -27,17 +30,21 @@ def _ocr_bw_text(img) -> str:
     # run defaults
     basic_text = basic_ocr_pipeline.run(input_img=img)
 
-    # loop
+    # loop over hyper parameters
+    final_txt = basic_text
     for lower_lim in lower_lim_settings:
-
-        black_text = _black_text_ocr(img=img, lower_lim=t)
-        print([str(t), black_text])
-        white_text = _white_text_ocr(img=img, lower_lim=t)
+        black_text_ocr_pipeline.set_img_pipeline_params(
+            func_name="remove_background", params={"lower_lim": lower_lim}
+        )
+        black_text = black_text_ocr_pipeline.run(input_img=img)
+        white_text_ocr_pipeline.set_img_pipeline_params(
+            func_name="remove_background", params={"lower_lim": lower_lim}
+        )
+        white_text = white_text_ocr_pipeline.run(input_img=img)
         if len(black_text) > len(final_txt):
             final_txt = black_text
         if len(white_text) > len(final_txt):
             final_txt = white_text
-    print(final_txt)
     return final_txt
 
 
@@ -45,9 +52,10 @@ def _ocr_card(ocr_func: Callable, file: str) -> str:
     """
     API to OCR a Pokémon card from file.
 
-    :param ocr_func: The OCR function to use
-    :param file: Path to card image file
-    :return Extracted text
+    param ocr_func: The OCR function to use
+    param file: Path to card image file
+    return:
+        output: Extracted text
     """
 
     # load card image
@@ -61,11 +69,14 @@ def ocr_cards(files_path: str, ocr_func: Callable = _ocr_bw_text) -> List[str]:
     """
     API to OCR a list of Pokémon card files.
 
-    :param files_path: Path to directory of card image files
-    :param ocr_func: The OCR function to use
-    :return: List of OCR results
+    param files_path: Path to directory of card image files
+    param ocr_func: The OCR function to use
+    return:
+        output: List of OCR results
     """
-    files = natsorted([os.path.join(files_path, file) for file in os.listdir(files_path)])
+    files = natsorted(
+        [os.path.join(files_path, file) for file in os.listdir(files_path)]
+    )
     ocr_func_par = functools.partial(_ocr_card, ocr_func)
     results = paraloop.loop(func=ocr_func_par, params=files)
     return results
