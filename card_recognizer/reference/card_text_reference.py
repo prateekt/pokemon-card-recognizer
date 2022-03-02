@@ -5,7 +5,7 @@ from typing import List, Dict, Optional, Tuple
 import numpy as np
 from pokemontcgsdk import Card
 
-from card_recognizer.algo.text_classify import vect_words
+from card_recognizer.classifier.text_classify import vect_words
 
 
 def _add_words(s: str, lst: list) -> None:

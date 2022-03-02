@@ -61,7 +61,7 @@ def _ocr_card(ocr_func: Callable, file: str) -> str:
     # load card image
     img = cv2.imread(filename=file)
 
-    # run algo method
+    # run classifier method
     return ocr_func(img=img)
 
 

@@ -3,7 +3,7 @@ import pickle
 
 from card_recognizer.eval.eval import compute_acc_exclude_alt_art
 from card_recognizer.ocr.ocr import ocr_cards
-from card_recognizer.algo.text_classify import classify
+from card_recognizer.classifier.text_classify import classify
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
         ref_pkl_path = os.path.join(out_folder, set_prefix + ".pkl")
         ocr_result_path = os.path.join(out_folder, set_prefix + "_ocr.pkl")
 
-        # algo cards
+        # classifier cards
         if recompute_ocr or not os.path.exists(ocr_result_path):
             ocr_results = ocr_cards(files_path=images_path)
             pickle.dump(ocr_results, open(ocr_result_path, "wb"))

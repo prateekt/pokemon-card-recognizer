@@ -111,7 +111,7 @@ def _classify_multiple(
     Classify multiple OCR results.
 
     :return:
-        preds: The predicted card number for each algo result
+        preds: The predicted card number for each classifier result
         scores: The scores of top match
     """
     par_classify_func = functools.partial(
@@ -137,7 +137,7 @@ def classify(
     Classify OCR result(s).
 
     return:
-        pred(s): The predicted card number for each algo result
+        pred(s): The predicted card number for each classifier result
         score(s): The scores of top match
     """
 
