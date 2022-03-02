@@ -117,6 +117,13 @@ class OCRPipeline:
             raise ValueError("Cannot set parameters when img_pipeline=None.")
         self.img_pipeline.set_params(func_name=func_name, params=params)
 
+    def vis(self) -> None:
+        """
+        Visualizes image preprocessing pipeline.
+        """
+        if self.img_pipeline is not None:
+            self.img_pipeline.vis()
+
     def save(self, out_path: str = "") -> None:
         """
         Saves image pipeline steps to file.
