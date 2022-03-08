@@ -16,8 +16,10 @@ def _tokenize_text(text: str) -> List[str]:
 def _resplit_new_lines(text: List[str]) -> List[str]:
     new_words: List[str] = list()
     for word in text:
-        if '\n' in word:
-            new_words.extend([w.strip() for w in word.split('\n') if len(w.strip()) > 0])
+        if "\n" in word:
+            new_words.extend(
+                [w.strip() for w in word.split("\n") if len(w.strip()) > 0]
+            )
         else:
             new_words.append(word)
     return new_words
@@ -68,6 +70,7 @@ def basic_text_cleaning_pipeline() -> Pipeline:
 
 def retokenize_text_pipeline() -> Pipeline:
     pipeline = Pipeline(
-        [_retokenize_text, _resplit_new_lines, _strip, _correct_spelling, _check_vocab], op_class=TextOp
+        [_retokenize_text, _resplit_new_lines, _strip, _correct_spelling, _check_vocab],
+        op_class=TextOp,
     )
     return pipeline

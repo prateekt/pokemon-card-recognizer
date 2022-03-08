@@ -49,12 +49,18 @@ def main():
 
         # tokenize and clean raw OCR results
         text_cleaning_pipeline = basic_text_cleaning_pipeline()
-        text_cleaning_pipeline.set_params(func_name='_check_vocab', params={'vocab': classifier.vocab})
+        text_cleaning_pipeline.set_params(
+            func_name="_check_vocab", params={"vocab": classifier.vocab}
+        )
         ocr_words = paraloop.loop(func=text_cleaning_pipeline.run, params=ocr_results)
 
         # test various classifier rules and print out results
         acc_results = list()
-        for classifier_rule in [classify_l1, classify_shared_words, classify_shared_words_rarity]:
+        for classifier_rule in [
+            classify_l1,
+            classify_shared_words,
+            classify_shared_words_rarity,
+        ]:
             # make predictions
             preds, scores, all_scores = classifier.classify(
                 ocr_words=ocr_words, classification_func=classifier_rule
@@ -62,9 +68,11 @@ def main():
 
             # compute accuracy
             acc, incorrect = compute_acc_exclude_alt_art(
-                preds=preds, gt=range(len(ocr_results)), cards_reference=classifier.cards
+                preds=preds,
+                gt=range(len(ocr_results)),
+                cards_reference=classifier.cards,
             )
-            acc_results.append(classifier_rule.__name__ + ': ' + str(acc))
+            acc_results.append(classifier_rule.__name__ + ": " + str(acc))
         print(set_name + ": " + str(acc_results))
 
 
