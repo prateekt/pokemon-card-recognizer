@@ -1,15 +1,26 @@
 import re
-from typing import List, Dict
+from typing import List
 
 from spellchecker import SpellChecker
 
 from card_recognizer.infra.algo_ops.pipeline import Pipeline
 from card_recognizer.infra.algo_ops.textops import TextOp
+from card_recognizer.reference.vocab import Vocab
 
 
 def _tokenize_text(text: str) -> List[str]:
     # tokenize text into words
-    return [w.strip() for w in text.lower().strip().split(" ")]
+    return [w.strip() for w in text.lower().strip().split(" ") if len(w.strip()) > 0]
+
+
+def _resplit_new_lines(text: List[str]) -> List[str]:
+    new_words: List[str] = list()
+    for word in text:
+        if '\n' in word:
+            new_words.extend([w.strip() for w in word.split('\n') if len(w.strip()) > 0])
+        else:
+            new_words.append(word)
+    return new_words
 
 
 def _retokenize_text(text: List[str]) -> List[str]:
@@ -44,19 +55,19 @@ def _correct_spelling(words: List[str]) -> List[str]:
     return new_words
 
 
-def _check_vocab(words: List[str], vocab: Dict[str, int]) -> List[str]:
-    return [word for word in words if word in vocab.keys()]
+def _check_vocab(words: List[str], vocab: Vocab) -> List[str]:
+    return [word for word in words if word in vocab._words.keys()]
 
 
 def basic_text_cleaning_pipeline() -> Pipeline:
     pipeline = Pipeline(
-        [_tokenize_text, _strip, _correct_spelling, _check_vocab], op_class=TextOp
+        [_tokenize_text, _resplit_new_lines, _strip, _check_vocab], op_class=TextOp
     )
     return pipeline
 
 
 def retokenize_text_pipeline() -> Pipeline:
     pipeline = Pipeline(
-        [_retokenize_text, _strip, _correct_spelling, _check_vocab], op_class=TextOp
+        [_retokenize_text, _resplit_new_lines, _strip, _correct_spelling, _check_vocab], op_class=TextOp
     )
     return pipeline
