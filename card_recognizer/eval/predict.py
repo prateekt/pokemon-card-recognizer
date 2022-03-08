@@ -2,7 +2,7 @@ import os
 import pickle
 
 from card_recognizer.ocr.ocr import ocr_cards
-from card_recognizer.classifier.text_classify import classify
+from card_recognizer.classifier.rules import classify
 
 
 def main():

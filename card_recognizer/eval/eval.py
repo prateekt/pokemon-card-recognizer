@@ -20,6 +20,10 @@ def compute_basic_acc(preds: np.array, gt: np.array) -> [float, List[int]]:
     return acc, incorrect
 
 
+def is_correct_exclude_alt_art(pred: int, gt: int, cards_reference: List[Card]) -> bool:
+    return (pred == gt) | (cards_reference[pred].name == cards_reference[gt].name)
+
+
 def compute_acc_exclude_alt_art(
     preds: np.array, gt: np.array, cards_reference: List[Card]
 ) -> Tuple[float, List[int]]:
@@ -36,13 +40,11 @@ def compute_acc_exclude_alt_art(
     num_correct = 0
     incorrect = np.full((len(preds),), True, dtype=bool)
     for i, pred in enumerate(preds):
-        if pred == gt[i]:
+        if is_correct_exclude_alt_art(
+            pred=pred, gt=gt[i], cards_reference=cards_reference
+        ):
             incorrect[i] = False
             num_correct += 1
-        else:
-            if cards_reference[int(pred)].name == cards_reference[gt[i]].name:
-                incorrect[i] = False
-                num_correct += 1
     acc = num_correct / len(preds)
     incorrect = np.where(incorrect)[0]
     return acc, incorrect

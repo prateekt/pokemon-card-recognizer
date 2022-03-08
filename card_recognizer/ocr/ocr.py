@@ -7,12 +7,13 @@ import numpy as np
 from natsort import natsorted
 
 from card_recognizer.infra.paraloop import paraloop as paraloop
-from card_recognizer.ocr import ocr_pipeline
 
 # init pipelines
-basic_ocr_pipeline = ocr_pipeline.basic_ocr_pipeline()
-black_text_ocr_pipeline = ocr_pipeline.black_text_ocr_pipeline()
-white_text_ocr_pipeline = ocr_pipeline.white_text_ocr_pipeline()
+from card_recognizer.ocr.pipeline.instances import ocr
+
+basic_ocr_pipeline = ocr.basic_ocr_pipeline()
+black_text_ocr_pipeline = ocr.black_text_ocr_pipeline()
+white_text_ocr_pipeline = ocr.white_text_ocr_pipeline()
 
 
 def _ocr_bw_text(img: np.array) -> str:

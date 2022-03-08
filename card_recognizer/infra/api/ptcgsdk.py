@@ -1,6 +1,7 @@
 import os
 from typing import List
 import requests
+from natsort import natsorted
 from pokemontcgsdk import Card, RestClient
 import functools
 from card_recognizer.infra.paraloop import paraloop as paraloop
@@ -12,13 +13,16 @@ RestClient.configure(API_KEY)
 
 def query_set_cards(set_name: str) -> List[Card]:
     """
-    Queries cards from Pokémon card set.
+    Queries cards from Pokémon card set. Returns sorted by card number.
 
     param set_name: The name of the card set
+
     return:
         cards: List of Card objects in the card set
     """
     cards = Card.where(q='set.name:"' + set_name + '"')
+    card_numbers = natsorted([card.number for card in cards])
+    cards.sort(key=lambda card: card_numbers.index(card.number))
     return cards
 
 
