@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Sequence, Optional
 
 import numpy as np
 from pokemontcgsdk import Card
@@ -26,11 +26,13 @@ def _is_correct_exclude_alt_art(
     """
     Helper to determine if a prediction is correct or same as an alternate art.
     """
-    return (pred == gt) | (cards_reference[pred].name == cards_reference[gt].name)
+    return (pred is not None) and (
+        (pred == gt) | (cards_reference[pred].name == cards_reference[gt].name)
+    )
 
 
 def compute_acc_exclude_alt_art(
-    preds: np.array, gt: np.array, cards_reference: List[Card]
+    preds: Sequence[Optional[int]], gt: Sequence[int], cards_reference: List[Card]
 ) -> Tuple[float, List[int]]:
     """
     Computes accuracy, excluding alternate art duplicates.

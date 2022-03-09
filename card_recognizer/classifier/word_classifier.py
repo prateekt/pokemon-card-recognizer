@@ -26,7 +26,7 @@ class WordClassifier:
         classification_func: Callable,
         include_scores: bool,
         ocr_words: List[str],
-    ) -> Tuple[int, float, Optional[np.array]]:
+    ) -> Tuple[Optional[int], Optional[float], Optional[np.array]]:
         """
         Classify a single OCR result.
 
@@ -39,20 +39,28 @@ class WordClassifier:
             score: The score of top match
             scores: The scores for all cards in reference
         """
+
+        # run prediction
         v = self.vocab.vect(words=ocr_words, method=self.vect_method)
         card_number_prediction, score, scores = classification_func(
             v=v, ref_mat=self.ref_mat
         )
         if not include_scores:
             scores = None
-        return card_number_prediction, score, scores
+
+        # make a no-prediction if there are no detected words to predict from
+        if np.sum(v) == 0:
+            return None, None, scores
+        else:
+            # return prediction
+            return card_number_prediction, score, scores
 
     def _classify_multiple(
         self,
         ocr_words: List[List[str]],
         classification_func: Callable = classify_l1,
         include_scores: bool = False,
-    ) -> Tuple[np.array, np.array, Optional[List[np.array]]]:
+    ) -> Tuple[List[Optional[int]], List[Optional[float]], Optional[List[np.array]]]:
         """
         Classify multiple OCR results.
 
@@ -64,15 +72,15 @@ class WordClassifier:
             self._classify_one, classification_func, include_scores
         )
         results = paraloop.loop(func=par_classify_func, params=ocr_words)
-        preds = np.zeros((len(ocr_words),), dtype=int)
-        scores = np.zeros((len(ocr_words),), dtype=float)
+        preds: List[Optional[int]] = list()
+        scores: List[Optional[float]] = list()
         if include_scores:
             all_scores: Optional[List[np.array]] = list()
         else:
             all_scores = None
         for i, result in enumerate(results):
-            preds[i] = result[0]
-            scores[i] = result[1]
+            preds.append(result[0])
+            scores.append(result[1])
             if include_scores:
                 all_scores.append(result[2])
         return preds, scores, all_scores
@@ -82,7 +90,10 @@ class WordClassifier:
         ocr_words: Union[List[str], List[List[str]]],
         classification_func: Callable = classify_l1,
         include_scores: bool = False,
-    ) -> Union[Tuple[int, float, np.array], Tuple[np.array, np.array, List[np.array]]]:
+    ) -> Union[
+        Tuple[Optional[int], Optional[float], np.array],
+        Tuple[List[Optional[int]], List[Optional[float]], List[np.array]],
+    ]:
         """
         Classify OCR result(s).
 
