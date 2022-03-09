@@ -1,9 +1,9 @@
 import math
+import os
 from typing import List, Callable
 
-import numpy as np
 import cv2
-import os
+import numpy as np
 from matplotlib import pyplot as plt
 
 from card_recognizer.infra.algo_ops.pipeline import Op, Pipeline

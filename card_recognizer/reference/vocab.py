@@ -1,7 +1,7 @@
 from typing import Dict, List
 
-from bidict import bidict
 import numpy as np
+from bidict import bidict
 
 
 class Vocab:
@@ -120,7 +120,7 @@ class Vocab:
                             v[i] += 1
         return v
 
-    def vect(self, words: List[str], method: str) -> np.array:
+    def vect(self, words: List[str], method: str = "basic") -> np.array:
         """
         API to convert a list of words into a vector.
 

@@ -1,3 +1,4 @@
+import os
 import tempfile
 from enum import Enum
 from typing import Optional, Dict, Any, List, Union
@@ -6,9 +7,11 @@ import cv2
 import easyocr
 import numpy as np
 import pytesseract
+from natsort import natsorted
 
 from card_recognizer.infra.algo_ops.cvops import CVPipeline
 from card_recognizer.infra.algo_ops.pipeline import Pipeline
+from card_recognizer.infra.paraloop import paraloop
 
 
 # OCR Method Enum
@@ -86,7 +89,7 @@ class OCRPipeline:
 
     def run(
         self, input_img: np.array, ocr_method: Optional[OCRMethod] = None
-    ) -> List[str]:
+    ) -> Union[str, List[str]]:
         """
         Runs OCR pipeline on input image.
 
@@ -109,7 +112,7 @@ class OCRPipeline:
 
     def run_on_img_file(
         self, file: str, ocr_method: Optional[OCRMethod] = None
-    ) -> List[str]:
+    ) -> Union[str, List[str]]:
         """
         Runs OCR pipeline on input image file.
 
@@ -170,3 +173,18 @@ class OCRPipeline:
         if self.img_pipeline is None:
             raise ValueError("Cannot save when img_pipeline=None.")
         self.img_pipeline.save(out_path=out_path)
+
+    def run_on_images(self, images_dir: str) -> Union[List[str], List[List[str]]]:
+        """
+        API to run OCR on a directory of images.
+
+        param files_path: Path to directory of card image files
+
+        return:
+            output: List of OCR results
+        """
+        files = natsorted(
+            [os.path.join(images_dir, file) for file in os.listdir(images_dir)]
+        )
+        results = paraloop.loop(func=self.run_on_img_file, params=files)
+        return results

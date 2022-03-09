@@ -1,5 +1,6 @@
-import numpy as np
 import cv2
+import numpy as np
+
 from card_recognizer.infra.algo_ops.cvops import CVPipeline
 
 

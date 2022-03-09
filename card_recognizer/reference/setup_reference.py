@@ -19,7 +19,7 @@ def main():
         "Fusion Strike",
         "Brilliant Stars",
     ]
-    download_images = False
+    download_images = True
 
     # loop
     for set_name in card_sets:
@@ -30,13 +30,14 @@ def main():
 
         # download card images
         if download_images:
-            out_images_path = os.path.join(out_folder, set_prefix)
+            out_images_path = os.path.join(out_folder, "card_images", set_prefix)
             print(set_name + ": Downloading images...")
             download_card_images(cards=cards, out_path=out_images_path)
 
         # build card text reference pickle file
         print(set_name + ": building reference...")
-        out_pkl_path = os.path.join(out_folder, set_prefix + ".pkl")
+        os.makedirs(os.path.join(out_folder, "ref_build"), exist_ok=True)
+        out_pkl_path = os.path.join(out_folder, "ref_build", set_prefix + ".pkl")
         build_set_reference(cards=cards, out_pkl_path=out_pkl_path)
 
 

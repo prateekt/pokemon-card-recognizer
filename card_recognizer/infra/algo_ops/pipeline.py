@@ -1,7 +1,7 @@
 import functools
 from abc import ABC, abstractmethod
-from typing import Callable, List, Any, Dict
 from collections import OrderedDict
+from typing import Callable, List, Any, Dict
 
 
 class Op(ABC):

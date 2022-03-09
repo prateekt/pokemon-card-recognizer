@@ -1,4 +1,5 @@
 import os
+
 from card_recognizer.infra.algo_ops.pipeline import Op
 
 

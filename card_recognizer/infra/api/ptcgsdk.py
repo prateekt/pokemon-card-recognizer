@@ -1,9 +1,11 @@
+import functools
 import os
 from typing import List
+
 import requests
 from natsort import natsorted
 from pokemontcgsdk import Card, RestClient
-import functools
+
 from card_recognizer.infra.paraloop import paraloop as paraloop
 
 # set up API key for Pokémon TCG API

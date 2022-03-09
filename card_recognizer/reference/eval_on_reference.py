@@ -1,16 +1,14 @@
 import os
 import pickle
 
-from card_recognizer.classifier.word_classifier import WordClassifier
-from card_recognizer.eval.eval import compute_acc_exclude_alt_art
-from card_recognizer.ocr.ocr import ocr_cards
 from card_recognizer.classifier.rules import (
     classify_shared_words,
     classify_shared_words_rarity,
     classify_l1,
 )
-from card_recognizer.ocr.pipeline.instances.text import basic_text_cleaning_pipeline
-from card_recognizer.infra.paraloop import paraloop as paraloop
+from card_recognizer.classifier.word_classifier import WordClassifier
+from card_recognizer.eval.eval import compute_acc_exclude_alt_art
+from card_recognizer.ocr.pipeline.framework.ocr_fusion import OCRFusion
 
 
 def main():
@@ -31,28 +29,23 @@ def main():
 
         # define paths
         set_prefix = set_name.lower().replace(" ", "_")
-        images_path = os.path.join(out_folder, set_prefix)
-        ref_pkl_path = os.path.join(out_folder, set_prefix + ".pkl")
-        ocr_result_path = os.path.join(out_folder, set_prefix + "_ocr.pkl")
-
-        # load OCR results
-        if recompute_ocr or not os.path.exists(ocr_result_path):
-            ocr_results = ocr_cards(files_path=images_path)
-            pickle.dump(ocr_results, open(ocr_result_path, "wb"))
-        else:
-            ocr_results = pickle.load(open(ocr_result_path, "rb"))
+        images_path = os.path.join(out_folder, "card_images", set_prefix)
+        ref_pkl_path = os.path.join(out_folder, "ref_build", set_prefix + ".pkl")
+        ocr_result_path = os.path.join(out_folder, "ref_ocr", set_prefix + "_ocr.pkl")
 
         # init classifier
         classifier = WordClassifier(
             ref_pkl_file=ref_pkl_path, vect_method="encapsulation_match"
         )
 
-        # tokenize and clean raw OCR results
-        text_cleaning_pipeline = basic_text_cleaning_pipeline()
-        text_cleaning_pipeline.set_params(
-            func_name="_check_vocab", params={"vocab": classifier.vocab}
-        )
-        ocr_words = paraloop.loop(func=text_cleaning_pipeline.run, params=ocr_results)
+        # load OCR results
+        if recompute_ocr or not os.path.exists(ocr_result_path):
+            os.makedirs(os.path.join(out_folder, "ref_ocr"), exist_ok=True)
+            ocr_pipeline = OCRFusion(vocab=classifier.vocab)
+            ocr_words = ocr_pipeline.run_on_images(images_dir=images_path)
+            pickle.dump(ocr_words, open(ocr_result_path, "wb"))
+        else:
+            ocr_words = pickle.load(open(ocr_result_path, "rb"))
 
         # test various classifier rules and print out results
         acc_results = list()
@@ -69,7 +62,7 @@ def main():
             # compute accuracy
             acc, incorrect = compute_acc_exclude_alt_art(
                 preds=preds,
-                gt=range(len(ocr_results)),
+                gt=range(len(ocr_words)),
                 cards_reference=classifier.cards,
             )
             acc_results.append(classifier_rule.__name__ + ": " + str(acc))
