@@ -101,7 +101,9 @@ class WordClassifier:
             pred(s): The predicted card number for each classifier result
             score(s): The scores of top match
         """
-        if isinstance(ocr_words, list) and not isinstance(ocr_words[0], list):
+        if len(ocr_words) == 0:
+            return None, None, None
+        elif not isinstance(ocr_words[0], list):
             return self._classify_one(
                 ocr_words=ocr_words,
                 classification_func=classification_func,

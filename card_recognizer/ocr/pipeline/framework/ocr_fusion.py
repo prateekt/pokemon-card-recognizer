@@ -86,6 +86,11 @@ class OCRFusion:
             print("Final: " + str(final_ocr_words))
         return final_ocr_words
 
+    def vis_profile(self):
+        self.basic_pytesseract_pipeline.vis_profile()
+        self.black_text_ocr_pipeline.vis_profile()
+        self.white_text_ocr_pipeline.vis_profile()
+
     def run_on_img_file(self, file: str) -> List[str]:
         """
         Runs OCR pipeline on input image file.

@@ -2,6 +2,8 @@ import functools
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from typing import Callable, List, Any, Dict
+import time
+import numpy as np
 
 
 class Op(ABC):
@@ -19,17 +21,22 @@ class Op(ABC):
         self.name = func.__name__
         self.input = None
         self.output = None
+        self.execution_times: List[float] = list()
 
     def exec(self, inp: Any) -> Any:
         """
-        Executes operation function on an input.
+        Executes operation function on an input. Is also self-time profiling.
 
         param inp: The input
         return
             output: The result of the operation
         """
         self.input = inp
+        t0 = time.time()
         self.output = self.exec_func(inp)
+        tf = time.time()
+        elapsed_time = tf - t0
+        self.execution_times.append(elapsed_time)
         return self.output
 
     @abstractmethod
@@ -137,3 +144,11 @@ class Pipeline:
             if i == 0:
                 op.save_input(out_path=out_path)
             op.save_output(out_path=out_path)
+
+    def vis_profile(self) -> None:
+        print("---Profile---")
+        for i, op_name in enumerate(self.ops.keys()):
+            op = self.ops[op_name]
+            assert isinstance(op, Op)
+            print(op_name + ": " + str(np.mean(op.execution_times)) + " s/call")
+        print("-------------")

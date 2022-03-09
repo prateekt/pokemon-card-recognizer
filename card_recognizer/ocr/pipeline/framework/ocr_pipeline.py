@@ -164,6 +164,15 @@ class OCRPipeline:
         if self.text_pipeline is not None:
             self.text_pipeline.vis()
 
+    def vis_profile(self) -> None:
+        """
+        Visualizes profiling metrics.
+        """
+        if self.img_pipeline is not None:
+            self.img_pipeline.vis_profile()
+        if self.text_pipeline is not None:
+            self.text_pipeline.vis_profile()
+
     def save(self, out_path: str = "") -> None:
         """
         Saves image pipeline steps to file.
