@@ -125,7 +125,7 @@ class WordClassifier:
         if len(ocr_words) == 0:
             return None, None
         elif not isinstance(ocr_words[0], list):
-            return self._classify_one(ocr_words=ocr_words, include_probs=include_probs,)
+            return self._classify_one(ocr_words=ocr_words, include_probs=include_probs)
         else:
             return self._classify_multiple(
                 ocr_words=ocr_words, include_probs=include_probs,
