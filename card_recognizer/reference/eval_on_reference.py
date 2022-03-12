@@ -10,8 +10,8 @@ def main():
     # flags
     out_folder = "data"
     card_sets = [
-#        "Vivid Voltage",
-#        "Darkness Ablaze",
+        #        "Vivid Voltage",
+        #        "Darkness Ablaze",
         "Chilling Reign",
         "Evolving Skies",
         "Fusion Strike",
