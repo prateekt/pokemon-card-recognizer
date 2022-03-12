@@ -28,10 +28,7 @@ class OCRFusion:
         self.lower_lim_trials = [0, 50, 90, 100, 150, 190, 200, 210, 220, 250]
         self.vis = False
 
-    def run(
-        self,
-        img: np.array,
-    ) -> List[str]:
+    def run(self, img: np.array,) -> List[str]:
         """
         param img: Input image
 
@@ -79,9 +76,7 @@ class OCRFusion:
             )
 
         # compute final OCR-ed words
-        final_ocr_words = [
-            self.vocab._words.inv[i] for i in np.where(final_vect > 0)[0]
-        ]
+        final_ocr_words = [self.vocab.inv(i) for i in np.where(final_vect > 0)[0]]
         if self.vis:
             print("Final: " + str(final_ocr_words))
         return final_ocr_words

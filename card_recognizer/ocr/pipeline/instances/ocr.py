@@ -15,9 +15,7 @@ def basic_ocr_pipeline() -> OCRPipeline:
     Initializes basic PyTesseract OCR pipeline.
     """
     ocr_pipeline = OCRPipeline(
-        img_pipeline=None,
-        ocr_method=OCRMethod.PYTESSERACT,
-        text_pipeline=None,
+        img_pipeline=None, ocr_method=OCRMethod.PYTESSERACT, text_pipeline=None,
     )
     return ocr_pipeline
 

@@ -23,6 +23,10 @@ class Vocab:
     def __contains__(self, key):
         return key in self._words
 
+    # noinspection PyUnresolvedReferences
+    def inv(self, key):
+        return self._words.inv[key]
+
     @staticmethod
     def _build_vocab(
         card_words: Dict[int, List[str]], min_word_length: int = 2

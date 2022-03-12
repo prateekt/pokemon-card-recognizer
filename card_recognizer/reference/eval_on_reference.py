@@ -1,11 +1,6 @@
 import os
 import pickle
 
-from card_recognizer.classifier.rules import (
-    classify_shared_words,
-    classify_shared_words_rarity,
-    classify_l1,
-)
 from card_recognizer.classifier.word_classifier import WordClassifier
 from card_recognizer.eval.eval import compute_acc_exclude_alt_art
 from card_recognizer.ocr.pipeline.framework.ocr_fusion import OCRFusion
@@ -49,23 +44,19 @@ def main():
 
         # test various classifier rules and print out results
         acc_results = list()
-        for classifier_rule in [
-            classify_l1,
-            classify_shared_words,
-            classify_shared_words_rarity,
-        ]:
+        for classifier_rule in ["l1", "shared_words", "shared_words_rarity"]:
+
+            # set classifier rule
+            classifier.set_classification_method(method=classifier_rule)
+
             # make predictions
-            preds, scores, all_scores = classifier.classify(
-                ocr_words=ocr_words, classification_func=classifier_rule
-            )
+            preds, _ = classifier.classify(ocr_words=ocr_words,)
 
             # compute accuracy
             acc, incorrect = compute_acc_exclude_alt_art(
-                preds=preds,
-                gt=range(len(ocr_words)),
-                cards_reference=classifier.cards,
+                preds=preds, gt=range(len(ocr_words)), cards_reference=classifier.cards,
             )
-            acc_results.append(classifier_rule.__name__ + ": " + str(acc))
+            acc_results.append(classifier_rule + ": " + str(acc))
         print(set_name + ": " + str(acc_results))
 
 

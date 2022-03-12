@@ -1,8 +1,9 @@
 import functools
+import time
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from typing import Callable, List, Any, Dict
-import time
+
 import numpy as np
 
 
@@ -96,6 +97,7 @@ class Pipeline:
         self.ops = OrderedDict()
         for func in funcs:
             self.ops[func.__name__] = op_class(func)
+        self.execution_times: List[float] = list()
 
     def set_params(self, func_name: str, params: Dict[str, Any]) -> None:
         """
@@ -115,10 +117,14 @@ class Pipeline:
         return:
             output: The output of the pipeline
         """
+        t0 = time.time()
         current_input = inp
         for op_name in self.ops.keys():
             op = self.ops[op_name]
             current_input = op.exec(inp=current_input)
+        tf = time.time()
+        pipeline_execution_time = tf - t0
+        self.execution_times.append(pipeline_execution_time)
         return current_input
 
     def vis(self) -> None:
@@ -150,5 +156,26 @@ class Pipeline:
         for i, op_name in enumerate(self.ops.keys()):
             op = self.ops[op_name]
             assert isinstance(op, Op)
-            print(op_name + ": " + str(np.mean(op.execution_times)) + " s/call")
+            print(
+                op_name
+                + ": "
+                + self._format_execution_time_stats(execution_times=op.execution_times)
+            )
+        print(
+            "Total pipeline: "
+            + self._format_execution_time_stats(execution_times=self.execution_times)
+        )
         print("-------------")
+
+    @staticmethod
+    def _format_execution_time_stats(
+        execution_times: List[float], num_sf: int = 9
+    ) -> str:
+        mean_val = np.mean(execution_times)
+        std_val = np.std(execution_times)
+        return (
+            str(np.round(mean_val, num_sf))
+            + " +/- "
+            + str(np.round(std_val, num_sf))
+            + " s/call"
+        )
