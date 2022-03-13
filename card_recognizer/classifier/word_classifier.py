@@ -59,7 +59,9 @@ class WordClassifier:
             raise ValueError("Classification method not supported: " + str(method))
 
     def _classify_one(
-        self, include_probs: bool, ocr_words: List[str],
+        self,
+        include_probs: bool,
+        ocr_words: List[str],
     ) -> Tuple[Optional[int], Optional[np.array]]:
         """
         Classify a single OCR result.
@@ -88,7 +90,9 @@ class WordClassifier:
             return card_number_prediction, probs
 
     def _classify_multiple(
-        self, ocr_words: List[List[str]], include_probs: bool = False,
+        self,
+        ocr_words: List[List[str]],
+        include_probs: bool = False,
     ) -> Tuple[List[Optional[int]], Optional[List[np.array]]]:
         """
         Classify multiple OCR results.
@@ -111,9 +115,12 @@ class WordClassifier:
         return preds, all_probs
 
     def classify(
-        self, ocr_words: Union[List[str], List[List[str]]], include_probs: bool = False,
+        self,
+        ocr_words: Union[List[str], List[List[str]]],
+        include_probs: bool = False,
     ) -> Union[
-        Tuple[Optional[int], np.array], Tuple[List[Optional[int]], List[np.array]],
+        Tuple[Optional[int], np.array],
+        Tuple[List[Optional[int]], List[np.array]],
     ]:
         """
         Classify OCR result(s).
@@ -128,5 +135,6 @@ class WordClassifier:
             return self._classify_one(ocr_words=ocr_words, include_probs=include_probs)
         else:
             return self._classify_multiple(
-                ocr_words=ocr_words, include_probs=include_probs,
+                ocr_words=ocr_words,
+                include_probs=include_probs,
             )

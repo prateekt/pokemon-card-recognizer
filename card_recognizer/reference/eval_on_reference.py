@@ -10,8 +10,8 @@ def main():
     # flags
     out_folder = "data"
     card_sets = [
-        #        "Vivid Voltage",
-        #        "Darkness Ablaze",
+        "Vivid Voltage",
+        "Darkness Ablaze",
         "Chilling Reign",
         "Evolving Skies",
         "Fusion Strike",
@@ -54,7 +54,9 @@ def main():
 
             # compute accuracy
             acc, incorrect = compute_acc_exclude_alt_art(
-                preds=preds, gt=range(len(ocr_words)), cards_reference=classifier.cards,
+                preds=preds,
+                gt=range(len(ocr_words)),
+                cards_reference=classifier.cards,
             )
             acc_results.append(classifier_rule + ": " + str(acc))
         print(set_name + ": " + str(acc_results))

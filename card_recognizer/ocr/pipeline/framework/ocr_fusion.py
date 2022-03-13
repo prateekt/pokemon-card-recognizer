@@ -1,34 +1,34 @@
 import os
-from typing import List, Union
+from typing import List, Union, Dict, Any
 
 import cv2
 import numpy as np
 from natsort import natsorted
 
+from card_recognizer.infra.algo_ops.op import Op
 from card_recognizer.infra.paraloop import paraloop
+from card_recognizer.ocr.pipeline.framework.ocr_pipeline import OCRPipeline
 from card_recognizer.ocr.pipeline.instances import ocr
 from card_recognizer.reference.vocab import Vocab
 
 
-class OCRFusion:
-    def __init__(self, vocab: Vocab):
-        self.vocab = vocab
-        self.basic_pytesseract_pipeline = ocr.basic_pytesseract_pipeline()
-        self.black_text_ocr_pipeline = ocr.black_text_ocr_pipeline()
-        self.white_text_ocr_pipeline = ocr.white_text_ocr_pipeline()
-        self.basic_pytesseract_pipeline.set_text_pipeline_params(
-            func_name="_check_vocab", params={"vocab": vocab}
-        )
-        self.black_text_ocr_pipeline.set_text_pipeline_params(
-            func_name="_check_vocab", params={"vocab": vocab}
-        )
-        self.white_text_ocr_pipeline.set_text_pipeline_params(
-            func_name="_check_vocab", params={"vocab": vocab}
-        )
-        self.lower_lim_trials = [0, 50, 90, 100, 150, 190, 200, 210, 220, 250]
-        self.vis = False
+class OCRFusion(Op):
+    def save_output(self, out_path: str = ".") -> None:
+        pass
 
-    def run(self, img: np.array,) -> List[str]:
+    def save_input(self, out_path: str = ".") -> None:
+        pass
+
+    def vis(self) -> None:
+        pass
+
+    def vis_input(self) -> None:
+        pass
+
+    def _run(
+        self,
+        file: str,
+    ) -> List[str]:
         """
         param img: Input image
 
@@ -36,8 +36,11 @@ class OCRFusion:
             output: List of detected words
         """
 
+        # load img file
+        img = cv2.imread(filename=file)
+
         # run defaults
-        ocr_words = self.basic_pytesseract_pipeline.run(input_img=img)
+        ocr_words = self.basic_pytesseract_pipeline.exec(inp=img)
         if self.vis:
             print("Basic Pytesseract OCR")
             self.basic_pytesseract_pipeline.vis()
@@ -47,20 +50,24 @@ class OCRFusion:
         for lower_lim in self.lower_lim_trials:
 
             # run black text ocr pipeline on lower lim parameter setting
-            self.black_text_ocr_pipeline.set_img_pipeline_params(
-                func_name="_remove_background", params={"lower_lim": lower_lim}
+            black_text = self.run_param(
+                ocr_pipeline=self.black_text_ocr_pipeline,
+                func_name="_remove_background",
+                params={"lower_lim": lower_lim},
+                inp=img,
             )
-            black_text = self.black_text_ocr_pipeline.run(input_img=img)
             black_text_vect = self.vocab.vect(black_text)
             if self.vis:
                 print("Black Text OCR (ll=" + str(lower_lim) + ")")
                 self.black_text_ocr_pipeline.vis()
 
             # run white text ocr pipeline on lower lim parameter setting
-            self.white_text_ocr_pipeline.set_img_pipeline_params(
-                func_name="_remove_background", params={"lower_lim": lower_lim}
+            white_text = self.run_param(
+                ocr_pipeline=self.white_text_ocr_pipeline,
+                func_name="_remove_background",
+                params={"lower_lim": lower_lim},
+                inp=img,
             )
-            white_text = self.white_text_ocr_pipeline.run(input_img=img)
             white_text_vect = self.vocab.vect(white_text)
             if self.vis:
                 print("White Text OCR (ll=" + str(lower_lim) + ")")
@@ -81,23 +88,43 @@ class OCRFusion:
             print("Final: " + str(final_ocr_words))
         return final_ocr_words
 
+    def __init__(self, vocab: Vocab):
+        super().__init__(func=self._run)
+        self.vocab = vocab
+        self.basic_pytesseract_pipeline = ocr.basic_pytesseract_pipeline()
+        self.black_text_ocr_pipeline = ocr.black_text_ocr_pipeline()
+        self.white_text_ocr_pipeline = ocr.white_text_ocr_pipeline()
+        self.basic_pytesseract_pipeline.set_text_pipeline_params(
+            func_name="_check_vocab", params={"vocab": vocab}
+        )
+        self.black_text_ocr_pipeline.set_text_pipeline_params(
+            func_name="_check_vocab", params={"vocab": vocab}
+        )
+        self.white_text_ocr_pipeline.set_text_pipeline_params(
+            func_name="_check_vocab", params={"vocab": vocab}
+        )
+        self.lower_lim_trials = [0, 50, 90, 100, 150, 190, 200, 210, 220, 250]
+        self.vis = False
+
+    @staticmethod
+    def run_param(
+        ocr_pipeline: OCRPipeline, func_name: str, params: Dict[Any, Any], inp: np.array
+    ) -> List[str]:
+        ocr_pipeline.set_img_pipeline_params(func_name=func_name, params=params)
+        result = ocr_pipeline.exec(inp=inp)
+        return result
+
     def vis_profile(self):
+        """
+        Visualizes each component.
+        """
         self.basic_pytesseract_pipeline.vis_profile()
+        print()
         self.black_text_ocr_pipeline.vis_profile()
+        print()
         self.white_text_ocr_pipeline.vis_profile()
-
-    def run_on_img_file(self, file: str) -> List[str]:
-        """
-        Runs OCR pipeline on input image file.
-
-        param file: Path to input image file
-
-        return:
-            output: List of detected words
-        """
-        img = cv2.imread(filename=file)
-        ocr_words = self.run(img=img)
-        return ocr_words
+        print()
+        super().vis_profile()
 
     def run_on_images(self, images_dir: str) -> Union[List[str], List[List[str]]]:
         """
@@ -111,5 +138,5 @@ class OCRFusion:
         files = natsorted(
             [os.path.join(images_dir, file) for file in os.listdir(images_dir)]
         )
-        results = paraloop.loop(func=self.run_on_img_file, params=files)
+        results = paraloop.loop(func=self._run, params=files)
         return results

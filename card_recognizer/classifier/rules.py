@@ -70,7 +70,8 @@ def classify_shared_words(ref_mat: np.array, v: np.array) -> Tuple[int, np.array
 
 
 def classify_shared_words_rarity(
-    rarity_mat: np.array, v: np.array,
+    rarity_mat: np.array,
+    v: np.array,
 ) -> Tuple[int, np.array]:
     """
     Classifies the nearest match of word vector v based on count of shared words with reference card text,

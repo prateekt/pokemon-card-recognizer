@@ -62,14 +62,14 @@ def _check_vocab(words: List[str], vocab: Vocab) -> List[str]:
 
 
 def basic_text_cleaning_pipeline() -> Pipeline:
-    pipeline = Pipeline(
+    pipeline = Pipeline.init_from_funcs(
         [_tokenize_text, _resplit_new_lines, _strip, _check_vocab], op_class=TextOp
     )
     return pipeline
 
 
 def retokenize_text_pipeline() -> Pipeline:
-    pipeline = Pipeline(
+    pipeline = Pipeline.init_from_funcs(
         [_retokenize_text, _resplit_new_lines, _strip, _correct_spelling, _check_vocab],
         op_class=TextOp,
     )

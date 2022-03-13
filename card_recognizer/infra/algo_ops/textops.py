@@ -14,14 +14,12 @@ class TextOp(Op):
         Print current input.
         """
         print("Input: " + str(self.input))
-        print()
 
-    def vis_output(self) -> None:
+    def vis(self) -> None:
         """
         Print current output.
         """
         print(self.name + ": " + str(self.output))
-        print()
 
     def save_input(self, out_path: str = ".") -> None:
         """

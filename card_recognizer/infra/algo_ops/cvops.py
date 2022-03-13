@@ -38,7 +38,7 @@ class CVOp(Op):
         """
         _pyplot_image(img=self.input, title=self.name)
 
-    def vis_output(self) -> None:
+    def vis(self) -> None:
         """
         Plot current output image using pyplot (jupyter compatible)
         """
@@ -74,23 +74,31 @@ class CVPipeline(Pipeline):
     Implementation of an OpenCV Image Processing pipeline.
     """
 
-    def __init__(self, funcs: List[Callable]):
+    @classmethod
+    def init_from_funcs(cls, funcs: List[Callable], op_class=CVOp) -> "CVPipeline":
         """
         param funcs: List of pipeline functions that execute serially
             as operations in pipeline.
+        param op_class: The subclass of Op that the pipeline uses
         """
-        super().__init__(funcs=funcs, op_class=CVOp)
+        assert op_class is CVOp, "Cannot use non-CVOp in CVPipeline."
+        op_class = [op_class for _ in range(len(funcs))]
+        ops: List[Op] = list()
+        for i, func in enumerate(funcs):
+            ops.append(op_class[i](func))
+        return cls(ops=ops)
 
     def run_on_img_file(self, file: str) -> np.array:
         """
         Run pipeline on an input image file.
 
         param file: Path to input image file
+
         return:
             output: The output image of the pipeline
         """
         img = cv2.imread(filename=file)
-        return self.run(inp=img)
+        return self.exec(inp=img)
 
     def vis(
         self, num_cols: int = 4, fig_width: int = 15, fig_height: int = 6, dpi: int = 80
@@ -117,5 +125,5 @@ class CVPipeline(Pipeline):
                 plt_num += 1
             plt.subplot(num_rows, num_cols, plt_num)
             plt_num += 1
-            op.vis_output()
+            op.vis()
         plt.show()

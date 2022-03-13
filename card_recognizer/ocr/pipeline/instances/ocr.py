@@ -15,7 +15,9 @@ def basic_ocr_pipeline() -> OCRPipeline:
     Initializes basic PyTesseract OCR pipeline.
     """
     ocr_pipeline = OCRPipeline(
-        img_pipeline=None, ocr_method=OCRMethod.PYTESSERACT, text_pipeline=None,
+        img_pipeline=None,
+        ocr_method=OCRMethod.PYTESSERACT,
+        text_pipeline=None,
     )
     return ocr_pipeline
 
@@ -24,7 +26,7 @@ def basic_pytesseract_pipeline() -> OCRPipeline:
     """
     Initializes basic PyTesseract pipeline with additional basic text cleaning pipeline.
     """
-    img_pipeline = CVPipeline(funcs=[_gray_scale])
+    img_pipeline = CVPipeline.init_from_funcs(funcs=[_gray_scale])
     ocr_pipeline = OCRPipeline(
         img_pipeline=img_pipeline,
         ocr_method=OCRMethod.PYTESSERACT,
@@ -77,7 +79,7 @@ def black_text_ocr_pipeline(
     Initializes pipeline to OCR black text.
     """
 
-    img_pipeline = CVPipeline(
+    img_pipeline = CVPipeline.init_from_funcs(
         funcs=[_invert_black_channel, _remove_background, _invert_back]
     )
     ocr_pipeline = OCRPipeline(
@@ -95,7 +97,9 @@ def white_text_ocr_pipeline(
     Initializes pipeline to OCR white text.
     """
 
-    img_pipeline = CVPipeline(funcs=[_gray_scale, _remove_background, _invert_back])
+    img_pipeline = CVPipeline.init_from_funcs(
+        funcs=[_gray_scale, _remove_background, _invert_back]
+    )
     ocr_pipeline = OCRPipeline(
         img_pipeline=img_pipeline,
         ocr_method=ocr_method,
