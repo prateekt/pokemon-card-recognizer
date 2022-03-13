@@ -126,7 +126,9 @@ class OCRFusion(Op):
         print()
         super().vis_profile()
 
-    def run_on_images(self, images_dir: str) -> Union[List[str], List[List[str]]]:
+    def run_on_images(
+        self, images_dir: str, mechanism: str = "pool"
+    ) -> Union[List[str], List[List[str]]]:
         """
         API to run OCR on a directory of images.
 
@@ -138,5 +140,5 @@ class OCRFusion(Op):
         files = natsorted(
             [os.path.join(images_dir, file) for file in os.listdir(images_dir)]
         )
-        results = paraloop.loop(func=self._run, params=files)
+        results = paraloop.loop(func=self.exec, params=files, mechanism=mechanism)
         return results
