@@ -1,13 +1,14 @@
 import cv2
 import numpy as np
 
-from card_recognizer.infra.algo_ops.cvops import CVPipeline
-from card_recognizer.infra.algo_ops.pipeline import Pipeline
+from card_recognizer.infra.algo_ops.pipeline.cv_pipeline import CVPipeline
+from card_recognizer.infra.algo_ops.pipeline.pipeline import Pipeline
 from card_recognizer.ocr.pipeline.framework.ocr_pipeline import OCRPipeline, OCRMethod
 from card_recognizer.ocr.pipeline.instances.text import (
     basic_text_cleaning_pipeline,
     retokenize_text_pipeline,
 )
+from card_recognizer.reference.vocab import Vocab
 
 
 def basic_ocr_pipeline() -> OCRPipeline:
@@ -22,15 +23,21 @@ def basic_ocr_pipeline() -> OCRPipeline:
     return ocr_pipeline
 
 
-def basic_pytesseract_pipeline() -> OCRPipeline:
+def basic_ocr_with_text_cleaning_pipeline(
+    vocab: Vocab,
+    ocr_method: OCRMethod = OCRMethod.PYTESSERACT,
+) -> OCRPipeline:
     """
     Initializes basic PyTesseract pipeline with additional basic text cleaning pipeline.
     """
     img_pipeline = CVPipeline.init_from_funcs(funcs=[_gray_scale])
     ocr_pipeline = OCRPipeline(
         img_pipeline=img_pipeline,
-        ocr_method=OCRMethod.PYTESSERACT,
-        text_pipeline=_get_text_cleaning_pipeline(ocr_method=OCRMethod.PYTESSERACT),
+        ocr_method=ocr_method,
+        text_pipeline=_get_text_cleaning_pipeline(ocr_method=ocr_method),
+    )
+    ocr_pipeline.set_text_pipeline_params(
+        func_name="_check_vocab", params={"vocab": vocab}
     )
     return ocr_pipeline
 

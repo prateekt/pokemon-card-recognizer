@@ -7,7 +7,7 @@ import easyocr
 import numpy as np
 import pytesseract
 
-from card_recognizer.infra.algo_ops.op import Op
+from card_recognizer.infra.algo_ops.ops.op import Op
 
 
 # OCR Method Enum
@@ -57,15 +57,21 @@ class OCROp(Op):
             result = self.easy_ocr_reader.readtext(png.name, detail=0)
         return result
 
-    def _run_ocr(self, img: np.array) -> Union[str, List[str]]:
+    def _run_ocr(self, inp: Union[str, np.array]) -> Union[str, List[str]]:
         """
         Runs OCR method on image.
 
-        param img: Input image object
+        param img: Either a path to an image or an image object.
 
         return:
             output: Text OCR-ed from image
         """
+        if isinstance(inp, str):
+            img = cv2.imread(filename=inp)
+        elif isinstance(inp, np.ndarray):
+            img = inp
+        else:
+            raise ValueError("Unsupported input: " + str(inp))
         if self.ocr_method == OCRMethod.PYTESSERACT:
             return self._run_pytesseract_ocr(img=img)
         elif self.ocr_method == OCRMethod.EASYOCR:

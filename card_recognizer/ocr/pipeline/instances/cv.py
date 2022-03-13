@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from card_recognizer.infra.algo_ops.cvops import CVPipeline
+from card_recognizer.infra.algo_ops.pipeline.cv_pipeline import CVPipeline
 
 
 def black_text_ocr_pipeline() -> CVPipeline:
@@ -27,7 +27,7 @@ def black_text_ocr_pipeline() -> CVPipeline:
         inv_img = cv2.bitwise_not(img)
         return inv_img
 
-    img_pipeline = CVPipeline(
+    img_pipeline = CVPipeline.init_from_funcs(
         funcs=[invert_black_channel, remove_background, invert_back]
     )
     return img_pipeline
@@ -53,5 +53,7 @@ def white_text_ocr_pipeline() -> CVPipeline:
         inv_img = cv2.bitwise_not(img)
         return inv_img
 
-    img_pipeline = CVPipeline(funcs=[gray_scale, remove_background, invert_back])
+    img_pipeline = CVPipeline.init_from_funcs(
+        funcs=[gray_scale, remove_background, invert_back]
+    )
     return img_pipeline

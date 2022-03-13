@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 from natsort import natsorted
 
-from card_recognizer.infra.algo_ops.op import Op
+from card_recognizer.infra.algo_ops.ops.op import Op
 from card_recognizer.infra.paraloop import paraloop
 from card_recognizer.ocr.pipeline.framework.ocr_pipeline import OCRPipeline
 from card_recognizer.ocr.pipeline.instances import ocr
@@ -91,7 +91,7 @@ class OCRFusion(Op):
     def __init__(self, vocab: Vocab):
         super().__init__(func=self._run)
         self.vocab = vocab
-        self.basic_pytesseract_pipeline = ocr.basic_pytesseract_pipeline()
+        self.basic_pytesseract_pipeline = ocr.basic_ocr_with_text_cleaning_pipeline()
         self.black_text_ocr_pipeline = ocr.black_text_ocr_pipeline()
         self.white_text_ocr_pipeline = ocr.white_text_ocr_pipeline()
         self.basic_pytesseract_pipeline.set_text_pipeline_params(
@@ -103,7 +103,7 @@ class OCRFusion(Op):
         self.white_text_ocr_pipeline.set_text_pipeline_params(
             func_name="_check_vocab", params={"vocab": vocab}
         )
-        self.lower_lim_trials = [0, 50, 90, 100, 150, 190, 200, 210, 220, 250]
+        self.lower_lim_trials = [100, 150, 200, 250]
         self.vis = False
 
     @staticmethod

@@ -1,6 +1,6 @@
 import os
 
-from card_recognizer.infra.algo_ops.pipeline import Op
+from card_recognizer.infra.algo_ops.ops.op import Op
 
 
 class TextOp(Op):

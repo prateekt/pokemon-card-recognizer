@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from typing import Callable, List, Any, Dict, Union
 
-from card_recognizer.infra.algo_ops.op import Op
+from card_recognizer.infra.algo_ops.ops.op import Op
 
 
 class Pipeline(Op):
