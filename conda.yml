@@ -29,6 +29,7 @@ dependencies:
     - black==22.1.0
     - bleach==4.1.0
     - cffi==1.15.0
+    - charset-normalizer==2.0.12
     - click==8.0.4
     - cycler==0.11.0
     - dacite==1.6.0
@@ -40,6 +41,7 @@ dependencies:
     - executing==0.8.3
     - ezplotly==0.1.2.4
     - fonttools==4.30.0
+    - idna==3.3
     - imageio==2.9.0
     - inexactsearch==1.0.2
     - ipykernel==6.9.1
@@ -99,6 +101,7 @@ dependencies:
     - pyzmq==22.3.0
     - qtconsole==5.2.2
     - qtpy==2.0.1
+    - requests==2.27.1
     - scikit-image==0.19.2
     - scipy==1.8.0
     - send2trash==1.8.0
@@ -117,6 +120,7 @@ dependencies:
     - tornado==6.1
     - traitlets==5.1.1
     - typing-extensions==4.1.1
+    - urllib3==1.26.8
     - wcwidth==0.2.5
     - webencodings==0.5.1
     - widgetsnbextension==3.5.2

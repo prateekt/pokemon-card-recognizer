@@ -8,6 +8,7 @@ from card_recognizer.classifier.word_classifier import WordClassifier
 from card_recognizer.infra.algo_ops.ops.text_op import TextOp
 from card_recognizer.infra.algo_ops.pipeline.pipeline import Pipeline
 from card_recognizer.infra.paraloop import paraloop
+
 # from card_recognizer.ocr.pipeline.framework.ocr_fusion import OCRFusion
 from card_recognizer.ocr.pipeline.framework.ocr_op import OCRMethod
 from card_recognizer.ocr.pipeline.instances import ocr

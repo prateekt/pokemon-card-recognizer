@@ -91,7 +91,9 @@ class OCRFusion(Op):
     def __init__(self, vocab: Vocab):
         super().__init__(func=self._run)
         self.vocab = vocab
-        self.basic_pytesseract_pipeline = ocr.basic_ocr_with_text_cleaning_pipeline()
+        self.basic_pytesseract_pipeline = ocr.basic_ocr_with_text_cleaning_pipeline(
+            vocab=vocab
+        )
         self.black_text_ocr_pipeline = ocr.black_text_ocr_pipeline()
         self.white_text_ocr_pipeline = ocr.white_text_ocr_pipeline()
         self.basic_pytesseract_pipeline.set_text_pipeline_params(

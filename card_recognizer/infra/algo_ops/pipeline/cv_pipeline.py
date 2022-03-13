@@ -28,7 +28,7 @@ class CVPipeline(Pipeline):
         return cls(ops=ops)
 
     def vis(
-            self, num_cols: int = 4, fig_width: int = 15, fig_height: int = 6, dpi: int = 80
+        self, num_cols: int = 4, fig_width: int = 15, fig_height: int = 6, dpi: int = 80
     ) -> None:
         """
         Plot current output images of each Op using pyplot (jupyter compatible).
