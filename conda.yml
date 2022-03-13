@@ -2,21 +2,21 @@ name: py39_card_rec_prod
 channels:
   - defaults
 dependencies:
-  - ca-certificates=2021.10.26=hecd8cb5_2
-  - certifi=2021.10.8=py39hecd8cb5_2
-  - libcxx=12.0.0=h2f01273_0
-  - libffi=3.3=hb1e8313_2
-  - ncurses=6.3=hca72f7f_2
-  - openssl=1.1.1m=hca72f7f_0
-  - python=3.9.7=h88f2d9e_1
-  - readline=8.1.2=hca72f7f_1
-  - setuptools=58.0.4=py39hecd8cb5_0
-  - sqlite=3.37.2=h707629a_0
-  - tk=8.6.11=h7bc2e8c_0
-  - tzdata=2021e=hda174b7_0
-  - wheel=0.37.1=pyhd3eb1b0_0
-  - xz=5.2.5=h1de35cc_0
-  - zlib=1.2.11=h4dc903c_4
+  - ca-certificates=2021.10.26
+  - certifi=2021.10.8
+  - libcxx=12.0.0
+  - libffi=3.3
+  - ncurses=6.3
+  - openssl=1.1.1m
+  - python=3.9.7
+  - readline=8.1.2
+  - setuptools=58.0.4
+  - sqlite=3.37.2
+  - tk=8.6.11
+  - tzdata=2021e
+  - wheel=0.37.1
+  - xz=5.2.5
+  - zlib=1.2.11
   - pip:
     - appnope==0.1.2
     - argon2-cffi==21.3.0
