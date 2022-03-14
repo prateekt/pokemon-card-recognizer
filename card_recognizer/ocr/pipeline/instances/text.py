@@ -70,7 +70,7 @@ def basic_text_cleaning_pipeline() -> Pipeline:
 
 def retokenize_text_pipeline() -> Pipeline:
     pipeline = Pipeline.init_from_funcs(
-        [_retokenize_text, _resplit_new_lines, _strip, _correct_spelling, _check_vocab],
+        [_retokenize_text, _resplit_new_lines, _strip, _check_vocab],
         op_class=TextOp,
     )
     return pipeline

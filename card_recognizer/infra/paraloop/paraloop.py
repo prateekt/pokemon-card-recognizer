@@ -11,7 +11,12 @@ def _sequential(func: Callable, params: List[Any]) -> List[Any]:
     return:
         Results of function executions
     """
-    return [func(param) for param in params]
+    results = list()
+    for param in params:
+        print(param)
+        result = func(param)
+        results.append(result)
+    return results
 
 
 def _pool(func: Callable, params: List[Any]) -> List[Any]:
