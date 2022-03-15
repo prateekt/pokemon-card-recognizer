@@ -62,9 +62,8 @@ class CardRecognizerPipeline(Pipeline):
 
 if __name__ == "__main__":
     ref_pkl_file = (
-        "/Users/tandonp/Desktop/pokemon-card-recognizer/card_recognizer/reference/data/ref_build"
-        "/chilling_reign.pkl"
+        "/home/borg1/Desktop/pokemon-card-recognizer/card_recognizer/reference/data/ref_build/brilliant_stars.pkl"
     )
     pipeline = CardRecognizerPipeline(ref_pkl_file)
-    r = pipeline.run_on_images("/Users/tandonp/Desktop/frames", mechanism="sequential")
-    pickle.dump(r, open("results.pkl", "wb"))
+    r = pipeline.run_on_images("/home/borg1/Desktop/ttframes", mechanism="sequential")
+    pickle.dump(r, open("results_frames.pkl", "wb"))

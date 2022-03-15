@@ -4,6 +4,8 @@ import pickle
 from card_recognizer.classifier.word_classifier import WordClassifier
 from card_recognizer.eval.eval import compute_acc_exclude_alt_art
 from card_recognizer.ocr.pipeline.framework.ocr_fusion import OCRFusion
+from card_recognizer.ocr.pipeline.framework.ocr_op import OCRMethod
+from card_recognizer.ocr.pipeline.instances import ocr
 
 
 def main():
@@ -17,7 +19,7 @@ def main():
         "Fusion Strike",
         "Brilliant Stars",
     ]
-    recompute_ocr = False
+    recompute_ocr = True
 
     # loop
     for set_name in card_sets:
@@ -36,8 +38,11 @@ def main():
         # load OCR results
         if recompute_ocr or not os.path.exists(ocr_result_path):
             os.makedirs(os.path.join(out_folder, "ref_ocr"), exist_ok=True)
-            ocr_pipeline = OCRFusion(vocab=classifier.vocab)
-            ocr_words = ocr_pipeline.run_on_images(images_dir=images_path)
+#            ocr_pipeline = OCRFusion(vocab=classifier.vocab)
+            ocr_pipeline = ocr.basic_ocr_with_text_cleaning_pipeline(
+                vocab=classifier.vocab, ocr_method=OCRMethod.EASYOCR
+            )
+            ocr_words = ocr_pipeline.run_on_images(images_dir=images_path, mechanism='sequential')
             pickle.dump(ocr_words, open(ocr_result_path, "wb"))
         else:
             ocr_words = pickle.load(open(ocr_result_path, "rb"))

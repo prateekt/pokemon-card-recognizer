@@ -88,7 +88,7 @@ class OCRPipeline(Pipeline):
             raise ValueError("Cannot save when img_pipeline=None.")
         self.img_pipeline.save_output(out_path=out_path)
 
-    def run_on_images(self, images_dir: str) -> Union[List[str], List[List[str]]]:
+    def run_on_images(self, images_dir: str, mechanism: str = 'pool') -> Union[List[str], List[List[str]]]:
         """
         API to run OCR on a directory of images.
 
@@ -100,5 +100,5 @@ class OCRPipeline(Pipeline):
         files = natsorted(
             [os.path.join(images_dir, file) for file in os.listdir(images_dir)]
         )
-        results = paraloop.loop(func=self.run_on_img_file, params=files)
+        results = paraloop.loop(func=self.run_on_img_file, params=files, mechanism=mechanism)
         return results
