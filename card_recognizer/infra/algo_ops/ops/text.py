@@ -1,5 +1,3 @@
-import os
-
 from card_recognizer.infra.algo_ops.ops.op import Op
 
 
@@ -21,28 +19,26 @@ class TextOp(Op):
         """
         print(self.name + ": " + str(self.output))
 
-    def save_input(self, out_path: str = ".") -> None:
+    def save_input(self, out_path: str) -> None:
         """
         Saves current input text to file.
 
         param out_path: Path to where input file should be saved.
         """
         if self.input is not None:
-            outfile = os.path.join(out_path, self.name + "_input.txt")
-            with open(outfile, "w") as out_file:
+            with open(out_path, "w") as out_file:
                 out_file.write(self.input)
         else:
             raise ValueError("Op " + str(self.name) + " has not executed yet.")
 
-    def save_output(self, out_path: str = ".") -> None:
+    def save_output(self, out_path: str) -> None:
         """
         Saves current output to file.
 
         param out_path: Path to where output file should be saved.
         """
         if self.output is not None:
-            outfile = os.path.join(out_path, self.name + ".txt")
-            with open(outfile, "w") as out_file:
+            with open(out_path, "w") as out_file:
                 out_file.write(self.output)
         else:
             raise ValueError("Op " + str(self.name) + " has not executed yet.")

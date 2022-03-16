@@ -54,7 +54,7 @@ class Op(ABC):
         pass
 
     @abstractmethod
-    def save_input(self, out_path: str = ".") -> None:
+    def save_input(self, out_path: str) -> None:
         """
         Saves current input to file.
 
@@ -63,7 +63,7 @@ class Op(ABC):
         pass
 
     @abstractmethod
-    def save_output(self, out_path: str = ".") -> None:
+    def save_output(self, out_path) -> None:
         """
         Saves current output to file.
 
@@ -115,13 +115,15 @@ class Op(ABC):
         """
         Pickles current state of Op to file.
         """
-        pickle.dump(self, open(out_file, "wb"))
+        with open(out_file, 'wb') as out:
+            pickle.dump(self, out)
 
     @staticmethod
     def load_from_pickle(in_file: str) -> "Op":
         """
         Loads op state from a pickle file.
         """
-        op = pickle.load(open(in_file, "rb"))
+        with open(in_file, 'rb') as inp:
+            op = pickle.load(inp)
         assert isinstance(op, Op)
         return op

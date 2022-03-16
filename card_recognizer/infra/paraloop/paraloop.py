@@ -1,25 +1,28 @@
 import multiprocessing
-from typing import Callable, List, Any
+from typing import Callable, List, Any, Sequence
 
 
-def _sequential(func: Callable, params: List[Any]) -> List[Any]:
+def _sequential(func: Callable, params: Sequence[Any], debug: bool = False) -> List[Any]:
     """
     Sequentially runs a function.
 
     param func: The function to run
     param params: The parameters to the function
+    param debug: Whether to enable debug prints
+
     return:
         Results of function executions
     """
-    results = list()
+    results: List[Any] = list()
     for param in params:
-        print(param)
+        if debug:
+            print(param)
         result = func(param)
         results.append(result)
     return results
 
 
-def _pool(func: Callable, params: List[Any]) -> List[Any]:
+def _pool(func: Callable, params: Sequence[Any]) -> List[Any]:
     """
     Implements paraloop using multiprocessing pool.
 
@@ -33,7 +36,7 @@ def _pool(func: Callable, params: List[Any]) -> List[Any]:
         return p.map(func, params)
 
 
-def loop(func: Callable, params: List[Any], mechanism: str = "pool") -> List[Any]:
+def loop(func: Callable, params: Sequence[Any], mechanism: str = "pool") -> List[Any]:
     """
     Executes function calls with list of parameters using specified mechanism.
 
@@ -46,6 +49,8 @@ def loop(func: Callable, params: List[Any], mechanism: str = "pool") -> List[Any
     if mechanism == "pool":
         return _pool(func=func, params=params)
     elif mechanism == "sequential":
-        return _sequential(func=func, params=params)
+        return _sequential(func=func, params=params, debug=False)
+    elif mechanism == 'debug':
+        return _sequential(func=func, params=params, debug=True)
     else:
         raise ValueError("Unsupported mechanism: " + str(mechanism))

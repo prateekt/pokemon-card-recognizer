@@ -25,13 +25,18 @@ def _norm_distribution(d: np.array) -> np.array:
 def _to_portions(v: np.array) -> np.array:
     """
     Normalize vector to portion vector.
+
+    param v:
+
+    return:
+        Normalized vector
     """
     v_sum = np.sum(v)
     if v_sum > 0:
         v_portions = v / v_sum
     else:
         v_portions = v
-    return v
+    return v_portions
 
 
 def classify_l1(word_portions_mat: np.array, v: np.array) -> Tuple[int, np.array]:

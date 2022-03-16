@@ -3,7 +3,7 @@ from typing import List
 
 from spellchecker import SpellChecker
 
-from card_recognizer.infra.algo_ops.ops.text_op import TextOp
+from card_recognizer.infra.algo_ops.ops.text import TextOp
 from card_recognizer.infra.algo_ops.pipeline.pipeline import Pipeline
 from card_recognizer.reference.vocab import Vocab
 
