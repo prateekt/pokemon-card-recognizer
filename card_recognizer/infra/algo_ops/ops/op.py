@@ -137,6 +137,11 @@ class Op(ABC):
         return op
 
     def _embedded_eval(self, inp: Any) -> bool:
+        """
+        Helper function to embed evaluation and prediction in same function.
+        Returns true if function, when run on input, yielded correct result.
+        If false, pickles, op state to file, if pickle path is specified.
+        """
         result = self.exec(inp=inp)
         correct = self.eval_func(inp=inp, pred=result)
         if not correct and self.incorrect_pkl_path is not None:
@@ -149,9 +154,21 @@ class Op(ABC):
         inputs: Sequence[Any],
         eval_func: Callable,
         incorrect_pkl_path: Optional[str] = None,
+        mechanism: str = "pool",
     ) -> None:
+        """
+        Evaluates Op on a set of inputs. On each prediction, an evaluation function is run.
+        If the answer is incorrect, the op state is pickled to [incorrect_pkl_path] / [inp].pkl.
+        This is useful for debugging and evaluating an Op.
+
+        param inputs: The set of inputs to evaluate on
+        param eval_func: A function to evaluate a prediction on an input
+        param incorrect_pkl_path: Path where incorrect prediction states should be pickled
+        param mechanism: The paraloop mechanism to use
+
+        """
         if incorrect_pkl_path is not None:
             os.makedirs(incorrect_pkl_path, exist_ok=True)
         self.incorrect_pkl_path = incorrect_pkl_path
         self.eval_func = eval_func
-        paraloop.loop(func=self._embedded_eval, params=inputs, mechanism="pool")
+        paraloop.loop(func=self._embedded_eval, params=inputs, mechanism=mechanism)
