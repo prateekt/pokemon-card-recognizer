@@ -2,7 +2,9 @@ import multiprocessing
 from typing import Callable, List, Any, Sequence
 
 
-def _sequential(func: Callable, params: Sequence[Any], debug: bool = False) -> List[Any]:
+def _sequential(
+    func: Callable, params: Sequence[Any], debug: bool = False
+) -> List[Any]:
     """
     Sequentially runs a function.
 
@@ -50,7 +52,7 @@ def loop(func: Callable, params: Sequence[Any], mechanism: str = "pool") -> List
         return _pool(func=func, params=params)
     elif mechanism == "sequential":
         return _sequential(func=func, params=params, debug=False)
-    elif mechanism == 'debug':
+    elif mechanism == "debug":
         return _sequential(func=func, params=params, debug=True)
     else:
         raise ValueError("Unsupported mechanism: " + str(mechanism))

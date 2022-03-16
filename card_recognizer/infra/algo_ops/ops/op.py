@@ -1,8 +1,10 @@
 import functools
+import os
 import pickle
 import time
 from abc import ABC, abstractmethod
-from typing import Callable, List, Any, Dict
+from typing import Callable, List, Any, Dict, Sequence, Optional
+import card_recognizer.infra.paraloop.paraloop as paraloop
 
 import numpy as np
 
@@ -16,12 +18,18 @@ class Op(ABC):
         """
         param func: The operation function
         """
+
+        # core functionality
         self.func = func
         self.exec_func = func
         self.name = func.__name__
         self.input = None
         self.output = None
         self.execution_times: List[float] = list()
+
+        # evaluation functionality variables
+        self.eval_func = None
+        self.incorrect_pkl_path: Optional[str] = None
 
     def exec(self, inp: Any) -> Any:
         """
@@ -115,7 +123,7 @@ class Op(ABC):
         """
         Pickles current state of Op to file.
         """
-        with open(out_file, 'wb') as out:
+        with open(out_file, "wb") as out:
             pickle.dump(self, out)
 
     @staticmethod
@@ -123,7 +131,27 @@ class Op(ABC):
         """
         Loads op state from a pickle file.
         """
-        with open(in_file, 'rb') as inp:
+        with open(in_file, "rb") as inp:
             op = pickle.load(inp)
         assert isinstance(op, Op)
         return op
+
+    def _embedded_eval(self, inp: Any) -> bool:
+        result = self.exec(inp=inp)
+        correct = self.eval_func(inp=inp, pred=result)
+        if not correct and self.incorrect_pkl_path is not None:
+            outfile = os.path.join(self.incorrect_pkl_path, str(inp) + ".pkl")
+            self.to_pickle(out_file=outfile)
+        return correct
+
+    def evaluate(
+        self,
+        inputs: Sequence[Any],
+        eval_func: Callable,
+        incorrect_pkl_path: Optional[str] = None,
+    ) -> None:
+        if incorrect_pkl_path is not None:
+            os.makedirs(incorrect_pkl_path, exist_ok=True)
+        self.incorrect_pkl_path = incorrect_pkl_path
+        self.eval_func = eval_func
+        paraloop.loop(func=self._embedded_eval, params=inputs, mechanism="pool")

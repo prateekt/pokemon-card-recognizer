@@ -38,11 +38,13 @@ def main():
         # load OCR results
         if recompute_ocr or not os.path.exists(ocr_result_path):
             os.makedirs(os.path.join(out_folder, "ref_ocr"), exist_ok=True)
-#            ocr_pipeline = OCRFusion(vocab=classifier.vocab)
+            #            ocr_pipeline = OCRFusion(vocab=classifier.vocab)
             ocr_pipeline = ocr.basic_ocr_with_text_cleaning_pipeline(
                 vocab=classifier.vocab, ocr_method=OCRMethod.EASYOCR
             )
-            ocr_words = ocr_pipeline.run_on_images(images_dir=images_path, mechanism='sequential')
+            ocr_words = ocr_pipeline.run_on_images(
+                images_dir=images_path, mechanism="sequential"
+            )
             pickle.dump(ocr_words, open(ocr_result_path, "wb"))
         else:
             ocr_words = pickle.load(open(ocr_result_path, "rb"))
