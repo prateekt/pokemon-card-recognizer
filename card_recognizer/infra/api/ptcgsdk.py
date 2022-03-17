@@ -40,9 +40,8 @@ def _download_card_image(out_path: str, card: Card) -> None:
         url = card.images.large
         file_name = os.path.basename(url)
         outfile = os.path.join(out_path, file_name)
-        fout = open(outfile, "wb")
-        fout.write(requests.get(url).content)
-        fout.close()
+        with open(outfile, "wb") as file_out:
+            file_out.write(requests.get(url).content)
     except:
         traceback.print_exc()
 
