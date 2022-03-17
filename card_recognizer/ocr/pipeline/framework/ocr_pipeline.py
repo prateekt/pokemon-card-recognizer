@@ -103,7 +103,7 @@ class OCRPipeline(Pipeline):
         self.img_pipeline.save_output(out_path=out_path)
 
     def run_on_images(
-        self, images_dir: str, mechanism: str = "pool"
+        self, images_dir: str, mechanism: str = "sequential"
     ) -> Union[List[str], List[List[str]]]:
         """
         API to run OCR on a directory of images.
