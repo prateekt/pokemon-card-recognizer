@@ -13,10 +13,9 @@ from card_recognizer.eval.eval import (
 
 
 def eval_prediction(
-    card_reference: List[Card], inp: str, pred: Tuple[int, float]
+    card_reference: List[Card], card_files: List[str], inp: str, pred: Tuple[int, float]
 ) -> bool:
-    inp_parts = os.path.basename(inp).split("_")
-    gt_card_num = int(inp_parts[0]) - 1
+    gt_card_num = card_files.index(os.path.basename(inp))
     pred = pred[0]
     return _is_correct_exclude_alt_art(
         pred=pred, gt=gt_card_num, cards_reference=card_reference
@@ -52,8 +51,12 @@ def main():
 
             # init pipeline
             pipeline = CardRecognizerPipeline(ref_pkl_path=ref_pkl_path)
+            card_files = [
+                os.path.basename(card.images.large)
+                for card in pipeline.classifier.cards
+            ]
             eval_prediction_func = functools.partial(
-                eval_prediction, pipeline.classifier.cards
+                eval_prediction, pipeline.classifier.cards, card_files
             )
             eval_results = pipeline.evaluate(
                 inputs=input_files,

@@ -145,7 +145,7 @@ class Op(ABC):
         result = self.exec(inp=inp)
         correct = self.eval_func(inp=inp, pred=result)
         if isinstance(inp, str):
-            inp = inp.replace('/', '_')
+            inp = inp.replace("/", "_")
         if not correct and self.incorrect_pkl_path is not None:
             outfile = os.path.join(self.incorrect_pkl_path, str(inp) + ".pkl")
             self.to_pickle(out_file=outfile)
