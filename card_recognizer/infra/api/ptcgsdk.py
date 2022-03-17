@@ -1,5 +1,6 @@
 import functools
 import os
+import traceback
 from typing import List
 
 import requests
@@ -35,12 +36,15 @@ def _download_card_image(out_path: str, card: Card) -> None:
     param out_path: The path to where image files are stored
     param card: The card object
     """
-    url = card.images.large
-    file_name = os.path.basename(url)
-    outfile = os.path.join(out_path, file_name)
-    fout = open(outfile, "wb")
-    fout.write(requests.get(url).content)
-    fout.close()
+    try:
+        url = card.images.large
+        file_name = os.path.basename(url)
+        outfile = os.path.join(out_path, file_name)
+        fout = open(outfile, "wb")
+        fout.write(requests.get(url).content)
+        fout.close()
+    except:
+        traceback.print_exc()
 
 
 def download_card_images(cards: List[Card], out_path: str) -> None:

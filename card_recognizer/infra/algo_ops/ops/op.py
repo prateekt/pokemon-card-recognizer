@@ -3,7 +3,7 @@ import os
 import pickle
 import time
 from abc import ABC, abstractmethod
-from typing import Callable, List, Any, Dict, Sequence, Optional
+from typing import Callable, List, Any, Dict, Sequence, Optional, Tuple
 import card_recognizer.infra.paraloop.paraloop as paraloop
 
 import numpy as np
@@ -136,7 +136,7 @@ class Op(ABC):
         assert isinstance(op, Op)
         return op
 
-    def _embedded_eval(self, inp: Any) -> bool:
+    def _embedded_eval(self, inp: Any) -> Tuple[Any, bool]:
         """
         Helper function to embed evaluation and prediction in same function.
         Returns true if function, when run on input, yielded correct result.
@@ -147,7 +147,7 @@ class Op(ABC):
         if not correct and self.incorrect_pkl_path is not None:
             outfile = os.path.join(self.incorrect_pkl_path, str(inp) + ".pkl")
             self.to_pickle(out_file=outfile)
-        return correct
+        return result, correct
 
     def evaluate(
         self,
@@ -155,7 +155,7 @@ class Op(ABC):
         eval_func: Callable,
         incorrect_pkl_path: Optional[str] = None,
         mechanism: str = "pool",
-    ) -> None:
+    ) -> List[Tuple[Any, bool]]:
         """
         Evaluates Op on a set of inputs. On each prediction, an evaluation function is run.
         If the answer is incorrect, the op state is pickled to [incorrect_pkl_path] / [inp].pkl.
@@ -166,9 +166,13 @@ class Op(ABC):
         param incorrect_pkl_path: Path where incorrect prediction states should be pickled
         param mechanism: The paraloop mechanism to use
 
+        return:
+            results: (List of results of pipeline executions, bool whether answer was correct)
         """
         if incorrect_pkl_path is not None:
             os.makedirs(incorrect_pkl_path, exist_ok=True)
         self.incorrect_pkl_path = incorrect_pkl_path
         self.eval_func = eval_func
-        paraloop.loop(func=self._embedded_eval, params=inputs, mechanism=mechanism)
+        return paraloop.loop(
+            func=self._embedded_eval, params=inputs, mechanism=mechanism
+        )

@@ -17,6 +17,20 @@ class OCRPipeline(Pipeline):
     using a CVOps image processing pipeline.
     """
 
+    @staticmethod
+    def get_image_files(images_dir: str) -> List[str]:
+        """
+        Get image paths for images in an images directory.
+
+        param images_dir: The images directory
+
+        return: Image file paths
+        """
+        files = natsorted(
+            [os.path.join(images_dir, file) for file in os.listdir(images_dir)]
+        )
+        return files
+
     def __init__(
         self,
         img_pipeline: Optional[CVPipeline],

@@ -1,16 +1,12 @@
-import os
 import pickle
 from typing import Union, List, Tuple, Optional
-
-from natsort import natsorted
 
 from card_recognizer.classifier.word_classifier import WordClassifier
 from card_recognizer.infra.algo_ops.ops.text import TextOp
 from card_recognizer.infra.algo_ops.pipeline.pipeline import Pipeline
 from card_recognizer.infra.paraloop import paraloop
-
-# from card_recognizer.ocr.pipeline.framework.ocr_fusion import OCRFusion
 from card_recognizer.ocr.pipeline.framework.ocr_op import OCRMethod
+from card_recognizer.ocr.pipeline.framework.ocr_pipeline import OCRPipeline
 from card_recognizer.ocr.pipeline.instances import ocr
 
 
@@ -25,11 +21,13 @@ class CardRecognizerPipeline(Pipeline):
             return None, None
         return card_pred, probs[card_pred]
 
-    def __init__(self, ref_pkl_path: str):
+    def __init__(self, ref_pkl_path: str, classification_method: str = "shared_words"):
 
         # load classifier
         self.classifier = WordClassifier(
-            ref_pkl_file=ref_pkl_path, vect_method="encapsulation_match"
+            ref_pkl_file=ref_pkl_path,
+            vect_method="encapsulation_match",
+            classification_method=classification_method,
         )
 
         # load OCR pipeline
@@ -53,9 +51,7 @@ class CardRecognizerPipeline(Pipeline):
         return:
             output: List of OCR results
         """
-        files = natsorted(
-            [os.path.join(images_dir, file) for file in os.listdir(images_dir)]
-        )
+        files = OCRPipeline.get_image_files(images_dir=images_dir)
         results = paraloop.loop(func=self.exec, params=files, mechanism=mechanism)
         return results
 

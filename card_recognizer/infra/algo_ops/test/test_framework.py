@@ -199,11 +199,12 @@ class TestFramework(unittest.TestCase):
         # evaluate on a set of inputs. The pipeline should get it all wrong
         # and produce debug pickle files that can be loaded.
         inputs = ["a", "b", "cc"]
-        pipeline.evaluate(
+        results = pipeline.evaluate(
             inputs=inputs,
             eval_func=self._fake_gen_ans_and_compare,
             incorrect_pkl_path="bad_pkl",
         )
+        self.assertEqual(results, [("aab", False), ("bab", False), ("ccab", False)])
         self.assertTrue(os.path.exists("bad_pkl"))
         for inp in inputs:
             self.assertTrue(os.path.exists("bad_pkl/" + inp + ".pkl"))
