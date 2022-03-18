@@ -77,7 +77,7 @@ def main():
             eval_results = pipeline.evaluate(
                 inputs=input_files,
                 eval_func=eval_prediction_func,
-                incorrect_pkl_path="incorrect_reference_preds",
+                incorrect_pkl_path="incorrect_master_reference_preds",
                 mechanism="sequential",
             )
             preds = [result[0][0] for result in eval_results]
