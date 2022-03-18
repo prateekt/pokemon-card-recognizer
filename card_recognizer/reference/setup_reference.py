@@ -1,4 +1,7 @@
 import os
+from typing import List
+
+from pokemontcgsdk import Card
 
 from card_recognizer.infra.api.ptcgsdk import query_set_cards, download_card_images
 from card_recognizer.reference.card_reference import build_set_reference
@@ -21,11 +24,13 @@ def main():
     ]
     download_images = True
 
-    # loop
+    # loop over sets to build set-specific references
+    master_set: List[Card] = list()
     for set_name in card_sets:
         # query cards in set
         print(set_name + ": Querying set...")
         cards = query_set_cards(set_name=set_name)
+        master_set += cards
         set_prefix = set_name.lower().replace(" ", "_")
 
         # download card images
@@ -39,6 +44,11 @@ def main():
         os.makedirs(os.path.join(out_folder, "ref_build"), exist_ok=True)
         out_pkl_path = os.path.join(out_folder, "ref_build", set_prefix + ".pkl")
         build_set_reference(cards=cards, out_pkl_path=out_pkl_path)
+
+    # build master reference
+    print("Building master reference..")
+    out_pkl_path = os.path.join(out_folder, "ref_build", "master.pkl")
+    build_set_reference(cards=master_set, out_pkl_path=out_pkl_path)
 
 
 if __name__ == "__main__":
