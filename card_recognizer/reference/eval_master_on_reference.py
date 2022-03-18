@@ -72,7 +72,7 @@ def main():
                 for input_file in input_files
             ]
             eval_prediction_func = functools.partial(
-                eval_prediction, set_name, pipeline.classifier.cards, card_files
+                eval_prediction, pipeline.classifier.cards, set_name, card_files
             )
             eval_results = pipeline.evaluate(
                 inputs=input_files,
