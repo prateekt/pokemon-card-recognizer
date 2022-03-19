@@ -20,9 +20,7 @@ def compute_basic_acc(preds: np.array, gt: np.array) -> [float, List[int]]:
     return acc, incorrect
 
 
-def _is_correct_exclude_alt_art(
-    pred: int, gt: int, cards_reference: List[Card]
-) -> bool:
+def is_correct_exclude_alt_art(pred: int, gt: int, cards_reference: List[Card]) -> bool:
     """
     Helper to determine if a prediction is correct or same as an alternate art.
     """
@@ -47,7 +45,7 @@ def compute_acc_exclude_alt_art(
     num_correct = 0
     incorrect = np.full((len(preds),), True, dtype=bool)
     for i, pred in enumerate(preds):
-        if _is_correct_exclude_alt_art(
+        if is_correct_exclude_alt_art(
             pred=pred, gt=gt[i], cards_reference=cards_reference
         ):
             incorrect[i] = False

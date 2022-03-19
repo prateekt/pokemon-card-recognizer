@@ -6,9 +6,8 @@ from card_recognizer.infra.algo_ops.ops.op import Op
 
 class Pipeline(Op):
     """
-    A pipeline is list of operations that execute serially on an input.
-    The output of the previous pipeline step is the input of the next
-    pipeline step.
+    A generic pipeline is list of operations that execute serially on an input.
+    The output of the previous pipeline step is the input of the next pipeline step.
     """
 
     @staticmethod

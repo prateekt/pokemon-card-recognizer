@@ -4,7 +4,7 @@ from typing import List
 from pokemontcgsdk import Card
 
 from card_recognizer.infra.api.ptcgsdk import query_set_cards, download_card_images
-from card_recognizer.reference.card_reference import build_set_reference
+from card_recognizer.reference.card_reference import CardReference
 
 
 def main():
@@ -43,12 +43,14 @@ def main():
         print(set_name + ": building reference...")
         os.makedirs(os.path.join(out_folder, "ref_build"), exist_ok=True)
         out_pkl_path = os.path.join(out_folder, "ref_build", set_prefix + ".pkl")
-        build_set_reference(cards=cards, out_pkl_path=out_pkl_path)
+        reference = CardReference(cards=cards)
+        reference.to_pickle(out_pkl_path=out_pkl_path)
 
     # build master reference
     print("Building master reference..")
     out_pkl_path = os.path.join(out_folder, "ref_build", "master.pkl")
-    build_set_reference(cards=master_set, out_pkl_path=out_pkl_path)
+    master_reference = CardReference(cards=master_set)
+    master_reference.to_pickle(out_pkl_path=out_pkl_path)
 
 
 if __name__ == "__main__":

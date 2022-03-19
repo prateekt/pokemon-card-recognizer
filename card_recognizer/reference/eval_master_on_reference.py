@@ -8,7 +8,7 @@ from pokemontcgsdk import Card
 from card_recognizer.api.card_recognizer_pipeline import CardRecognizerPipeline
 from card_recognizer.eval.eval import (
     compute_acc_exclude_alt_art,
-    _is_correct_exclude_alt_art,
+    is_correct_exclude_alt_art,
 )
 
 
@@ -21,7 +21,7 @@ def eval_prediction(
 ) -> bool:
     gt_card_num = card_files.index(os.path.join(set_name, os.path.basename(inp)))
     pred = pred[0]
-    return _is_correct_exclude_alt_art(
+    return is_correct_exclude_alt_art(
         pred=pred, gt=gt_card_num, cards_reference=card_reference
     )
 
@@ -54,13 +54,12 @@ def main():
         input_files = natsorted(
             [os.path.join(images_path, file) for file in os.listdir(images_path)]
         )
-        ref_pkl_path = os.path.join(out_folder, "ref_build", "master.pkl")
 
         # test different classifier rules
         acc_results: List[str] = list()
         for classifier_rule in ["l1", "shared_words", "shared_words_rarity"]:
             # init pipeline
-            pipeline = CardRecognizerPipeline(ref_pkl_path=ref_pkl_path)
+            pipeline = CardRecognizerPipeline(set_name=set_name)
             card_files = [
                 os.path.join(
                     correct_set_name(card.set.name), os.path.basename(card.images.large)

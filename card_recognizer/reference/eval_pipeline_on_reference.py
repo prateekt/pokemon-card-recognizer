@@ -8,7 +8,7 @@ from pokemontcgsdk import Card
 from card_recognizer.api.card_recognizer_pipeline import CardRecognizerPipeline
 from card_recognizer.eval.eval import (
     compute_acc_exclude_alt_art,
-    _is_correct_exclude_alt_art,
+    is_correct_exclude_alt_art,
 )
 
 
@@ -17,7 +17,7 @@ def eval_prediction(
 ) -> bool:
     gt_card_num = card_files.index(os.path.basename(inp))
     pred = pred[0]
-    return _is_correct_exclude_alt_art(
+    return is_correct_exclude_alt_art(
         pred=pred, gt=gt_card_num, cards_reference=card_reference
     )
 

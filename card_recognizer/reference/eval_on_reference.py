@@ -3,7 +3,6 @@ import pickle
 
 from card_recognizer.classifier.word_classifier import WordClassifier
 from card_recognizer.eval.eval import compute_acc_exclude_alt_art
-from card_recognizer.ocr.pipeline.framework.ocr_fusion import OCRFusion
 from card_recognizer.ocr.pipeline.framework.ocr_op import OCRMethod
 from card_recognizer.ocr.pipeline.instances import ocr
 
@@ -32,7 +31,7 @@ def main():
 
         # init classifier
         classifier = WordClassifier(
-            ref_pkl_file=ref_pkl_path, vect_method="encapsulation_match"
+            ref_pkl_path=ref_pkl_path, vect_method="encapsulation_match"
         )
 
         # load OCR results
@@ -40,7 +39,7 @@ def main():
             os.makedirs(os.path.join(out_folder, "ref_ocr"), exist_ok=True)
             #            ocr_pipeline = OCRFusion(vocab=classifier.vocab)
             ocr_pipeline = ocr.basic_ocr_with_text_cleaning_pipeline(
-                vocab=classifier.vocab, ocr_method=OCRMethod.EASYOCR
+                vocab=classifier.reference.vocab, ocr_method=OCRMethod.EASYOCR
             )
             ocr_words = ocr_pipeline.run_on_images(
                 images_dir=images_path, mechanism="sequential"
@@ -63,7 +62,7 @@ def main():
             acc, incorrect = compute_acc_exclude_alt_art(
                 preds=preds,
                 gt=range(len(ocr_words)),
-                cards_reference=classifier.cards,
+                cards_reference=classifier.reference.cards,
             )
             acc_results.append(classifier_rule + ": " + str(acc))
         print(set_name + ": " + str(acc_results))

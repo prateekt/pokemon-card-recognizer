@@ -1,5 +1,4 @@
 import functools
-import pickle
 from typing import List, Tuple, Optional, Union
 
 import numpy as np
@@ -10,6 +9,7 @@ from card_recognizer.classifier.rules import (
     classify_shared_words_rarity,
 )
 from card_recognizer.infra.paraloop import paraloop as paraloop
+from card_recognizer.reference.card_reference import CardReference
 
 
 class WordClassifier:
@@ -19,20 +19,23 @@ class WordClassifier:
 
     def __init__(
         self,
-        ref_pkl_file: str,
+        ref_pkl_path: str,
         vect_method: str = "basic",
         classification_method: str = "shared_words",
     ):
         """
         Loads reference and vocab from reference pickle file.
         """
-        self.pkl_file = ref_pkl_file
-        self.ref_mat, self.vocab, self.cards = pickle.load(open(self.pkl_file, "rb"))
+        self.reference = CardReference.load_from_pickle(pkl_path=ref_pkl_path)
         self.vect_method = vect_method
 
         # structures to help with inference
-        self._norm_word_portions = (self.ref_mat.T / self.ref_mat.sum(axis=1)).T
-        self._norm_word_rarity = self.ref_mat / self.ref_mat.sum(axis=0)
+        self._norm_word_portions = (
+            self.reference.ref_mat.T / self.reference.ref_mat.sum(axis=1)
+        ).T
+        self._norm_word_rarity = self.reference.ref_mat / self.reference.ref_mat.sum(
+            axis=0
+        )
 
         # prepare classification method
         self.classification_method = classification_method
@@ -49,7 +52,7 @@ class WordClassifier:
             )
         elif method == "shared_words":
             self.classification_func = functools.partial(
-                classify_shared_words, self.ref_mat
+                classify_shared_words, self.reference.ref_mat
             )
         elif method == "shared_words_rarity":
             self.classification_func = functools.partial(
@@ -77,7 +80,7 @@ class WordClassifier:
         """
 
         # run prediction
-        v = self.vocab.vect(words=ocr_words, method=self.vect_method)
+        v = self.reference.vocab.vect(words=ocr_words, method=self.vect_method)
         card_number_prediction, probs = self.classification_func(v=v)
         if not include_probs:
             probs = None
