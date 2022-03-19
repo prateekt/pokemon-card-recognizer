@@ -1,4 +1,3 @@
-import os
 import pickle
 import re
 from typing import List, Dict
@@ -6,7 +5,7 @@ from typing import List, Dict
 import numpy as np
 from pokemontcgsdk import Card
 
-from card_recognizer.reference.vocab import Vocab
+from card_recognizer.reference.core.vocab import Vocab
 
 
 class CardReference:
@@ -123,32 +122,3 @@ class CardReference:
         loaded_obj = pickle.load(open(pkl_path, "rb"))
         assert isinstance(loaded_obj, CardReference)
         return loaded_obj
-
-    @staticmethod
-    def get_ref_build_pkl_file(set_name: str) -> str:
-        """
-        Get path to reference build pickle file for set. Throws a value error if file does not exist.
-
-        param: set_name
-
-        return:
-            Path to ref build pickle file for set
-        """
-        ref_direc = os.path.dirname(os.path.abspath(__file__))
-        pkl_file = set_name.lower().replace(" ", "_") + ".pkl"
-        ref_build_path = os.path.join(ref_direc, "data", "ref_build", pkl_file)
-        if not os.path.exists(ref_build_path):
-            raise ValueError(
-                "Reference build not found for set: "
-                + str(set_name)
-                + ". Has reference been setup? If not, run setup_reference.py"
-            )
-        return ref_build_path
-
-    @staticmethod
-    def load(set_name: str) -> "CardReference":
-        """
-        Load built reference for set.
-        """
-        ref_build_path = CardReference.get_ref_build_pkl_file(set_name=set_name)
-        return CardReference.load_from_pickle(pkl_path=ref_build_path)

@@ -5,7 +5,7 @@ from spellchecker import SpellChecker
 
 from card_recognizer.infra.algo_ops.ops.text import TextOp
 from card_recognizer.infra.algo_ops.pipeline.pipeline import Pipeline
-from card_recognizer.reference.vocab import Vocab
+from card_recognizer.reference.core.vocab import Vocab
 
 
 def _tokenize_text(text: str) -> List[str]:

@@ -9,7 +9,7 @@ from card_recognizer.classifier.rules import (
     classify_shared_words_rarity,
 )
 from card_recognizer.infra.paraloop import paraloop as paraloop
-from card_recognizer.reference.card_reference import CardReference
+from card_recognizer.reference.core.card_reference import CardReference
 
 
 class WordClassifier:

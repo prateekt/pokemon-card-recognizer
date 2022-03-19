@@ -13,24 +13,13 @@ from card_recognizer.eval.eval import (
 
 
 def eval_prediction(
-    card_reference: List[Card],
-    set_name: str,
-    card_files: List[str],
-    inp: str,
-    pred: Tuple[int, float],
+    card_reference: List[Card], card_files: List[str], inp: str, pred: Tuple[int, float]
 ) -> bool:
-    gt_card_num = card_files.index(os.path.join(set_name, os.path.basename(inp)))
+    gt_card_num = card_files.index(os.path.basename(inp))
     pred = pred[0]
     return is_correct_exclude_alt_art(
         pred=pred, gt=gt_card_num, cards_reference=card_reference
     )
-
-
-def correct_set_name(proposed_set_name: str) -> str:
-    if proposed_set_name == "Brilliant Stars Trainer Gallery":
-        return "Brilliant Stars"
-    else:
-        return proposed_set_name
 
 
 def main():
@@ -58,31 +47,28 @@ def main():
         # test different classifier rules
         acc_results: List[str] = list()
         for classifier_rule in ["l1", "shared_words", "shared_words_rarity"]:
+
             # init pipeline
-            pipeline = CardRecognizerPipeline(set_name=set_name)
+            pipeline = CardRecognizerPipeline(
+                set_name=set_name, classification_method=classifier_rule
+            )
             card_files = [
-                os.path.join(
-                    correct_set_name(card.set.name), os.path.basename(card.images.large)
-                )
+                os.path.basename(card.images.large)
                 for card in pipeline.classifier.cards
             ]
-            gt = [
-                card_files.index(os.path.join(set_name, os.path.basename(input_file)))
-                for input_file in input_files
-            ]
             eval_prediction_func = functools.partial(
-                eval_prediction, pipeline.classifier.cards, set_name, card_files
+                eval_prediction, pipeline.classifier.cards, card_files
             )
             eval_results = pipeline.evaluate(
                 inputs=input_files,
                 eval_func=eval_prediction_func,
-                incorrect_pkl_path="incorrect_master_reference_preds",
+                incorrect_pkl_path="incorrect_reference_preds",
                 mechanism="sequential",
             )
             preds = [result[0][0] for result in eval_results]
             acc, incorrect = compute_acc_exclude_alt_art(
                 preds=preds,
-                gt=gt,
+                gt=range(len(eval_results)),
                 cards_reference=pipeline.classifier.cards,
             )
             acc_results.append(classifier_rule + ": " + str(acc))

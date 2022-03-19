@@ -10,7 +10,7 @@ from card_recognizer.infra.algo_ops.pipeline.pipeline import Pipeline
 from card_recognizer.ocr.pipeline.framework.ffmpeg_op import FFMPEGOp
 from card_recognizer.ocr.pipeline.framework.ocr_op import OCRMethod
 from card_recognizer.ocr.pipeline.instances import ocr
-from card_recognizer.reference.card_reference import CardReference
+from card_recognizer.reference.core.card_reference import CardReference
 
 
 # CardRecognizerPipeline mode enum

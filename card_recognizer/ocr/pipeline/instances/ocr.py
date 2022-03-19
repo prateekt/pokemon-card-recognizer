@@ -8,7 +8,7 @@ from card_recognizer.ocr.pipeline.instances.text import (
     basic_text_cleaning_pipeline,
     retokenize_text_pipeline,
 )
-from card_recognizer.reference.vocab import Vocab
+from card_recognizer.reference.core.vocab import Vocab
 
 
 def basic_ocr_pipeline() -> OCRPipeline:

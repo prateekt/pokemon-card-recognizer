@@ -35,7 +35,7 @@ class Vocab:
         Creates vocabulary from card words from all cards in set.
 
         param card_words: Dict that maps card # in set -> list of card words.
-        param min_word_length:
+        param min_word_length: The minimum character length for a word
 
         return:
             vocab: Bidirectional dict that maps vocab word <-> word index in vocabulary

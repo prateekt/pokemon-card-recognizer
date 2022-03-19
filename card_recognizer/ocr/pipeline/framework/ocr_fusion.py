@@ -9,7 +9,7 @@ from card_recognizer.infra.algo_ops.ops.op import Op
 from card_recognizer.infra.paraloop import paraloop
 from card_recognizer.ocr.pipeline.framework.ocr_pipeline import OCRPipeline
 from card_recognizer.ocr.pipeline.instances import ocr
-from card_recognizer.reference.vocab import Vocab
+from card_recognizer.reference.core.vocab import Vocab
 
 
 class OCRFusion(Op):
