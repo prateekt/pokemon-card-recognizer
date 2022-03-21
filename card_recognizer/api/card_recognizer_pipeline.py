@@ -4,13 +4,13 @@ import collections
 
 from pokemontcgsdk import Card
 
-from card_recognizer.classifier.word_classifier import WordClassifier
+from card_recognizer.classifier.core.word_classifier import WordClassifier
 from card_recognizer.infra.algo_ops.ops.text import TextOp
 from card_recognizer.infra.algo_ops.pipeline.pipeline import Pipeline
 from card_recognizer.ocr.pipeline.framework.ffmpeg_op import FFMPEGOp
 from card_recognizer.ocr.pipeline.framework.ocr_op import OCRMethod
 from card_recognizer.ocr.pipeline.instances import ocr
-from card_recognizer.reference.core.card_reference import CardReference
+from card_recognizer.reference.core.build import ReferenceBuild
 
 
 # CardRecognizerPipeline mode enum
@@ -75,7 +75,7 @@ class CardRecognizerPipeline(Pipeline):
     ):
 
         # load classifier
-        ref_pkl_path = CardReference.get_ref_build_pkl_file(set_name=set_name)
+        ref_pkl_path = ReferenceBuild.get_set_pkl_path(set_name=set_name)
         self.classifier = WordClassifier(
             ref_pkl_path=ref_pkl_path,
             vect_method="encapsulation_match",

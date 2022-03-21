@@ -1,10 +1,11 @@
 import os
-from typing import List
+from typing import List, Dict
 
 from pokemontcgsdk import Card
 
 from card_recognizer.infra.api.ptcgsdk import query_set_cards, download_card_images
 from card_recognizer.reference.core.card_reference import CardReference
+from card_recognizer.reference.eval_scripts.plots import plot_word_counts
 
 
 class ReferenceBuild:
@@ -17,15 +18,26 @@ class ReferenceBuild:
             "Evolving Skies",
             "Fusion Strike",
             "Brilliant Stars",
+            "Master",
         ]
         return card_sets
 
     @staticmethod
-    def get_path_to_build():
-        ref_build_folder = os.path.join(
+    def get_path_to_data():
+        """
+        Get path to top-level data folder for reference build.
+        """
+        data_folder = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "..", "data"
         )
-        return ref_build_folder
+        return data_folder
+
+    @staticmethod
+    def get_path():
+        """
+        Get path to reference build folder.
+        """
+        return os.path.join(ReferenceBuild.get_path_to_data(), "ref_build")
 
     @staticmethod
     def get_set_pkl_path(set_name: str) -> str:
@@ -37,16 +49,15 @@ class ReferenceBuild:
         return:
             Path to ref build pickle file for set
         """
-        ref_direc = os.path.dirname(os.path.abspath(__file__))
         pkl_file = set_name.lower().replace(" ", "_") + ".pkl"
-        ref_build_path = os.path.join(ref_direc, "data", "ref_build", pkl_file)
-        if not os.path.exists(ref_build_path):
+        full_path = os.path.join(ReferenceBuild.get_path(), pkl_file)
+        if not os.path.exists(full_path):
             raise ValueError(
                 "Reference build not found for set: "
                 + str(set_name)
                 + ". Has reference been setup? If not, run build.py"
             )
-        return ref_build_path
+        return full_path
 
     @staticmethod
     def load(set_name: str) -> CardReference:
@@ -55,6 +66,13 @@ class ReferenceBuild:
         """
         ref_build_path = ReferenceBuild.get_set_pkl_path(set_name=set_name)
         return CardReference.load_from_pickle(pkl_path=ref_build_path)
+
+    @staticmethod
+    def load_all_card_references() -> Dict[str, CardReference]:
+        return {
+            set_name: ReferenceBuild.load(set_name=set_name)
+            for set_name in ReferenceBuild.supported_card_sets()
+        }
 
     @staticmethod
     def build(download_images: bool = True) -> None:
@@ -76,7 +94,7 @@ class ReferenceBuild:
             # download card images
             if download_images:
                 out_images_path = os.path.join(
-                    ReferenceBuild.get_path_to_build(), "card_images", set_prefix
+                    ReferenceBuild.get_path_to_data(), "card_images", set_prefix
                 )
                 print(set_name + ": Downloading images...")
                 download_card_images(cards=cards, out_path=out_images_path)
@@ -84,23 +102,29 @@ class ReferenceBuild:
             # build card text reference pickle file
             print(set_name + ": building reference...")
             os.makedirs(
-                os.path.join(ReferenceBuild.get_path_to_build(), "ref_build"),
+                os.path.join(ReferenceBuild.get_path()),
                 exist_ok=True,
             )
-            out_pkl_path = os.path.join(
-                ReferenceBuild.get_path_to_build(), "ref_build", set_prefix + ".pkl"
-            )
-            reference = CardReference(cards=cards)
+            out_pkl_path = os.path.join(ReferenceBuild.get_path(), set_prefix + ".pkl")
+            reference = CardReference(cards=cards, name=set_name)
             reference.to_pickle(out_pkl_path=out_pkl_path)
 
         # build master reference
         print("Building master reference..")
-        out_pkl_path = os.path.join(
-            ReferenceBuild.get_path_to_build(), "ref_build", "master.pkl"
-        )
-        master_reference = CardReference(cards=master_set)
+        out_pkl_path = os.path.join(ReferenceBuild.get_path(), "master.pkl")
+        master_reference = CardReference(cards=master_set, name="master")
         master_reference.to_pickle(out_pkl_path=out_pkl_path)
+
+    @staticmethod
+    def make_eval_plots() -> None:
+        eval_plots_dir = os.path.join(ReferenceBuild.get_path_to_data(), "eval_figs")
+        os.makedirs(eval_plots_dir, exist_ok=True)
+        plot_word_counts(
+            references=ReferenceBuild.load_all_card_references(),
+            outfile=os.path.join(eval_plots_dir, "word_counts.png"),
+        )
 
 
 if __name__ == "__main__":
     ReferenceBuild.build()
+    ReferenceBuild.make_eval_plots()

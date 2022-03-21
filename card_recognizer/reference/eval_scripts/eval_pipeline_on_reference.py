@@ -10,6 +10,7 @@ from card_recognizer.eval.eval import (
     compute_acc_exclude_alt_art,
     is_correct_exclude_alt_art,
 )
+from card_recognizer.reference.core.build import ReferenceBuild
 
 
 def eval_prediction(
@@ -23,23 +24,15 @@ def eval_prediction(
 
 
 def main():
-    # flags
-    out_folder = "data"
-    card_sets = [
-        "Vivid Voltage",
-        "Darkness Ablaze",
-        "Chilling Reign",
-        "Evolving Skies",
-        "Fusion Strike",
-        "Brilliant Stars",
-    ]
 
     # loop
-    for set_name in card_sets:
+    for set_name in ReferenceBuild.supported_card_sets():
 
         # define paths
         set_prefix = set_name.lower().replace(" ", "_")
-        images_path = os.path.join(out_folder, "card_images", set_prefix)
+        images_path = os.path.join(
+            ReferenceBuild.get_path_to_data(), "card_images", set_prefix
+        )
         input_files = natsorted(
             [os.path.join(images_path, file) for file in os.listdir(images_path)]
         )

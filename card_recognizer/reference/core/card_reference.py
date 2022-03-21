@@ -9,7 +9,7 @@ from card_recognizer.reference.core.vocab import Vocab
 
 
 class CardReference:
-    def __init__(self, cards: List[Card]):
+    def __init__(self, cards: List[Card], name: str):
         """
         API to build reference data structures for Pokemon card listing.
 
@@ -20,6 +20,7 @@ class CardReference:
         self.cards = cards
         card_words = CardReference._extract_set_words(cards=self.cards)
         self.vocab = Vocab(card_words=card_words)
+        self.name = name
 
         # build reference matrix
         self.ref_mat = CardReference._create_reference_matrix(
@@ -119,6 +120,11 @@ class CardReference:
 
     @staticmethod
     def load_from_pickle(pkl_path: str) -> "CardReference":
+        """
+        Loads card reference from pickled file.
+
+        param pkl_path: Path to pkl file containing CardReference object
+        """
         loaded_obj = pickle.load(open(pkl_path, "rb"))
         assert isinstance(loaded_obj, CardReference)
         return loaded_obj

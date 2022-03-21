@@ -3,7 +3,7 @@ from typing import List, Tuple, Optional, Union
 
 import numpy as np
 
-from card_recognizer.classifier.rules import (
+from card_recognizer.classifier.core.rules import (
     classify_l1,
     classify_shared_words,
     classify_shared_words_rarity,
@@ -60,6 +60,10 @@ class WordClassifier:
             )
         else:
             raise ValueError("Classification method not supported: " + str(method))
+
+    @staticmethod
+    def get_supported_classifier_methods() -> List[str]:
+        return ["l1", "shared_words", "shared_words_rarity"]
 
     def _classify_one(
         self,
