@@ -3,9 +3,13 @@ from typing import List, Dict
 
 from pokemontcgsdk import Card
 
+from card_recognizer.classifier.core.word_classifier import WordClassifier
 from card_recognizer.infra.api.ptcgsdk import query_set_cards, download_card_images
 from card_recognizer.reference.core.card_reference import CardReference
-from card_recognizer.reference.eval_scripts.plots import plot_word_counts
+from card_recognizer.reference.eval.plots import (
+    plot_word_counts,
+    plot_classifier_sensitivity_curve,
+)
 
 
 class ReferenceBuild:
@@ -123,6 +127,17 @@ class ReferenceBuild:
             references=ReferenceBuild.load_all_card_references(),
             outfile=os.path.join(eval_plots_dir, "word_counts.png"),
         )
+        for classifier_method in WordClassifier.get_supported_classifier_methods():
+            plot_classifier_sensitivity_curve(
+                set_pkl_paths={
+                    set_name: ReferenceBuild.get_set_pkl_path(set_name)
+                    for set_name in ReferenceBuild.supported_card_sets()
+                },
+                classifier_method=classifier_method,
+                outfile=os.path.join(
+                    eval_plots_dir, classifier_method + "_sensitivity_curve.png"
+                ),
+            )
 
 
 if __name__ == "__main__":
