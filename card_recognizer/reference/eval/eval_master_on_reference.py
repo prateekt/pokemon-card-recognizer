@@ -55,7 +55,8 @@ def main():
         acc_results: List[str] = list()
         for classifier_rule in ["l1", "shared_words", "shared_words_rarity"]:
             # init pipeline
-            pipeline = CardRecognizerPipeline(set_name=set_name)
+            pipeline = CardRecognizerPipeline(set_name="master",
+                                              classification_method=classifier_rule)
             card_files = [
                 os.path.join(
                     correct_set_name(card.set.name), os.path.basename(card.images.large)
