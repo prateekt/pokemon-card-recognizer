@@ -22,7 +22,6 @@ class ReferenceBuild:
             "Evolving Skies",
             "Fusion Strike",
             "Brilliant Stars",
-            "Master",
         ]
         return card_sets
 
@@ -59,7 +58,7 @@ class ReferenceBuild:
             raise ValueError(
                 "Reference build not found for set: "
                 + str(set_name)
-                + ". Has reference been setup? If not, run build.py"
+                + ". Has reference been setup? If not, run build.py."
             )
         return full_path
 
@@ -131,7 +130,7 @@ class ReferenceBuild:
             plot_classifier_sensitivity_curve(
                 set_pkl_paths={
                     set_name: ReferenceBuild.get_set_pkl_path(set_name)
-                    for set_name in ReferenceBuild.supported_card_sets()
+                    for set_name in (ReferenceBuild.supported_card_sets() + ['master'])
                 },
                 classifier_method=classifier_method,
                 outfile=os.path.join(
