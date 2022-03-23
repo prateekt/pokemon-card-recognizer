@@ -25,10 +25,11 @@ class Mode(Enum):
 class PullsEstimator(TextOp):
     def _estimate_pulls(
         self, results: Tuple[Sequence[Optional[int]], Sequence[Optional[float]]]
-    ) -> List[Card]:
+    ) -> List[Tuple[Card, int]]:
         pred_count = collections.Counter(results[0])
         pred_count.pop(None)
-        pulls = [self.set_cards[pred] for pred in pred_count.keys()]
+        pulls = [(self.set_cards[pred], pred_count[pred])
+                 for pred in pred_count.keys()]
         return pulls
 
     def __init__(self, set_cards: List[Card]):
