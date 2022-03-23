@@ -119,11 +119,13 @@ class CardRecognizerPipeline(Pipeline):
 
 if __name__ == "__main__":
     pipeline = CardRecognizerPipeline(
-        set_name="Brilliant Stars", mode=Mode.PULLS_IMAGE_DIR
+        set_name="Vivid Voltage", mode=Mode.PULLS_VIDEO
     )
     #    r = pipeline.exec(inp='/Users/tandonp/Desktop/VID_20220213_132037.mp4')
-    r = pipeline.exec("/Users/tandonp/Desktop/frames_test")
-    LOZ = 1
-#    r = pipeline.exec(inp="/home/borg1/Desktop/ttframes")
+#    r = pipeline.exec("/Users/tandonp/Desktop/frames_test")
+#    LOZ = 1
+    r = pipeline.exec(inp="/home/borg1/Desktop/vivid_voltage_test_videos/VID_20220316_214213.mp4")
+    print(r)
+    LOZ=1
 #    r = pipeline.run_on_images("/home/borg1/Desktop/ttframes", mechanism="sequential")
 #    pickle.dump(r, open("results_frames.pkl", "wb"))

@@ -61,14 +61,14 @@ def main():
                 os.path.join(
                     correct_set_name(card.set.name), os.path.basename(card.images.large)
                 )
-                for card in pipeline.classifier.cards
+                for card in pipeline.classifier.reference.cards
             ]
             gt = [
                 card_files.index(os.path.join(set_name, os.path.basename(input_file)))
                 for input_file in input_files
             ]
             eval_prediction_func = functools.partial(
-                eval_prediction, pipeline.classifier.cards, set_name, card_files
+                eval_prediction, pipeline.classifier.reference.cards, set_name, card_files
             )
             eval_results = pipeline.evaluate(
                 inputs=input_files,
@@ -80,7 +80,7 @@ def main():
             acc, incorrect = compute_acc_exclude_alt_art(
                 preds=preds,
                 gt=gt,
-                cards_reference=pipeline.classifier.cards,
+                cards_reference=pipeline.classifier.reference.cards,
             )
             acc_results.append(classifier_rule + ": " + str(acc))
         print(set_name + ": " + str(acc_results))

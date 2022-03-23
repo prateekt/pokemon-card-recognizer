@@ -120,6 +120,7 @@ class ReferenceBuild:
 
     @staticmethod
     def make_eval_plots() -> None:
+        print('Making Eval plots...')
         eval_plots_dir = os.path.join(ReferenceBuild.get_path_to_data(), "eval_figs")
         os.makedirs(eval_plots_dir, exist_ok=True)
         plot_word_counts(
