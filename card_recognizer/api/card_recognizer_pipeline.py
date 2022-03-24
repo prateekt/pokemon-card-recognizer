@@ -26,7 +26,7 @@ class Mode(Enum):
 
 class PullsEstimator(TextOp):
     def _estimate_pulls(
-            self, results: Tuple[Sequence[Optional[int]], Sequence[Optional[float]]]
+        self, results: Tuple[Sequence[Optional[int]], Sequence[Optional[float]]]
     ) -> List[Tuple[Card, int, float]]:
         """
         Estimates pulls from results.
@@ -39,9 +39,22 @@ class PullsEstimator(TextOp):
         pred_count = collections.Counter(results[0])
         if None in pred_count:
             pred_count.pop(None)
-        pulls = [(self.set_cards[pred], pred_count[pred], float(np.mean([results[1][i] for i in range(len(results[0]))
-                                                                         if results[0][i] == pred])))
-                 for pred in pred_count.keys()]
+        pulls = [
+            (
+                self.set_cards[pred],
+                pred_count[pred],
+                float(
+                    np.mean(
+                        [
+                            results[1][i]
+                            for i in range(len(results[0]))
+                            if results[0][i] == pred
+                        ]
+                    )
+                ),
+            )
+            for pred in pred_count.keys()
+        ]
         return pulls
 
     def __init__(self, set_cards: List[Card]):
@@ -62,7 +75,7 @@ class PullsEstimator(TextOp):
 
 class CardRecognizerPipeline(Pipeline):
     def _classify_func(
-            self, ocr_words: Union[List[str], List[List[str]]]
+        self, ocr_words: Union[List[str], List[List[str]]]
     ) -> Union[
         Tuple[Optional[int], Optional[float]],
         Tuple[List[Optional[int]], List[Optional[float]]],
@@ -72,7 +85,8 @@ class CardRecognizerPipeline(Pipeline):
         )
         if isinstance(card_pred, list) and isinstance(probs, list):
             card_probs = [
-                probs[i][pred] if pred is not None else None for i, pred in enumerate(card_pred)
+                probs[i][pred] if pred is not None else None
+                for i, pred in enumerate(card_pred)
             ]
             return card_pred, card_probs
         elif card_pred is None:
@@ -81,10 +95,10 @@ class CardRecognizerPipeline(Pipeline):
             return card_pred, probs[card_pred]
 
     def __init__(
-            self,
-            set_name: str,
-            classification_method: str = "shared_words",
-            mode: Mode = Mode.SINGLE_IMAGE,
+        self,
+        set_name: str,
+        classification_method: str = "shared_words",
+        mode: Mode = Mode.SINGLE_IMAGE,
     ):
 
         # load classifier
@@ -131,10 +145,10 @@ class CardRecognizerPipeline(Pipeline):
 
 
 if __name__ == "__main__":
-    pipeline = CardRecognizerPipeline(
-        set_name="Master", mode=Mode.PULLS_IMAGE_DIR
+    pipeline = CardRecognizerPipeline(set_name="Master", mode=Mode.PULLS_IMAGE_DIR)
+    in_dir = os.sep + os.path.join(
+        "home", "borg1", "Desktop", "vivid_voltage_test_videos"
     )
-    in_dir = os.sep + os.path.join('home', 'borg1', 'Desktop', 'vivid_voltage_test_videos')
     videos = [os.path.join(in_dir, video) for video in os.listdir(in_dir)]
     for video in videos:
         print(video)

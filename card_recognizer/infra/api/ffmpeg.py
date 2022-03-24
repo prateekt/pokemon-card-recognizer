@@ -41,6 +41,6 @@ class FFMPEG:
         out_sig = os.path.join(out_path, fmt)
         _, ret_code = run_os_command(
             ["ffmpeg", "-i", video_path, "-vf", "fps=" + str(fps), out_sig],
-            squelch_output=squelch_output
+            squelch_output=squelch_output,
         )
         return ret_code == 0, out_path
