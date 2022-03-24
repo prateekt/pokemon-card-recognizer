@@ -4,10 +4,9 @@ import traceback
 from typing import List
 
 import requests
+from algo_ops.paraloop import paraloop
 from natsort import natsorted
 from pokemontcgsdk import Card, RestClient
-
-from card_recognizer.infra.paraloop import paraloop as paraloop
 
 # set up API key for Pokémon TCG API
 API_KEY = "1a83fd9c-f080-4ab1-bd68-aea084f2bdc0"

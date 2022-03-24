@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
-
-from card_recognizer.infra.algo_ops.pipeline.cv_pipeline import CVPipeline
+from algo_ops.pipeline.cv_pipeline import CVPipeline
 
 
 def black_text_ocr_pipeline() -> CVPipeline:

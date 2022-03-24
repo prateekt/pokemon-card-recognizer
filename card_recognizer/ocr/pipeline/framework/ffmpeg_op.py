@@ -1,4 +1,5 @@
-from card_recognizer.infra.algo_ops.ops.op import Op
+from algo_ops.ops.op import Op
+
 from card_recognizer.infra.api.ffmpeg import FFMPEG
 
 

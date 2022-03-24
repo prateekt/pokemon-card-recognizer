@@ -2,12 +2,12 @@ import os
 from typing import Optional, Dict, Any, List, Union
 
 import cv2
+from algo_ops.ops.op import Op
+from algo_ops.paraloop import paraloop
+from algo_ops.pipeline.cv_pipeline import CVPipeline
+from algo_ops.pipeline.pipeline import Pipeline
 from natsort import natsorted
 
-from card_recognizer.infra.algo_ops.pipeline.cv_pipeline import CVPipeline
-from card_recognizer.infra.algo_ops.ops.op import Op
-from card_recognizer.infra.algo_ops.pipeline.pipeline import Pipeline
-from card_recognizer.infra.paraloop import paraloop
 from card_recognizer.ocr.pipeline.framework.ocr_op import OCRMethod, OCROp
 
 

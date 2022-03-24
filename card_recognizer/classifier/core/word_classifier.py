@@ -2,13 +2,13 @@ import functools
 from typing import List, Tuple, Optional, Union
 
 import numpy as np
+from algo_ops.paraloop import paraloop
 
 from card_recognizer.classifier.core.rules import (
     classify_l1,
     classify_shared_words,
     classify_shared_words_rarity,
 )
-from card_recognizer.infra.paraloop import paraloop as paraloop
 from card_recognizer.reference.core.card_reference import CardReference
 
 

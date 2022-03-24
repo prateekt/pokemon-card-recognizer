@@ -18,6 +18,7 @@ dependencies:
   - xz=5.2.5
   - zlib=1.2.11
   - pip:
+    - algo-ops==0.0.1
     - appnope==0.1.2
     - argon2-cffi==21.3.0
     - argon2-cffi-bindings==21.2.0

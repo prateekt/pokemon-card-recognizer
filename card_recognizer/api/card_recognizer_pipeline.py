@@ -1,14 +1,14 @@
+import collections
 import os
 from enum import Enum
 from typing import Union, List, Tuple, Optional, Sequence
-import collections
 
 import numpy as np
+from algo_ops.ops.text import TextOp
+from algo_ops.pipeline.pipeline import Pipeline
 from pokemontcgsdk import Card
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
-from card_recognizer.infra.algo_ops.ops.text import TextOp
-from card_recognizer.infra.algo_ops.pipeline.pipeline import Pipeline
 from card_recognizer.ocr.pipeline.framework.ffmpeg_op import FFMPEGOp
 from card_recognizer.ocr.pipeline.framework.ocr_op import OCRMethod
 from card_recognizer.ocr.pipeline.instances import ocr

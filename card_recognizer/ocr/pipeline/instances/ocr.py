@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
+from algo_ops.pipeline.cv_pipeline import CVPipeline
+from algo_ops.pipeline.pipeline import Pipeline
 
-from card_recognizer.infra.algo_ops.pipeline.cv_pipeline import CVPipeline
-from card_recognizer.infra.algo_ops.pipeline.pipeline import Pipeline
 from card_recognizer.ocr.pipeline.framework.ocr_pipeline import OCRPipeline, OCRMethod
 from card_recognizer.ocr.pipeline.instances.text import (
     basic_text_cleaning_pipeline,

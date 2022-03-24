@@ -6,8 +6,7 @@ import cv2
 import easyocr
 import numpy as np
 import pytesseract
-
-from card_recognizer.infra.algo_ops.ops.op import Op
+from algo_ops.ops.op import Op
 
 
 # OCR Method Enum
