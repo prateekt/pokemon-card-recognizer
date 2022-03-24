@@ -20,6 +20,7 @@ class FFMPEG:
         out_path: Optional[str] = None,
         fps: int = 10,
         fmt: str = "out%04d.png",
+        squelch_output: bool = True,
     ) -> [bool, str]:
         """
         Converts video to frames. Returns true if conversion succeeded.
@@ -28,6 +29,7 @@ class FFMPEG:
         param out_path: Path to output
         param fps: Frames per second
         param fmt: Format string
+        param squelch_output: Whether to squelch output or not
 
         return:
             True if conversion succeeded
@@ -38,6 +40,7 @@ class FFMPEG:
         os.makedirs(out_path, exist_ok=True)
         out_sig = os.path.join(out_path, fmt)
         _, ret_code = run_os_command(
-            ["ffmpeg", "-i", video_path, "-vf", "fps=" + str(fps), out_sig]
+            ["ffmpeg", "-i", video_path, "-vf", "fps=" + str(fps), out_sig],
+            squelch_output=squelch_output
         )
         return ret_code == 0, out_path

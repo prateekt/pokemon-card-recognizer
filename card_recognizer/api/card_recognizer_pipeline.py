@@ -1,7 +1,9 @@
+import os
 from enum import Enum
 from typing import Union, List, Tuple, Optional, Sequence
 import collections
 
+import numpy as np
 from pokemontcgsdk import Card
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
@@ -24,11 +26,22 @@ class Mode(Enum):
 
 class PullsEstimator(TextOp):
     def _estimate_pulls(
-        self, results: Tuple[Sequence[Optional[int]], Sequence[Optional[float]]]
-    ) -> List[Tuple[Card, int]]:
+            self, results: Tuple[Sequence[Optional[int]], Sequence[Optional[float]]]
+    ) -> List[Tuple[Card, int, float]]:
+        """
+        Estimates pulls from results.
+
+        param: Results structure (Card Number Predictions List, Confidence Score List)
+
+        return:
+            List of Pulls (Card Object, # of frames card appears in, Mean Confidence Score)
+        """
         pred_count = collections.Counter(results[0])
-        pred_count.pop(None)
-        pulls = [(self.set_cards[pred], pred_count[pred]) for pred in pred_count.keys()]
+        if None in pred_count:
+            pred_count.pop(None)
+        pulls = [(self.set_cards[pred], pred_count[pred], float(np.mean([results[1][i] for i in range(len(results[0]))
+                                                                         if results[0][i] == pred])))
+                 for pred in pred_count.keys()]
         return pulls
 
     def __init__(self, set_cards: List[Card]):
@@ -49,7 +62,7 @@ class PullsEstimator(TextOp):
 
 class CardRecognizerPipeline(Pipeline):
     def _classify_func(
-        self, ocr_words: Union[List[str], List[List[str]]]
+            self, ocr_words: Union[List[str], List[List[str]]]
     ) -> Union[
         Tuple[Optional[int], Optional[float]],
         Tuple[List[Optional[int]], List[Optional[float]]],
@@ -59,7 +72,7 @@ class CardRecognizerPipeline(Pipeline):
         )
         if isinstance(card_pred, list) and isinstance(probs, list):
             card_probs = [
-                probs[pred] if pred is not None else None for pred in card_pred
+                probs[i][pred] if pred is not None else None for i, pred in enumerate(card_pred)
             ]
             return card_pred, card_probs
         elif card_pred is None:
@@ -68,10 +81,10 @@ class CardRecognizerPipeline(Pipeline):
             return card_pred, probs[card_pred]
 
     def __init__(
-        self,
-        set_name: str,
-        classification_method: str = "shared_words",
-        mode: Mode = Mode.SINGLE_IMAGE,
+            self,
+            set_name: str,
+            classification_method: str = "shared_words",
+            mode: Mode = Mode.SINGLE_IMAGE,
     ):
 
         # load classifier
@@ -118,14 +131,12 @@ class CardRecognizerPipeline(Pipeline):
 
 
 if __name__ == "__main__":
-    pipeline = CardRecognizerPipeline(set_name="Vivid Voltage", mode=Mode.PULLS_VIDEO)
-    #    r = pipeline.exec(inp='/Users/tandonp/Desktop/VID_20220213_132037.mp4')
-    #    r = pipeline.exec("/Users/tandonp/Desktop/frames_test")
-    #    LOZ = 1
-    r = pipeline.exec(
-        inp="/home/borg1/Desktop/vivid_voltage_test_videos/VID_20220316_214213.mp4"
+    pipeline = CardRecognizerPipeline(
+        set_name="Master", mode=Mode.PULLS_IMAGE_DIR
     )
-    print(r)
-    LOZ = 1
-#    r = pipeline.run_on_images("/home/borg1/Desktop/ttframes", mechanism="sequential")
-#    pickle.dump(r, open("results_frames.pkl", "wb"))
+    in_dir = os.sep + os.path.join('home', 'borg1', 'Desktop', 'vivid_voltage_test_videos')
+    videos = [os.path.join(in_dir, video) for video in os.listdir(in_dir)]
+    for video in videos:
+        print(video)
+        r = pipeline.exec(inp=video)
+        print([a[0].name for a in r if a[1] > 10 and a[2] > 0.25])
