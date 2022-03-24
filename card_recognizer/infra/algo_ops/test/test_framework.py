@@ -7,7 +7,7 @@ from card_recognizer.infra.algo_ops.ops.text import TextOp
 from card_recognizer.infra.algo_ops.pipeline.pipeline import Pipeline
 
 
-class TestFramework(unittest.TestCase):
+class TestAlgoOpsFramework(unittest.TestCase):
 
     # test funcs
     @staticmethod
@@ -37,7 +37,7 @@ class TestFramework(unittest.TestCase):
         self.assertEqual(op.name, "reverse")
         self.assertEqual(op.input, None)
         self.assertEqual(op.output, None)
-        self.assertEqual(op.execution_times, [])
+        self.assertEqual(list(op.execution_times), [])
 
         # test op execution
         output = op.exec(inp="ab")

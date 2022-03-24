@@ -5,7 +5,7 @@ import time
 from abc import ABC, abstractmethod
 from typing import Callable, List, Any, Dict, Sequence, Optional, Tuple
 import card_recognizer.infra.paraloop.paraloop as paraloop
-
+import collections
 import numpy as np
 
 
@@ -25,7 +25,9 @@ class Op(ABC):
         self.name = func.__name__
         self.input = None
         self.output = None
-        self.execution_times: List[float] = list()
+
+        # profiling
+        self.execution_times: collections.deque = collections.deque(maxlen=1000)
 
         # evaluation functionality variables
         self.eval_func = None
@@ -116,7 +118,9 @@ class Op(ABC):
         print(
             self.name
             + ": "
-            + self._format_execution_time_stats(execution_times=self.execution_times)
+            + self._format_execution_time_stats(
+                execution_times=list(self.execution_times)
+            )
         )
 
     def to_pickle(self, out_file: str) -> None:

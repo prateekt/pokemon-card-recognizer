@@ -55,8 +55,9 @@ def main():
         acc_results: List[str] = list()
         for classifier_rule in ["l1", "shared_words", "shared_words_rarity"]:
             # init pipeline
-            pipeline = CardRecognizerPipeline(set_name="master",
-                                              classification_method=classifier_rule)
+            pipeline = CardRecognizerPipeline(
+                set_name="master", classification_method=classifier_rule
+            )
             card_files = [
                 os.path.join(
                     correct_set_name(card.set.name), os.path.basename(card.images.large)
@@ -68,7 +69,10 @@ def main():
                 for input_file in input_files
             ]
             eval_prediction_func = functools.partial(
-                eval_prediction, pipeline.classifier.reference.cards, set_name, card_files
+                eval_prediction,
+                pipeline.classifier.reference.cards,
+                set_name,
+                card_files,
             )
             eval_results = pipeline.evaluate(
                 inputs=input_files,

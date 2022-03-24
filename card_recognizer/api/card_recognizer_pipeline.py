@@ -28,8 +28,7 @@ class PullsEstimator(TextOp):
     ) -> List[Tuple[Card, int]]:
         pred_count = collections.Counter(results[0])
         pred_count.pop(None)
-        pulls = [(self.set_cards[pred], pred_count[pred])
-                 for pred in pred_count.keys()]
+        pulls = [(self.set_cards[pred], pred_count[pred]) for pred in pred_count.keys()]
         return pulls
 
     def __init__(self, set_cards: List[Card]):
@@ -119,14 +118,14 @@ class CardRecognizerPipeline(Pipeline):
 
 
 if __name__ == "__main__":
-    pipeline = CardRecognizerPipeline(
-        set_name="Vivid Voltage", mode=Mode.PULLS_VIDEO
-    )
+    pipeline = CardRecognizerPipeline(set_name="Vivid Voltage", mode=Mode.PULLS_VIDEO)
     #    r = pipeline.exec(inp='/Users/tandonp/Desktop/VID_20220213_132037.mp4')
-#    r = pipeline.exec("/Users/tandonp/Desktop/frames_test")
-#    LOZ = 1
-    r = pipeline.exec(inp="/home/borg1/Desktop/vivid_voltage_test_videos/VID_20220316_214213.mp4")
+    #    r = pipeline.exec("/Users/tandonp/Desktop/frames_test")
+    #    LOZ = 1
+    r = pipeline.exec(
+        inp="/home/borg1/Desktop/vivid_voltage_test_videos/VID_20220316_214213.mp4"
+    )
     print(r)
-    LOZ=1
+    LOZ = 1
 #    r = pipeline.run_on_images("/home/borg1/Desktop/ttframes", mechanism="sequential")
 #    pickle.dump(r, open("results_frames.pkl", "wb"))

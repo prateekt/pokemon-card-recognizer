@@ -120,7 +120,7 @@ class ReferenceBuild:
 
     @staticmethod
     def make_eval_plots() -> None:
-        print('Making Eval plots...')
+        print("Making Eval plots...")
         eval_plots_dir = os.path.join(ReferenceBuild.get_path_to_data(), "eval_figs")
         os.makedirs(eval_plots_dir, exist_ok=True)
         plot_word_counts(
@@ -131,7 +131,7 @@ class ReferenceBuild:
             plot_classifier_sensitivity_curve(
                 set_pkl_paths={
                     set_name: ReferenceBuild.get_set_pkl_path(set_name)
-                    for set_name in (ReferenceBuild.supported_card_sets() + ['master'])
+                    for set_name in (ReferenceBuild.supported_card_sets() + ["master"])
                 },
                 classifier_method=classifier_method,
                 outfile=os.path.join(

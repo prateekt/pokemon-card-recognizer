@@ -4,7 +4,7 @@ from card_recognizer.infra.algo_ops.ops.op import Op
 class TextOp(Op):
     """
     Represents a single text processing operation that can be executed.
-    Inputs and outputs can be printed and saved.
+    Inputs and outputs can be printed to screen and saved.
     """
 
     def vis_input(self) -> None:

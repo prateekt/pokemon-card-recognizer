@@ -58,6 +58,14 @@ class Pipeline(Op):
         )
 
     def _find_op(self, func_name: str) -> Op:
+        """
+        Helper function to find an Op corresponding to a pipeline function.
+
+        param func_name: Name of function
+
+        return:
+            Found Op (or ValueError if no Op found)
+        """
         for key in self.ops.keys():
             op = self.ops[key]
             assert isinstance(op, Op)
@@ -76,10 +84,10 @@ class Pipeline(Op):
         op.set_params(params=params)
 
     def save_input(self, out_path: str = ".") -> None:
-        pass
+        raise ValueError("Please use save_output to visualize pipeline data flow.")
 
     def vis_input(self) -> None:
-        pass
+        raise ValueError("Please use vis to visualize pipeline data flow.")
 
     def vis(self) -> None:
         """
@@ -117,6 +125,8 @@ class Pipeline(Op):
             op.vis_profile()
         print(
             "Total: "
-            + self._format_execution_time_stats(execution_times=self.execution_times)
+            + self._format_execution_time_stats(
+                execution_times=list(self.execution_times)
+            )
         )
         print("-------------")
