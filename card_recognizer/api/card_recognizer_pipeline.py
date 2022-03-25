@@ -145,7 +145,7 @@ class CardRecognizerPipeline(Pipeline):
 
 
 if __name__ == "__main__":
-    pipeline = CardRecognizerPipeline(set_name="Master", mode=Mode.VIDEO)
+    pipeline = CardRecognizerPipeline(set_name="Master", mode=Mode.PULLS_VIDEO)
     in_dir = os.sep + os.path.join(
         "home", "borg1", "Desktop", "vivid_voltage_test_videos"
     )
