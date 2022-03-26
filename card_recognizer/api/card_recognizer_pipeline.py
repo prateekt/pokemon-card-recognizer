@@ -80,6 +80,9 @@ class CardRecognizerPipeline(Pipeline):
         Tuple[Optional[int], Optional[float]],
         Tuple[List[Optional[int]], List[Optional[float]]],
     ]:
+        """
+        Helper wrapper function for classifier.
+        """
         card_pred, probs = self.classifier.classify(
             ocr_words=ocr_words, include_probs=True
         )

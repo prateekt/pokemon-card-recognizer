@@ -15,6 +15,9 @@ from card_recognizer.reference.eval.plots import (
 class ReferenceBuild:
     @staticmethod
     def supported_card_sets() -> List[str]:
+        """
+        Get list of supported set names.
+        """
         card_sets = [
             "Vivid Voltage",
             "Darkness Ablaze",
@@ -26,7 +29,7 @@ class ReferenceBuild:
         return card_sets
 
     @staticmethod
-    def get_path_to_data():
+    def get_path_to_data() -> str:
         """
         Get path to top-level data folder for reference build.
         """
@@ -36,7 +39,7 @@ class ReferenceBuild:
         return data_folder
 
     @staticmethod
-    def get_path():
+    def get_path() -> str:
         """
         Get path to reference build folder.
         """
@@ -72,6 +75,12 @@ class ReferenceBuild:
 
     @staticmethod
     def load_all_card_references() -> Dict[str, CardReference]:
+        """
+        Load all card reference objects.
+
+        Returns:
+            Dict mapping set name to CardReference object for set
+        """
         return {
             set_name: ReferenceBuild.load(set_name=set_name)
             for set_name in ReferenceBuild.supported_card_sets()
@@ -120,6 +129,10 @@ class ReferenceBuild:
 
     @staticmethod
     def make_eval_plots() -> None:
+        """
+        Makes all evaluation plots.
+        """
+
         print("Making Eval plots...")
         eval_plots_dir = os.path.join(ReferenceBuild.get_path_to_data(), "eval_figs")
         os.makedirs(eval_plots_dir, exist_ok=True)
@@ -131,7 +144,7 @@ class ReferenceBuild:
             plot_classifier_sensitivity_curve(
                 set_pkl_paths={
                     set_name: ReferenceBuild.get_set_pkl_path(set_name)
-                    for set_name in (ReferenceBuild.supported_card_sets() + ["master"])
+                    for set_name in (ReferenceBuild.supported_card_sets() + ["Master"])
                 },
                 classifier_method=classifier_method,
                 outfile=os.path.join(

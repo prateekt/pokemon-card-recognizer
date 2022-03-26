@@ -4,8 +4,21 @@ from card_recognizer.infra.api.ffmpeg import FFMPEG
 
 
 class FFMPEGOp(Op):
+    """
+    Turn the use of FFMPEG video -> frames conversion into an Op that can placed into an OCR pipeline.
+    """
+
     @staticmethod
     def _convert_to_images_wrapper(video_path: str):
+        """
+        Wrapper function to convert a video into image frames.
+
+        param video_path: Path to video file
+
+        Return:
+            images_frame_path: Path to directory containing frame images extracted from video using FFMPEG.
+
+        """
         success, image_frames_path = FFMPEG.convert_video_to_frames(
             video_path=video_path
         )
@@ -20,10 +33,10 @@ class FFMPEGOp(Op):
         print("Converted " + str(self.input) + ".")
 
     def vis_input(self) -> None:
-        pass
+        raise ValueError("Please use vis function to visualize data flow.")
 
     def save_input(self, out_path: str) -> None:
-        pass
+        raise NotImplementedError("This is not needed functionality.")
 
     def save_output(self, out_path) -> None:
-        pass
+        raise NotImplementedError("This is not needed functionality.")

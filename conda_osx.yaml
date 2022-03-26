@@ -1,4 +1,4 @@
-name: py39_card_rec
+name: card_rec_py39
 channels:
   - defaults
 dependencies:
@@ -131,4 +131,4 @@ dependencies:
     - wcwidth==0.2.5
     - webencodings==0.5.1
     - widgetsnbextension==3.5.2
-prefix: /opt/anaconda3/envs/py39_card_rec
+prefix: /opt/anaconda3/envs/card_rec_py39

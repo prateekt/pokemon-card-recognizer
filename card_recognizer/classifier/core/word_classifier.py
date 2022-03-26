@@ -100,6 +100,7 @@ class WordClassifier:
         self,
         ocr_words: List[List[str]],
         include_probs: bool = False,
+        mechanism: str = "pool",
     ) -> Tuple[List[Optional[int]], Optional[List[np.array]]]:
         """
         Classify multiple OCR results.
@@ -109,7 +110,9 @@ class WordClassifier:
             probs: The posterior probabilities for cards
         """
         par_classify_func = functools.partial(self._classify_one, include_probs)
-        results = paraloop.loop(func=par_classify_func, params=ocr_words)
+        results = paraloop.loop(
+            func=par_classify_func, params=ocr_words, mechanism=mechanism
+        )
         preds: List[Optional[int]] = list()
         if include_probs:
             all_probs: Optional[List[np.array]] = list()
@@ -125,6 +128,7 @@ class WordClassifier:
         self,
         ocr_words: Union[List[str], List[List[str]]],
         include_probs: bool = False,
+        mechanism: str = "pool",
     ) -> Union[
         Tuple[Optional[int], np.array],
         Tuple[List[Optional[int]], List[np.array]],
@@ -142,6 +146,5 @@ class WordClassifier:
             return self._classify_one(ocr_words=ocr_words, include_probs=include_probs)
         else:
             return self._classify_multiple(
-                ocr_words=ocr_words,
-                include_probs=include_probs,
+                ocr_words=ocr_words, include_probs=include_probs, mechanism=mechanism
             )

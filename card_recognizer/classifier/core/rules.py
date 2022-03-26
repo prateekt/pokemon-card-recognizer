@@ -26,7 +26,7 @@ def _to_portions(v: np.array) -> np.array:
     """
     Normalize vector to portion vector.
 
-    param v:
+    param v: Input vector
 
     return:
         Normalized vector
