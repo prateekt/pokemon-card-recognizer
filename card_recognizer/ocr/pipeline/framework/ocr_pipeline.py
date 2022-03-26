@@ -8,6 +8,7 @@ from algo_ops.pipeline.cv_pipeline import CVPipeline
 from algo_ops.pipeline.pipeline import Pipeline
 from natsort import natsorted
 
+from card_recognizer.infra.api import sys
 from card_recognizer.ocr.pipeline.framework.ocr_op import OCRMethod, OCROp
 
 
@@ -114,7 +115,11 @@ class OCRPipeline(Pipeline):
             output: List of OCR results
         """
         files = natsorted(
-            [os.path.join(images_dir, file) for file in os.listdir(images_dir)]
+            [
+                os.path.join(images_dir, file)
+                for file in os.listdir(images_dir)
+                if sys.is_image_file(file_path=file)
+            ]
         )
         results = paraloop.loop(
             func=self.run_on_img_file, params=files, mechanism=mechanism

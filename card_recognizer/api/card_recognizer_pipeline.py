@@ -34,7 +34,7 @@ class PullsEstimator(TextOp):
         param: Results structure (Card Number Predictions List, Confidence Score List)
 
         return:
-            List of Pulls (Card Object, # of frames card appears in, Mean Confidence Score)
+            List of Pulls (Card Object, # of frames card appears in, Max Confidence Score)
         """
         pred_count = collections.Counter(results[0])
         if None in pred_count:
@@ -44,7 +44,7 @@ class PullsEstimator(TextOp):
                 self.set_cards[pred],
                 pred_count[pred],
                 float(
-                    np.mean(
+                    np.max(
                         [
                             results[1][i]
                             for i in range(len(results[0]))
@@ -96,11 +96,7 @@ class CardRecognizerPipeline(Pipeline):
 
         # make pipeline
         if mode == Mode.VIDEO:
-            ops = [
-                FFMPEGOp(),
-                TextOp(ocr_pipeline.run_on_images),
-                TextOp(func=self.classifier.classify),
-            ]
+            ops = [FFMPEGOp(), TextOp(ocr_pipeline.run_on_images), self.classifier]
         elif mode == Mode.SINGLE_IMAGE:
             ops = [ocr_pipeline, self.classifier]
         elif mode == Mode.IMAGE_DIR:

@@ -52,3 +52,17 @@ def check_if_installed(program: str) -> bool:
         return False
     else:
         return True
+
+
+def is_image_file(file_path: str) -> bool:
+    """
+    Checks if a file has an image file extension.
+
+    param file_path: Path to file
+
+    return:
+        True if file is image file
+    """
+    return file_path.lower().endswith(
+        (".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".gif")
+    )

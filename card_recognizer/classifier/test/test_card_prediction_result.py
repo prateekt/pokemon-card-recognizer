@@ -1,6 +1,6 @@
 import unittest
 
-from card_recognizer.classifier.core.card_classification_result import (
+from card_recognizer.classifier.core.card_prediction_result import (
     CardPrediction,
     CardPredictionResult,
 )

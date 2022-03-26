@@ -5,7 +5,7 @@ from typing import List, Dict
 import numpy as np
 from pokemontcgsdk import Card
 
-from card_recognizer.classifier.core.card_classification_result import CardPrediction
+from card_recognizer.classifier.core.card_prediction_result import CardPrediction
 from card_recognizer.reference.core.vocab import Vocab
 
 

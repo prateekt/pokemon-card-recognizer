@@ -5,7 +5,7 @@ import numpy as np
 from algo_ops.ops.text import TextOp
 from algo_ops.paraloop import paraloop
 
-from card_recognizer.classifier.core.card_classification_result import (
+from card_recognizer.classifier.core.card_prediction_result import (
     CardPrediction,
     CardPredictionResult,
 )
