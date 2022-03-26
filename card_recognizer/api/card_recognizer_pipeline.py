@@ -1,11 +1,13 @@
 import collections
 import os
+import pickle
 from enum import Enum
 from typing import List, Tuple, Optional, Sequence
 
 import numpy as np
 from algo_ops.ops.text import TextOp
 from algo_ops.pipeline.pipeline import Pipeline
+from natsort import natsorted
 from pokemontcgsdk import Card
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
@@ -121,12 +123,21 @@ class CardRecognizerPipeline(Pipeline):
 
 
 if __name__ == "__main__":
-    pipeline = CardRecognizerPipeline(set_name="Master", mode=Mode.PULLS_VIDEO)
+    pipeline = CardRecognizerPipeline(set_name="Master", mode=Mode.VIDEO)
     in_dir = os.sep + os.path.join(
         "home", "borg1", "Desktop", "vivid_voltage_test_videos"
     )
-    videos = [os.path.join(in_dir, video) for video in os.listdir(in_dir)]
+    """
+    in_file = os.sep + os.path.join("home", "borg1", "Desktop",
+     "Y2Mate.is - Brilliant Stars Booster Box Opening PART 1-t8NtWA2_26M-1080p-1647284353120.mp4")
+    r = pipeline.exec(inp=in_file)
+    with open('tt_pkl.pkl', 'wb') as fout:
+        pickle.dump(r, fout)
+    """
+    videos = natsorted([os.path.join(in_dir, video) for video in os.listdir(in_dir) if '.pkl' not in video])
     for video in videos:
         print(video)
         r = pipeline.exec(inp=video)
-        print([a[0].name for a in r if a[1] > 10 and a[2] > 0.25])
+        with open(video + '.pkl', 'wb') as fout:
+            pickle.dump(r, fout)
+#        print([a[0].name for a in r if a[1] > 10 and a[2] > 0.1])

@@ -4,7 +4,7 @@ conda_dev:
 
 conda_deploy:
 	conda env remove -n card_rec_py39
-	conda env create -f conda_linx.yaml
+	conda env create -f conda_linux.yaml
 
 build_reference:
 	rm -rf card_recognizer/reference/data
