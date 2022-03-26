@@ -66,3 +66,15 @@ def is_image_file(file_path: str) -> bool:
     return file_path.lower().endswith(
         (".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".gif")
     )
+
+
+def is_video_file(file_path: str) -> bool:
+    """
+    Check if a file has a valid video extension.
+
+    param file_path: Path to file
+
+    return:
+        True if file is video file
+    """
+    return file_path.lower().endswith((".mp4", ".aiff", ".avi", ".mov", ".mkv"))

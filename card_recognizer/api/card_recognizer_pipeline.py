@@ -11,6 +11,7 @@ from natsort import natsorted
 from pokemontcgsdk import Card
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
+from card_recognizer.infra.api import sys
 from card_recognizer.ocr.pipeline.framework.ffmpeg_op import FFMPEGOp
 from card_recognizer.ocr.pipeline.framework.ocr_op import OCRMethod
 from card_recognizer.ocr.pipeline.instances import ocr
@@ -134,10 +135,16 @@ if __name__ == "__main__":
     with open('tt_pkl.pkl', 'wb') as fout:
         pickle.dump(r, fout)
     """
-    videos = natsorted([os.path.join(in_dir, video) for video in os.listdir(in_dir) if '.pkl' not in video])
+    videos = natsorted(
+        [
+            os.path.join(in_dir, video)
+            for video in os.listdir(in_dir)
+            if sys.is_video_file(video)
+        ]
+    )
     for video in videos:
         print(video)
         r = pipeline.exec(inp=video)
-        with open(video + '.pkl', 'wb') as fout:
+        with open(video + ".pkl", "wb") as fout:
             pickle.dump(r, fout)
 #        print([a[0].name for a in r if a[1] > 10 and a[2] > 0.1])
