@@ -2,10 +2,12 @@ import functools
 import os
 from typing import List, Tuple
 
+import pandas as pd
 from natsort import natsorted
 from pokemontcgsdk import Card
 
 from card_recognizer.api.card_recognizer_pipeline import CardRecognizerPipeline
+from card_recognizer.classifier.core.word_classifier import WordClassifier
 from card_recognizer.eval.eval import (
     compute_acc_exclude_alt_art,
     is_correct_exclude_alt_art,
@@ -24,8 +26,15 @@ def eval_prediction(
 
 
 def main():
+    """
+    Script to evaluate each individual set model accuracy on all set card images. Reports an accuracy per set and per
+    rule for each model tested on the correct set.
+    """
 
-    # loop
+    # create results data frame
+    results_df = pd.DataFrame(
+        {rule: [] for rule in WordClassifier.get_supported_classifier_methods()}
+    )
     for set_name in ReferenceBuild.supported_card_sets():
 
         # define paths
@@ -38,7 +47,7 @@ def main():
         )
 
         # test different classifier rules
-        acc_results: List[str] = list()
+        acc_results: List[float] = list()
         for classifier_rule in ["l1", "shared_words", "shared_words_rarity"]:
 
             # init pipeline
@@ -55,7 +64,9 @@ def main():
             eval_results = pipeline.evaluate(
                 inputs=input_files,
                 eval_func=eval_prediction_func,
-                incorrect_pkl_path="incorrect_reference_preds",
+                incorrect_pkl_path=os.path.join(
+                    ReferenceBuild.get_path_to_data(), "incorrect_set_reference_preds"
+                ),
                 mechanism="sequential",
             )
             preds = [result[0][0] for result in eval_results]
@@ -64,8 +75,14 @@ def main():
                 gt=range(len(eval_results)),
                 cards_reference=pipeline.classifier.reference.cards,
             )
-            acc_results.append(classifier_rule + ": " + str(acc))
-        print(set_name + ": " + str(acc_results))
+            acc_results.append(acc)
+        results_df.loc[set_name] = acc_results
+
+    # output results data frame to file
+    results_file_path = os.path.join(
+        ReferenceBuild.get_path_to_data(), "eval_figs", "acc_set_model_on_reference.tsv"
+    )
+    results_df.to_csv(results_file_path, sep="\t")
 
 
 if __name__ == "__main__":

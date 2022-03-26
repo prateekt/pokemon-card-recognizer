@@ -77,7 +77,6 @@ def plot_classifier_sensitivity_curve(
     """
     h: List[Optional[EZPlotlyPlot]] = [None] * len(set_pkl_paths.keys())
     for i, set_name in enumerate(set_pkl_paths.keys()):
-        # load classifier for set
         pkl_path = set_pkl_paths[set_name]
         classifier = WordClassifier(
             ref_pkl_path=pkl_path, classification_method=classifier_method

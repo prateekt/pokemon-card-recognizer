@@ -6,7 +6,10 @@ from bidict import bidict
 
 class Vocab:
     """
-    Vocab is a bidirectional dict that maps vocab word <-> word index in vector space.
+    Vocab is a bidirectional dict that maps vocab word <-> word index in vector space. It supports the capability to
+    take in a list of words and generate a word count vector from the bag of words. Different vectorization rules are
+    supported to create a word vector from a listing of words. Different rules help with different noise cases when with
+    OCR.
     """
 
     def __init__(self, card_words: Dict[int, List[str]]):

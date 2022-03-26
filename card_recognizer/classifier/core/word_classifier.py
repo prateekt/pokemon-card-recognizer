@@ -1,9 +1,14 @@
 import functools
-from typing import List, Tuple, Optional, Union
+from typing import List, Optional, Union
 
 import numpy as np
+from algo_ops.ops.text import TextOp
 from algo_ops.paraloop import paraloop
 
+from card_recognizer.classifier.core.card_classification_result import (
+    CardPrediction,
+    CardPredictionResult,
+)
 from card_recognizer.classifier.core.rules import (
     classify_l1,
     classify_shared_words,
@@ -12,7 +17,7 @@ from card_recognizer.classifier.core.rules import (
 from card_recognizer.reference.core.card_reference import CardReference
 
 
-class WordClassifier:
+class WordClassifier(TextOp):
     """
     Classify a card based on detected word frequencies.
     """
@@ -23,9 +28,9 @@ class WordClassifier:
         vect_method: str = "basic",
         classification_method: str = "shared_words",
     ):
-        """
-        Loads reference and vocab from reference pickle file.
-        """
+        super().__init__(func=self.classify)
+
+        # load reference and vocab
         self.reference = CardReference.load_from_pickle(pkl_path=ref_pkl_path)
         self.vect_method = vect_method
 
@@ -42,9 +47,18 @@ class WordClassifier:
         self.classification_func = None
         self.set_classification_method(method=self.classification_method)
 
-    def set_classification_method(self, method: str):
+    @staticmethod
+    def get_supported_classifier_methods() -> List[str]:
         """
-        Prepares classification rule function.
+        Obtains supported classification methods.
+        """
+        return ["l1", "shared_words", "shared_words_rarity"]
+
+    def set_classification_method(self, method: str) -> None:
+        """
+        Sets up classification rule function to method.
+
+        param method: The classification method to use
         """
         if method == "l1":
             self.classification_func = functools.partial(
@@ -61,15 +75,11 @@ class WordClassifier:
         else:
             raise ValueError("Classification method not supported: " + str(method))
 
-    @staticmethod
-    def get_supported_classifier_methods() -> List[str]:
-        return ["l1", "shared_words", "shared_words_rarity"]
-
     def _classify_one(
         self,
         include_probs: bool,
         ocr_words: List[str],
-    ) -> Tuple[Optional[int], Optional[np.array]]:
+    ) -> Optional[CardPrediction]:
         """
         Classify a single OCR result.
 
@@ -79,71 +89,68 @@ class WordClassifier:
         param include_probs: Whether to include probabilities for all cards
 
         return:
-            card_number_prediction: The predicted card number
-            probs: The posterior probabilities for cards
+            prediction: CardPrediction object if card was detected or None if no vocab words were detected in image.
         """
 
         # run prediction
         v = self.reference.vocab.vect(words=ocr_words, method=self.vect_method)
         card_number_prediction, probs = self.classification_func(v=v)
-        if not include_probs:
-            probs = None
+        conf = probs[card_number_prediction]
 
-        # make a no-prediction if there are no detected words to predict from
+        # return a no-prediction if there are no detected words to predict from
         if np.sum(v) == 0:
-            return None, probs
+            return None
         else:
             # return prediction
-            return card_number_prediction, probs
+            prediction = CardPrediction(
+                card_index_in_reference=card_number_prediction, conf=conf
+            )
+            if include_probs:
+                prediction.all_probs = probs
+            else:
+                prediction.all_probs = None
+            return prediction
 
     def _classify_multiple(
         self,
         ocr_words: List[List[str]],
         include_probs: bool = False,
         mechanism: str = "pool",
-    ) -> Tuple[List[Optional[int]], Optional[List[np.array]]]:
+    ) -> CardPredictionResult:
         """
         Classify multiple OCR results.
 
         return:
-            preds: The predicted card number for each classifier result
-            probs: The posterior probabilities for cards
+            card_prediction_result: CardPredictionResult object
         """
         par_classify_func = functools.partial(self._classify_one, include_probs)
-        results = paraloop.loop(
+        card_predictions = paraloop.loop(
             func=par_classify_func, params=ocr_words, mechanism=mechanism
         )
-        preds: List[Optional[int]] = list()
-        if include_probs:
-            all_probs: Optional[List[np.array]] = list()
-        else:
-            all_probs = None
-        for i, result in enumerate(results):
-            preds.append(result[0])
-            if include_probs:
-                all_probs.append(result[1])
-        return preds, all_probs
+        for i, pred in enumerate(card_predictions):
+            if pred is not None:
+                pred.frame_index = i
+        card_predictions = list(filter(None, card_predictions))
+        prediction_result = CardPredictionResult(predictions=card_predictions)
+        return prediction_result
 
     def classify(
         self,
         ocr_words: Union[List[str], List[List[str]]],
         include_probs: bool = False,
         mechanism: str = "pool",
-    ) -> Union[
-        Tuple[Optional[int], np.array],
-        Tuple[List[Optional[int]], List[np.array]],
-    ]:
+    ) -> CardPredictionResult:
         """
         Classify OCR result(s).
 
         return:
-            pred(s): The predicted card number for each classifier result
-            score(s): The scores of top match
+            card_prediction_result: CardPredictionResult object for classification task
         """
         if len(ocr_words) == 0:
-            return None, None
+            return CardPredictionResult(predictions=[])
         elif not isinstance(ocr_words[0], list):
-            return self._classify_one(ocr_words=ocr_words, include_probs=include_probs)
+            pred = self._classify_one(ocr_words=ocr_words, include_probs=include_probs)
+            return CardPredictionResult(predictions=[pred])
         else:
             return self._classify_multiple(
                 ocr_words=ocr_words, include_probs=include_probs, mechanism=mechanism

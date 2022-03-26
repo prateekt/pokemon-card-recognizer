@@ -1,7 +1,7 @@
 import collections
 import os
 from enum import Enum
-from typing import Union, List, Tuple, Optional, Sequence
+from typing import List, Tuple, Optional, Sequence
 
 import numpy as np
 from algo_ops.ops.text import TextOp
@@ -74,29 +74,6 @@ class PullsEstimator(TextOp):
 
 
 class CardRecognizerPipeline(Pipeline):
-    def _classify_func(
-        self, ocr_words: Union[List[str], List[List[str]]]
-    ) -> Union[
-        Tuple[Optional[int], Optional[float]],
-        Tuple[List[Optional[int]], List[Optional[float]]],
-    ]:
-        """
-        Helper wrapper function for classifier.
-        """
-        card_pred, probs = self.classifier.classify(
-            ocr_words=ocr_words, include_probs=True
-        )
-        if isinstance(card_pred, list) and isinstance(probs, list):
-            card_probs = [
-                probs[i][pred] if pred is not None else None
-                for i, pred in enumerate(card_pred)
-            ]
-            return card_pred, card_probs
-        elif card_pred is None:
-            return None, None
-        else:
-            return card_pred, probs[card_pred]
-
     def __init__(
         self,
         set_name: str,
@@ -122,23 +99,23 @@ class CardRecognizerPipeline(Pipeline):
             ops = [
                 FFMPEGOp(),
                 TextOp(ocr_pipeline.run_on_images),
-                TextOp(func=self._classify_func),
+                TextOp(func=self.classifier.classify),
             ]
         elif mode == Mode.SINGLE_IMAGE:
-            ops = [ocr_pipeline, TextOp(func=self._classify_func)]
+            ops = [ocr_pipeline, self.classifier]
         elif mode == Mode.IMAGE_DIR:
-            ops = [TextOp(ocr_pipeline.run_on_images), TextOp(func=self._classify_func)]
+            ops = [TextOp(ocr_pipeline.run_on_images), self.classifier]
         elif mode == Mode.PULLS_IMAGE_DIR:
             ops = [
                 TextOp(ocr_pipeline.run_on_images),
-                TextOp(func=self._classify_func),
+                self.classifier,
                 PullsEstimator(set_cards=self.classifier.reference.cards),
             ]
         elif mode == Mode.PULLS_VIDEO:
             ops = [
                 FFMPEGOp(),
                 TextOp(ocr_pipeline.run_on_images),
-                TextOp(func=self._classify_func),
+                self.classifier,
                 PullsEstimator(set_cards=self.classifier.reference.cards),
             ]
 

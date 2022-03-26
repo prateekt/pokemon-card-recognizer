@@ -5,13 +5,15 @@ from typing import List, Dict
 import numpy as np
 from pokemontcgsdk import Card
 
+from card_recognizer.classifier.core.card_classification_result import CardPrediction
 from card_recognizer.reference.core.vocab import Vocab
 
 
 class CardReference:
     def __init__(self, cards: List[Card], name: str):
         """
-        API to build reference data structures for Pokemon card listing.
+        Data structure to represent the "reference" for Pokemon card listing
+        (generally a card set like Fusion Strike).
 
         param cards: List of card objects
         """
@@ -116,6 +118,11 @@ class CardReference:
         return ref
 
     def to_pickle(self, out_pkl_path: str) -> None:
+        """
+        Pickles card reference.
+
+        param out_pkl_path: Path to output pickle file.
+        """
         pickle.dump(self, open(out_pkl_path, "wb"))
 
     @staticmethod
@@ -124,7 +131,32 @@ class CardReference:
         Loads card reference from pickled file.
 
         param pkl_path: Path to pkl file containing CardReference object
+
+        Return:
+            loaded_reference: The loaded CardReference object
         """
-        loaded_obj = pickle.load(open(pkl_path, "rb"))
-        assert isinstance(loaded_obj, CardReference)
-        return loaded_obj
+        loaded_card_reference = pickle.load(open(pkl_path, "rb"))
+        assert isinstance(loaded_card_reference, CardReference)
+        return loaded_card_reference
+
+    def lookup_by_index(self, card_index: int) -> Card:
+        """
+        Looks up a card index in the card reference. Returns the card object.
+
+        param card_index: The card index to look up
+
+        Return:
+            card: The Card object corresponding to card index.
+        """
+        return self.cards[card_index]
+
+    def lookup_card_prediction(self, card_prediction: CardPrediction) -> Card:
+        """
+        Looks up a card prediction in the reference. Returns the card object.
+
+        param card_prediction: Card prediction object to look up
+
+        Return:
+            card: The Card object corresponding to card index.
+        """
+        return self.cards[card_prediction.card_index_in_reference]
