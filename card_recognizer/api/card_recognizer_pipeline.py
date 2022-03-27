@@ -5,12 +5,12 @@ from typing import Optional
 from algo_ops.ops.text import TextOp
 from algo_ops.pipeline.pipeline import Pipeline
 from natsort import natsorted
+from ocr_ops.dependency import sys_util
+from ocr_ops.framework.op.ffmpeg_op import FFMPEGOp
+from ocr_ops.framework.op.ocr_op import OCRMethod
+from ocr_ops.instances import ocr
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
-from card_recognizer.ocr.dependency import sys_util
-from card_recognizer.ocr.framework.op.ffmpeg_op import FFMPEGOp
-from card_recognizer.ocr.framework.op.ocr_op import OCRMethod
-from card_recognizer.ocr.instances import ocr
 from card_recognizer.pulls_filter.pulls_filter import PullsFilter
 from card_recognizer.pulls_filter.pulls_summary import PullsSummary
 from card_recognizer.reference.core.build import ReferenceBuild
