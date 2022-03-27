@@ -33,7 +33,7 @@ class FFMPEGOp(Op):
         print("Converted " + str(self.input) + ".")
 
     def vis_input(self) -> None:
-        raise ValueError("Please use vis function to visualize data flow.")
+        raise ValueError("Please use vis function to visualize sample_data flow.")
 
     def save_input(self, out_path: str) -> None:
         raise NotImplementedError("This is not needed functionality.")

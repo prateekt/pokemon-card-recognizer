@@ -148,11 +148,13 @@ class WordClassifier(TextOp):
             card_prediction_result: CardPredictionResult object for classification task
         """
         if len(ocr_words) == 0:
-            return CardPredictionResult(predictions=[])
+            rtn = CardPredictionResult(predictions=[])
         elif not isinstance(ocr_words[0], list):
             pred = self._classify_one(ocr_words=ocr_words, include_probs=include_probs)
-            return CardPredictionResult(predictions=[pred])
+            rtn = CardPredictionResult(predictions=[pred])
         else:
-            return self._classify_multiple(
+            rtn = self._classify_multiple(
                 ocr_words=ocr_words, include_probs=include_probs, mechanism=mechanism
             )
+        rtn.reference_set = self.reference.name
+        return rtn

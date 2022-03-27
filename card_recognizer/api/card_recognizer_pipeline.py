@@ -1,21 +1,18 @@
-import collections
 import os
-import pickle
 from enum import Enum
-from typing import List, Tuple, Optional, Sequence
+from typing import Optional
 
-import numpy as np
 from algo_ops.ops.text import TextOp
 from algo_ops.pipeline.pipeline import Pipeline
 from natsort import natsorted
-from pokemontcgsdk import Card
 
-from card_recognizer.classifier.core.card_prediction_result import CardPredictionResult
 from card_recognizer.classifier.core.word_classifier import WordClassifier
 from card_recognizer.infra.api import sys
 from card_recognizer.ocr.pipeline.framework.ffmpeg_op import FFMPEGOp
 from card_recognizer.ocr.pipeline.framework.ocr_op import OCRMethod
 from card_recognizer.ocr.pipeline.instances import ocr
+from card_recognizer.pulls_filter.pulls_filter import PullsFilter
+from card_recognizer.pulls_filter.pulls_summary import PullsSummary
 from card_recognizer.reference.core.build import ReferenceBuild
 
 
@@ -26,55 +23,8 @@ class Mode(Enum):
     VIDEO = 3
     PULLS_IMAGE_DIR = 4
     PULLS_VIDEO = 5
-
-
-class PullsEstimator(TextOp):
-    def _estimate_pulls(
-        self, results: Tuple[Sequence[Optional[int]], Sequence[Optional[float]]]
-    ) -> List[Tuple[Card, int, float]]:
-        """
-        Estimates pulls from results.
-
-        param: Results structure (Card Number Predictions List, Confidence Score List)
-
-        return:
-            List of Pulls (Card Object, # of frames card appears in, Max Confidence Score)
-        """
-        pred_count = collections.Counter(results[0])
-        if None in pred_count:
-            pred_count.pop(None)
-        pulls = [
-            (
-                self.set_cards[pred],
-                pred_count[pred],
-                float(
-                    np.max(
-                        [
-                            results[1][i]
-                            for i in range(len(results[0]))
-                            if results[0][i] == pred
-                        ]
-                    )
-                ),
-            )
-            for pred in pred_count.keys()
-        ]
-        return pulls
-
-    def __init__(self, set_cards: List[Card]):
-        super().__init__(func=self._estimate_pulls)
-        self.set_cards = set_cards
-
-    def vis(self) -> None:
-        if self.output is not None:
-            assert isinstance(self.output, list)
-            if len(self.output) == 0:
-                print("Pulls Estimator: No Pulls")
-            else:
-                print("Pulls Estimator:")
-                for card in self.output:
-                    assert isinstance(card, Card)
-                    print(card.name + " (#" + card.number + ")")
+    BOOSTER_PULLS_IMAGE_DIR = 6
+    BOOSTER_PULLS_VIDEO = 7
 
 
 class CardRecognizerPipeline(Pipeline):
@@ -83,6 +33,8 @@ class CardRecognizerPipeline(Pipeline):
         set_name: str,
         classification_method: str = "shared_words",
         mode: Mode = Mode.SINGLE_IMAGE,
+        output_fig_path: Optional[str] = None,
+        suppress_plotly_output: bool = True,
     ):
 
         # load classifier
@@ -109,23 +61,50 @@ class CardRecognizerPipeline(Pipeline):
             ops = [
                 TextOp(ocr_pipeline.run_on_images),
                 self.classifier,
-                PullsEstimator(set_cards=self.classifier.reference.cards),
+                PullsFilter(
+                    output_fig_path=output_fig_path,
+                    suppress_plotly_output=suppress_plotly_output,
+                ),
             ]
         elif mode == Mode.PULLS_VIDEO:
             ops = [
                 FFMPEGOp(),
                 TextOp(ocr_pipeline.run_on_images),
                 self.classifier,
-                PullsEstimator(set_cards=self.classifier.reference.cards),
+                PullsFilter(
+                    output_fig_path=output_fig_path,
+                    suppress_plotly_output=suppress_plotly_output,
+                ),
             ]
-
+        elif mode == Mode.BOOSTER_PULLS_IMAGE_DIR:
+            ops = [
+                TextOp(ocr_pipeline.run_on_images),
+                self.classifier,
+                PullsFilter(
+                    freq_t=0,
+                    output_fig_path=output_fig_path,
+                    suppress_plotly_output=suppress_plotly_output,
+                ),
+                PullsSummary(),
+            ]
+        elif mode == Mode.BOOSTER_PULLS_VIDEO:
+            ops = [
+                FFMPEGOp(),
+                TextOp(ocr_pipeline.run_on_images),
+                self.classifier,
+                PullsFilter(
+                    output_fig_path=output_fig_path,
+                    suppress_plotly_output=suppress_plotly_output,
+                ),
+                PullsSummary(),
+            ]
         else:
             raise ValueError("Unsupported mode: " + str(mode))
         super().__init__(ops=ops)
 
 
 if __name__ == "__main__":
-    pipeline = CardRecognizerPipeline(set_name="Master", mode=Mode.VIDEO)
+    pipeline = CardRecognizerPipeline(set_name="Master", mode=Mode.BOOSTER_PULLS_VIDEO)
     in_dir = os.sep + os.path.join(
         "home", "borg1", "Desktop", "vivid_voltage_test_videos"
     )
@@ -146,6 +125,4 @@ if __name__ == "__main__":
     for video in videos:
         print(video)
         result = pipeline.exec(inp=video)
-        assert isinstance(result, CardPredictionResult)
-        result.to_pickle(out_pkl_path=(video+".pkl"))
-#        print([a[0].name for a in r if a[1] > 10 and a[2] > 0.1])
+        print(result)

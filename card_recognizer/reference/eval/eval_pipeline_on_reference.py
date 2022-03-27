@@ -43,7 +43,7 @@ def main():
     rule for each model tested on the correct set.
     """
 
-    # create results data frame
+    # create results sample_data frame
     results_df = pd.DataFrame(
         {rule: [] for rule in WordClassifier.get_supported_classifier_methods()}
     )
@@ -97,7 +97,7 @@ def main():
             acc_results.append(acc)
         results_df.loc[set_name] = acc_results
 
-    # output results data frame to file
+    # output results sample_data frame to file
     results_file_path = os.path.join(
         ReferenceBuild.get_path_to_data(), "eval_figs", "acc_set_model_on_reference.tsv"
     )

@@ -31,7 +31,7 @@ class ReferenceBuild:
     @staticmethod
     def get_path_to_data() -> str:
         """
-        Get path to top-level data folder for reference build.
+        Get path to top-level sample_data folder for reference build.
         """
         data_folder = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "..", "data"

@@ -56,7 +56,7 @@ def main():
     Script to evaluate master model accuracy on all set card images. Reports an accuracy per set and per rule.
     """
 
-    # create results data frame
+    # create results sample_data frame
     results_df = pd.DataFrame(
         {rule: [] for rule in WordClassifier.get_supported_classifier_methods()}
     )
@@ -120,7 +120,7 @@ def main():
             acc_results.append(acc)
         results_df.loc[set_name] = acc_results
 
-    # output results data frame to file
+    # output results sample_data frame to file
     results_file_path = os.path.join(
         ReferenceBuild.get_path_to_data(),
         "eval_figs",

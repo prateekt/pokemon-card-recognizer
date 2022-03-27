@@ -24,10 +24,10 @@ def _run_classifier_trial(
     param trial_num: The trial number
 
     Returns:
-        True if classifier prediction was correct on randomly generated data
+        True if classifier prediction was correct on randomly generated sample_data
     """
 
-    # extract meta data pointers
+    # extract meta sample_data pointers
     assert isinstance(trial_num, int)
     ref = classifier.reference.ref_mat
     vocab = classifier.reference.vocab

@@ -98,7 +98,7 @@ class CardReference(PickleableObject):
 
     @staticmethod
     def _create_reference_matrix(
-            card_words: Dict[int, List[str]], vocab: Vocab
+        card_words: Dict[int, List[str]], vocab: Vocab
     ) -> np.array:
         """
         Creates reference matrix of size (number of cards in set, number of vocab words) where ref[i,j] is the count in

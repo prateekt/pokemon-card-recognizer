@@ -5,7 +5,7 @@ from algo_ops.pickleable_object.pickleable_object import PickleableObject
 
 class CardPrediction:
     """
-    A light-weight data structure that represents a single card prediction of a single image frame by a classifier.
+    A light-weight sample_data structure that represents a single card prediction of a single image frame by a classifier.
     """
 
     def __init__(self, card_index_in_reference: int, conf: float):
@@ -13,7 +13,6 @@ class CardPrediction:
         self.conf: float = conf
         self.frame_index: Optional[int] = None
         self.all_probs: Optional[Sequence[float]] = None
-        self.reference_set: Optional[str] = None
 
     def __str__(self):
         """
@@ -32,7 +31,7 @@ class CardPrediction:
 
 class CardPredictionResult(PickleableObject):
     """
-    A light-weight data structure that represents the result of a card prediction task by a classifier.
+    A light-weight sample_data structure that represents the result of a card prediction task by a classifier.
     The result is typically a list of card predictions.
     """
 
@@ -40,6 +39,7 @@ class CardPredictionResult(PickleableObject):
         self.predictions: List[CardPrediction] = predictions
         self.input_path: Optional[str] = None
         self.num_frames: Optional[int] = None
+        self.reference_set: Optional[str] = None
 
     def __getitem__(self, i):
         return self.predictions[i]

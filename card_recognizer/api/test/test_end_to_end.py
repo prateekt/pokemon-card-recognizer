@@ -1,4 +1,5 @@
 import os
+import shutil
 import unittest
 
 from card_recognizer.api.card_recognizer_pipeline import CardRecognizerPipeline, Mode
@@ -51,3 +52,23 @@ class TestEndtoEnd(unittest.TestCase):
             card_prediction=card_pred
         )
         self.assertEqual(card.name, "Klara")
+
+    def test_end_to_end_booster_dir(self) -> None:
+        """
+        Tests card recognizer on booster images directory.
+        """
+        recognizer = CardRecognizerPipeline(
+            set_name="master", mode=Mode.BOOSTER_PULLS_IMAGE_DIR, output_fig_path="out_figs"
+        )
+        pred_result = recognizer.exec(inp=self.single_frames_path)
+        self.assertEqual(len(pred_result), 1)
+        self.assertEqual(pred_result, ["Klara (#145)"])
+
+        # test visualization capability and plot generation
+        recognizer.vis()
+        self.assertTrue(os.path.exists('out_figs'))
+        self.assertTrue(os.path.exists(os.path.join('out_figs', 'input_frame_prediction_time_series.png')))
+        self.assertTrue(os.path.exists(os.path.join('out_figs', 'output_frame_prediction_time_series.png')))
+        self.assertTrue(os.path.exists(os.path.join('out_figs', 'input_metrics.png')))
+        self.assertTrue(os.path.exists(os.path.join('out_figs', 'output_metrics.png')))
+        shutil.rmtree('out_figs')
