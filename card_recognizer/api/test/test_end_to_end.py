@@ -58,7 +58,9 @@ class TestEndtoEnd(unittest.TestCase):
         Tests card recognizer on booster images directory.
         """
         recognizer = CardRecognizerPipeline(
-            set_name="master", mode=Mode.BOOSTER_PULLS_IMAGE_DIR, output_fig_path="out_figs"
+            set_name="master",
+            mode=Mode.BOOSTER_PULLS_IMAGE_DIR,
+            output_fig_path="out_figs",
         )
         pred_result = recognizer.exec(inp=self.single_frames_path)
         self.assertEqual(len(pred_result), 1)
@@ -66,9 +68,17 @@ class TestEndtoEnd(unittest.TestCase):
 
         # test visualization capability and plot generation
         recognizer.vis()
-        self.assertTrue(os.path.exists('out_figs'))
-        self.assertTrue(os.path.exists(os.path.join('out_figs', 'input_frame_prediction_time_series.png')))
-        self.assertTrue(os.path.exists(os.path.join('out_figs', 'output_frame_prediction_time_series.png')))
-        self.assertTrue(os.path.exists(os.path.join('out_figs', 'input_metrics.png')))
-        self.assertTrue(os.path.exists(os.path.join('out_figs', 'output_metrics.png')))
-        shutil.rmtree('out_figs')
+        self.assertTrue(os.path.exists("out_figs"))
+        self.assertTrue(
+            os.path.exists(
+                os.path.join("out_figs", "input_frame_prediction_time_series.png")
+            )
+        )
+        self.assertTrue(
+            os.path.exists(
+                os.path.join("out_figs", "output_frame_prediction_time_series.png")
+            )
+        )
+        self.assertTrue(os.path.exists(os.path.join("out_figs", "input_metrics.png")))
+        self.assertTrue(os.path.exists(os.path.join("out_figs", "output_metrics.png")))
+        shutil.rmtree("out_figs")
