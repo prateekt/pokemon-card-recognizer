@@ -37,6 +37,7 @@ class CardPredictionResult:
     def __init__(self, predictions: List[CardPrediction]):
         self.predictions: List[CardPrediction] = predictions
         self.input_path: Optional[str] = None
+        self.num_frames: Optional[int] = None
 
     def __getitem__(self, i):
         return self.predictions[i]

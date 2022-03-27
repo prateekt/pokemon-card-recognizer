@@ -144,7 +144,7 @@ if __name__ == "__main__":
     )
     for video in videos:
         print(video)
-        r = pipeline.exec(inp=video)
+        result = pipeline.exec(inp=video)
         with open(video + ".pkl", "wb") as fout:
-            pickle.dump(r, fout)
+            pickle.dump(result, fout)
 #        print([a[0].name for a in r if a[1] > 10 and a[2] > 0.1])

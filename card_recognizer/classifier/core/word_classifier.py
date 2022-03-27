@@ -124,14 +124,15 @@ class WordClassifier(TextOp):
             card_prediction_result: CardPredictionResult object
         """
         par_classify_func = functools.partial(self._classify_one, include_probs)
-        card_predictions = paraloop.loop(
+        raw_card_predictions = paraloop.loop(
             func=par_classify_func, params=ocr_words, mechanism=mechanism
         )
-        for i, pred in enumerate(card_predictions):
+        for i, pred in enumerate(raw_card_predictions):
             if pred is not None:
                 pred.frame_index = i
-        card_predictions = list(filter(None, card_predictions))
+        card_predictions = list(filter(None, raw_card_predictions))
         prediction_result = CardPredictionResult(predictions=card_predictions)
+        prediction_result.num_frames = len(raw_card_predictions)
         return prediction_result
 
     def classify(
