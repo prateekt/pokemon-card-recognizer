@@ -5,7 +5,8 @@ from algo_ops.pickleable_object.pickleable_object import PickleableObject
 
 class CardPrediction:
     """
-    A light-weight sample_data structure that represents a single card prediction of a single image frame by a classifier.
+    A light-weight sample_data structure that represents a single card prediction of a single image frame
+    by a classifier.
     """
 
     def __init__(self, card_index_in_reference: int, conf: float):
