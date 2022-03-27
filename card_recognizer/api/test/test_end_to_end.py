@@ -61,7 +61,7 @@ class TestEndtoEnd(unittest.TestCase):
             set_name="master",
             mode=Mode.BOOSTER_PULLS_IMAGE_DIR,
         )
-        recognizer.set_output_figs_path(output_figs_path='out_figs')
+        recognizer.set_output_figs_path(output_figs_path="out_figs")
         pred_result = recognizer.exec(inp=self.single_frames_path)
         self.assertEqual(len(pred_result), 1)
         self.assertEqual(pred_result, ["Klara (#145)"])

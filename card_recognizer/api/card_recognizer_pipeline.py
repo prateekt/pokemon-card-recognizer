@@ -29,11 +29,11 @@ class Mode(Enum):
 
 class CardRecognizerPipeline(Pipeline):
     def __init__(
-            self,
-            set_name: str,
-            classification_method: str = "shared_words",
-            mode: Mode = Mode.SINGLE_IMAGE,
-            suppress_plotly_output: bool = True,
+        self,
+        set_name: str,
+        classification_method: str = "shared_words",
+        mode: Mode = Mode.SINGLE_IMAGE,
+        suppress_plotly_output: bool = True,
     ):
 
         # load classifier
