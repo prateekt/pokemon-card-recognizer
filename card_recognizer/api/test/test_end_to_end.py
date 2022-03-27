@@ -26,6 +26,7 @@ class TestEndtoEnd(unittest.TestCase):
         card_pred = pred_result[0]
         self.assertTrue(isinstance(card_pred, CardPrediction))
         self.assertEqual(card_pred.frame_index, None)
+        self.assertEqual(pred_result.num_frames, None)
         card = recognizer.classifier.reference.lookup_card_prediction(
             card_prediction=card_pred
         )
@@ -45,6 +46,7 @@ class TestEndtoEnd(unittest.TestCase):
         card_pred = pred_result[0]
         self.assertTrue(isinstance(card_pred, CardPrediction))
         self.assertEqual(card_pred.frame_index, 0)
+        self.assertEqual(pred_result.num_frames, 2)
         card = recognizer.classifier.reference.lookup_card_prediction(
             card_prediction=card_pred
         )
