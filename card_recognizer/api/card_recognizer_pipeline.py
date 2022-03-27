@@ -29,12 +29,11 @@ class Mode(Enum):
 
 class CardRecognizerPipeline(Pipeline):
     def __init__(
-        self,
-        set_name: str,
-        classification_method: str = "shared_words",
-        mode: Mode = Mode.SINGLE_IMAGE,
-        output_fig_path: Optional[str] = None,
-        suppress_plotly_output: bool = True,
+            self,
+            set_name: str,
+            classification_method: str = "shared_words",
+            mode: Mode = Mode.SINGLE_IMAGE,
+            suppress_plotly_output: bool = True,
     ):
 
         # load classifier
@@ -62,7 +61,6 @@ class CardRecognizerPipeline(Pipeline):
                 TextOp(ocr_pipeline.run_on_images),
                 self.classifier,
                 PullsFilter(
-                    output_fig_path=output_fig_path,
                     suppress_plotly_output=suppress_plotly_output,
                 ),
             ]
@@ -72,7 +70,6 @@ class CardRecognizerPipeline(Pipeline):
                 TextOp(ocr_pipeline.run_on_images),
                 self.classifier,
                 PullsFilter(
-                    output_fig_path=output_fig_path,
                     suppress_plotly_output=suppress_plotly_output,
                 ),
             ]
@@ -82,7 +79,6 @@ class CardRecognizerPipeline(Pipeline):
                 self.classifier,
                 PullsFilter(
                     freq_t=0,
-                    output_fig_path=output_fig_path,
                     suppress_plotly_output=suppress_plotly_output,
                 ),
                 PullsSummary(),
@@ -93,7 +89,6 @@ class CardRecognizerPipeline(Pipeline):
                 TextOp(ocr_pipeline.run_on_images),
                 self.classifier,
                 PullsFilter(
-                    output_fig_path=output_fig_path,
                     suppress_plotly_output=suppress_plotly_output,
                 ),
                 PullsSummary(),
@@ -101,6 +96,12 @@ class CardRecognizerPipeline(Pipeline):
         else:
             raise ValueError("Unsupported mode: " + str(mode))
         super().__init__(ops=ops)
+
+    def set_output_figs_path(self, output_figs_path: Optional[str] = None):
+        for op_name in self.ops.keys():
+            op = self.ops[op_name]
+            if isinstance(op, PullsFilter):
+                op.output_fig_path = output_figs_path
 
 
 if __name__ == "__main__":
@@ -124,5 +125,6 @@ if __name__ == "__main__":
     )
     for video in videos:
         print(video)
+        pipeline.set_output_figs_path(output_figs_path=os.path.basename(video))
         result = pipeline.exec(inp=video)
         print(result)
