@@ -95,7 +95,7 @@ def main():
                 set_name,
                 card_files,
             )
-            eval_result, _ = pipeline.evaluate(
+            eval_result = pipeline.evaluate(
                 inputs=input_files,
                 eval_func=eval_prediction_func,
                 incorrect_pkl_path=os.path.join(
@@ -104,8 +104,9 @@ def main():
                 ),
                 mechanism="sequential",
             )
+            all_results = eval_result[0]
             preds: List[Optional[int]] = [None for _ in range(len(input_files))]
-            for i, result in enumerate(eval_result):
+            for i, result in enumerate(all_results):
                 if result is not None:
                     assert isinstance(result, CardPredictionResult)
                     assert len(result) == 1
