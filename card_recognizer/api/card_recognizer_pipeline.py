@@ -127,4 +127,5 @@ if __name__ == "__main__":
         print(video)
         pipeline.set_output_figs_path(output_figs_path=os.path.basename(video))
         result = pipeline.exec(inp=video)
+        pipeline.vis()
         print(result)
