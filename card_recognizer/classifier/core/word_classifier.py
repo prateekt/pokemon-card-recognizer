@@ -151,7 +151,10 @@ class WordClassifier(TextOp):
             rtn = CardPredictionResult(predictions=[])
         elif not isinstance(ocr_words[0], list):
             pred = self._classify_one(ocr_words=ocr_words, include_probs=include_probs)
-            rtn = CardPredictionResult(predictions=[pred])
+            if pred is None:
+                rtn = CardPredictionResult(predictions=[])
+            else:
+                rtn = CardPredictionResult(predictions=[pred])
         else:
             rtn = self._classify_multiple(
                 ocr_words=ocr_words, include_probs=include_probs, mechanism=mechanism

@@ -95,7 +95,7 @@ def main():
                 set_name,
                 card_files,
             )
-            result = pipeline.evaluate(
+            eval_result, _ = pipeline.evaluate(
                 inputs=input_files,
                 eval_func=eval_prediction_func,
                 incorrect_pkl_path=os.path.join(
@@ -104,14 +104,13 @@ def main():
                 ),
                 mechanism="sequential",
             )
-            assert isinstance(result, CardPredictionResult)
-            assert result.num_frames == len(input_files)
-            preds: List[Optional[int]] = [None for _ in range(result.num_frames)]
-            for card_pred in result:
-                assert isinstance(card_pred, CardPrediction)
-                frame_index = card_pred.frame_index
-                assert isinstance(frame_index, int)
-                preds[frame_index] = card_pred.card_index_in_reference
+            preds: List[Optional[int]] = [None for _ in range(len(input_files))]
+            for i, result in enumerate(eval_result):
+                if result is not None:
+                    assert isinstance(result, CardPredictionResult)
+                    assert len(result) == 1
+                    card_pred = result[0]
+                    preds[i] = card_pred.card_index_in_reference
             acc, incorrect = compute_acc_exclude_alt_art(
                 preds=preds,
                 gt=gt,
