@@ -49,9 +49,11 @@ def _run_classifier_trial(
     ).tolist()
 
     # predict and evaluate
-    pred, _ = classifier.classify(ocr_words=random_words)
+    pred = classifier.classify(ocr_words=random_words)
     if is_correct_exclude_alt_art(
-        pred=pred, gt=correct_answer, cards_reference=classifier.reference.cards
+        pred=pred[0].card_index_in_reference,
+        gt=correct_answer,
+        cards_reference=classifier.reference.cards,
     ):
         return True
     else:
