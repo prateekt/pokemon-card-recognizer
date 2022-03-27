@@ -8,14 +8,16 @@ from algo_ops.pipeline.cv_pipeline import CVPipeline
 from algo_ops.pipeline.pipeline import Pipeline
 from natsort import natsorted
 
-from card_recognizer.infra.api import sys
-from card_recognizer.ocr.pipeline.framework.ocr_op import OCRMethod, OCROp
+from card_recognizer.ocr.dependency import sys_util
+from card_recognizer.ocr.framework.op.ocr_op import OCRMethod, OCROp
 
 
 class OCRPipeline(Pipeline):
     """
     OCR Pipeline supports running various OCR methods on an image to generate text. It supports
-    using a CVOps image processing pipeline.
+    using a CVOps image pre-processing pipeline to prepare an image for OCR. It also supports a
+    text post-processing pipeline to clean noisy OCR-ed text results to return a final robust
+    callset of OCR-ed text from an image.
     """
 
     @staticmethod
@@ -33,10 +35,10 @@ class OCRPipeline(Pipeline):
         return files
 
     def __init__(
-        self,
-        img_pipeline: Optional[CVPipeline],
-        ocr_method: OCRMethod,
-        text_pipeline: Optional[Pipeline],
+            self,
+            img_pipeline: Optional[CVPipeline],
+            ocr_method: OCRMethod,
+            text_pipeline: Optional[Pipeline],
     ):
         """
         param img_pipeline: An optional CVOps pre-processing pipeline to run on image before OCR
@@ -104,7 +106,7 @@ class OCRPipeline(Pipeline):
         self.img_pipeline.save_output(out_path=out_path)
 
     def run_on_images(
-        self, images_dir: str, mechanism: str = "sequential"
+            self, images_dir: str, mechanism: str = "sequential"
     ) -> Union[List[str], List[List[str]]]:
         """
         API to run OCR on a directory of images.
@@ -118,7 +120,7 @@ class OCRPipeline(Pipeline):
             [
                 os.path.join(images_dir, file)
                 for file in os.listdir(images_dir)
-                if sys.is_image_file(file_path=file)
+                if sys_util.is_image_file(file_path=file)
             ]
         )
         results = paraloop.loop(

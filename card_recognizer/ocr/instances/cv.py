@@ -3,7 +3,7 @@ import numpy as np
 from algo_ops.pipeline.cv_pipeline import CVPipeline
 
 
-def black_text_ocr_pipeline() -> CVPipeline:
+def black_text_cv_pipeline() -> CVPipeline:
     """
     Initializes computer vision pipeline to isolate black text in an image.
     """
@@ -32,9 +32,9 @@ def black_text_ocr_pipeline() -> CVPipeline:
     return img_pipeline
 
 
-def white_text_ocr_pipeline() -> CVPipeline:
+def white_text_cv_pipeline() -> CVPipeline:
     """
-    Initializes pipeline to isolate white text in an image.
+    Initializes computer vision pipeline to isolate white text in an image.
     """
 
     def gray_scale(img: np.array) -> np.array:

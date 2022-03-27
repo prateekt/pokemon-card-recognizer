@@ -6,7 +6,7 @@ from algo_ops.pickleable_object.pickleable_object import PickleableObject
 from pokemontcgsdk import Card
 
 from card_recognizer.classifier.core.card_prediction_result import CardPrediction
-from card_recognizer.reference.core.vocab import Vocab
+from card_recognizer.classifier.core.vocab import Vocab
 
 
 class CardReference(PickleableObject):

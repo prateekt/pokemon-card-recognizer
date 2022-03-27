@@ -1,11 +1,9 @@
 import re
-from typing import List
+from typing import List, Set
 
 from algo_ops.ops.text import TextOp
 from algo_ops.pipeline.pipeline import Pipeline
 from spellchecker import SpellChecker
-
-from card_recognizer.reference.core.vocab import Vocab
 
 
 def _tokenize_text(text: str) -> List[str]:
@@ -57,8 +55,8 @@ def _correct_spelling(words: List[str]) -> List[str]:
     return new_words
 
 
-def _check_vocab(words: List[str], vocab: Vocab) -> List[str]:
-    return [word for word in words if word in vocab._words.keys()]
+def _check_vocab(words: List[str], vocab_words: Set[str]) -> List[str]:
+    return [word for word in words if word in vocab_words]
 
 
 def basic_text_cleaning_pipeline() -> Pipeline:

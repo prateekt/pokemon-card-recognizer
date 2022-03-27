@@ -3,9 +3,10 @@ import unittest
 
 import easyocr
 import pytesseract
+from card_recognizer.ocr.dependency.ffmpeg import FFMPEG
 
 
-class TestOCRDep(unittest.TestCase):
+class TestOCRDependencies(unittest.TestCase):
     def setUp(self) -> None:
         dir_path = os.path.dirname(os.path.realpath(__file__))
         self.test_image = os.path.join(dir_path, "data", "joy_of_data.png")
@@ -24,3 +25,9 @@ class TestOCRDep(unittest.TestCase):
         """
         output = pytesseract.image_to_string(self.test_image)
         self.assertEqual(output.strip(), "joy of data")
+
+    def test_ffmpeg(self) -> None:
+        """
+        Test that FFMPEG is installed.
+        """
+        self.assertTrue(FFMPEG.is_installed())

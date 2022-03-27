@@ -1,6 +1,6 @@
 from algo_ops.ops.op import Op
 
-from card_recognizer.infra.api.ffmpeg import FFMPEG
+from card_recognizer.ocr.dependency.ffmpeg import FFMPEG
 
 
 class FFMPEGOp(Op):

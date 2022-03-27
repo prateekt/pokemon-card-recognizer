@@ -1,5 +1,5 @@
 import os
-from typing import List, Union, Dict, Any
+from typing import List, Union, Dict, Any, Set
 
 import cv2
 import numpy as np
@@ -7,9 +7,8 @@ from algo_ops.ops.op import Op
 from algo_ops.paraloop import paraloop
 from natsort import natsorted
 
-from card_recognizer.ocr.pipeline.framework.ocr_pipeline import OCRPipeline
-from card_recognizer.ocr.pipeline.instances import ocr
-from card_recognizer.reference.core.vocab import Vocab
+from card_recognizer.ocr.framework.pipeline.ocr_pipeline import OCRPipeline
+from card_recognizer.ocr.instances import ocr
 
 
 class OCRFusion(Op):
@@ -88,22 +87,22 @@ class OCRFusion(Op):
             print("Final: " + str(final_ocr_words))
         return final_ocr_words
 
-    def __init__(self, vocab: Vocab):
+    def __init__(self, vocab_words: Set[str]):
         super().__init__(func=self._run)
-        self.vocab = vocab
+        self.vocab_words = vocab_words
         self.basic_pytesseract_pipeline = ocr.basic_ocr_with_text_cleaning_pipeline(
-            vocab=vocab
+            vocab_words=vocab_words
         )
         self.black_text_ocr_pipeline = ocr.black_text_ocr_pipeline()
         self.white_text_ocr_pipeline = ocr.white_text_ocr_pipeline()
         self.basic_pytesseract_pipeline.set_text_pipeline_params(
-            func_name="_check_vocab", params={"vocab": vocab}
+            func_name="_check_vocab", params={"vocab_words": vocab_words}
         )
         self.black_text_ocr_pipeline.set_text_pipeline_params(
-            func_name="_check_vocab", params={"vocab": vocab}
+            func_name="_check_vocab", params={"vocab_words": vocab_words}
         )
         self.white_text_ocr_pipeline.set_text_pipeline_params(
-            func_name="_check_vocab", params={"vocab": vocab}
+            func_name="_check_vocab", params={"vocab_words": vocab_words}
         )
         self.lower_lim_trials = [100, 150, 200, 250]
         self.vis = False

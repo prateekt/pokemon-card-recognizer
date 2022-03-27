@@ -16,6 +16,10 @@ class OCRMethod(Enum):
 
 
 class OCROp(Op):
+    """
+    Turns the use of OCR package into an Op. Supports EasyOCR and PyTesseract.
+    """
+
     def save_output(self, out_path: str = ".") -> None:
         pass
 

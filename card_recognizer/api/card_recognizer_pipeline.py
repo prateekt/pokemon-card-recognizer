@@ -7,10 +7,10 @@ from algo_ops.pipeline.pipeline import Pipeline
 from natsort import natsorted
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
-from card_recognizer.infra.api import sys
-from card_recognizer.ocr.pipeline.framework.ffmpeg_op import FFMPEGOp
-from card_recognizer.ocr.pipeline.framework.ocr_op import OCRMethod
-from card_recognizer.ocr.pipeline.instances import ocr
+from card_recognizer.ocr.dependency import sys_util
+from card_recognizer.ocr.framework.op.ffmpeg_op import FFMPEGOp
+from card_recognizer.ocr.framework.op.ocr_op import OCRMethod
+from card_recognizer.ocr.instances import ocr
 from card_recognizer.pulls_filter.pulls_filter import PullsFilter
 from card_recognizer.pulls_filter.pulls_summary import PullsSummary
 from card_recognizer.reference.core.build import ReferenceBuild
@@ -46,7 +46,7 @@ class CardRecognizerPipeline(Pipeline):
 
         # load OCR pipeline
         ocr_pipeline = ocr.basic_ocr_with_text_cleaning_pipeline(
-            vocab=self.classifier.reference.vocab, ocr_method=OCRMethod.EASYOCR
+            vocab_words=self.classifier.reference.vocab(), ocr_method=OCRMethod.EASYOCR
         )
 
         # make pipeline
@@ -120,7 +120,7 @@ if __name__ == "__main__":
         [
             os.path.join(in_dir, video)
             for video in os.listdir(in_dir)
-            if sys.is_video_file(video)
+            if sys_util.is_video_file(video)
         ]
     )
     for video in videos:

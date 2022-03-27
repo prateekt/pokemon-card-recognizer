@@ -2,7 +2,7 @@ import os
 import uuid
 from typing import Optional
 
-from card_recognizer.infra.api.sys import run_os_command, check_if_installed
+from card_recognizer.ocr.dependency.sys_util import run_os_command, check_if_installed
 
 
 class FFMPEG:

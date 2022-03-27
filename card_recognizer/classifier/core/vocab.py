@@ -26,6 +26,9 @@ class Vocab:
     def __contains__(self, key):
         return key in self._words
 
+    def __call__(self, *args, **kwargs):
+        return set(self._words)
+
     # noinspection PyUnresolvedReferences
     def inv(self, key):
         return self._words.inv[key]
