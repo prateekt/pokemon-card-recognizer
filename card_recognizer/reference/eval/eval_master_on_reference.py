@@ -104,9 +104,9 @@ def main():
                 ),
                 mechanism="sequential",
             )
-            all_results = eval_result[0]
             preds: List[Optional[int]] = [None for _ in range(len(input_files))]
-            for i, result in enumerate(all_results):
+            for i, ev_result in enumerate(eval_result):
+                result = ev_result[0]
                 if result is not None:
                     assert isinstance(result, CardPredictionResult)
                     assert len(result) == 1
