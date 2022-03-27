@@ -1,5 +1,7 @@
 from typing import Optional, List, Sequence
 
+from algo_ops.pickleable_object.pickleable_object import PickleableObject
+
 
 class CardPrediction:
     """
@@ -28,7 +30,7 @@ class CardPrediction:
         return str(tpl)
 
 
-class CardPredictionResult:
+class CardPredictionResult(PickleableObject):
     """
     A light-weight data structure that represents the result of a card prediction task by a classifier.
     The result is typically a list of card predictions.

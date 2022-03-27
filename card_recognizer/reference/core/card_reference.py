@@ -1,15 +1,15 @@
-import pickle
 import re
 from typing import List, Dict
 
 import numpy as np
+from algo_ops.pickleable_object.pickleable_object import PickleableObject
 from pokemontcgsdk import Card
 
 from card_recognizer.classifier.core.card_prediction_result import CardPrediction
 from card_recognizer.reference.core.vocab import Vocab
 
 
-class CardReference:
+class CardReference(PickleableObject):
     def __init__(self, cards: List[Card], name: str):
         """
         Data structure to represent the "reference" for Pokemon card listing
@@ -98,7 +98,7 @@ class CardReference:
 
     @staticmethod
     def _create_reference_matrix(
-        card_words: Dict[int, List[str]], vocab: Vocab
+            card_words: Dict[int, List[str]], vocab: Vocab
     ) -> np.array:
         """
         Creates reference matrix of size (number of cards in set, number of vocab words) where ref[i,j] is the count in
@@ -116,28 +116,6 @@ class CardReference:
                 words=card_words[card_number], method="basic"
             )
         return ref
-
-    def to_pickle(self, out_pkl_path: str) -> None:
-        """
-        Pickles card reference.
-
-        param out_pkl_path: Path to output pickle file.
-        """
-        pickle.dump(self, open(out_pkl_path, "wb"))
-
-    @staticmethod
-    def load_from_pickle(pkl_path: str) -> "CardReference":
-        """
-        Loads card reference from pickled file.
-
-        param pkl_path: Path to pkl file containing CardReference object
-
-        Return:
-            loaded_reference: The loaded CardReference object
-        """
-        loaded_card_reference = pickle.load(open(pkl_path, "rb"))
-        assert isinstance(loaded_card_reference, CardReference)
-        return loaded_card_reference
 
     def lookup_by_index(self, card_index: int) -> Card:
         """

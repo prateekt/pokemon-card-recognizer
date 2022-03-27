@@ -10,6 +10,7 @@ from algo_ops.pipeline.pipeline import Pipeline
 from natsort import natsorted
 from pokemontcgsdk import Card
 
+from card_recognizer.classifier.core.card_prediction_result import CardPredictionResult
 from card_recognizer.classifier.core.word_classifier import WordClassifier
 from card_recognizer.infra.api import sys
 from card_recognizer.ocr.pipeline.framework.ffmpeg_op import FFMPEGOp
@@ -145,6 +146,6 @@ if __name__ == "__main__":
     for video in videos:
         print(video)
         result = pipeline.exec(inp=video)
-        with open(video + ".pkl", "wb") as fout:
-            pickle.dump(result, fout)
+        assert isinstance(result, CardPredictionResult)
+        result.to_pickle(out_pkl_path=(video+".pkl"))
 #        print([a[0].name for a in r if a[1] > 10 and a[2] > 0.1])
