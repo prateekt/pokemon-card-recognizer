@@ -1,12 +1,16 @@
 import functools
 import os
-from typing import List, Tuple
+from typing import List, Optional
 
 import pandas as pd
 from natsort import natsorted
 from pokemontcgsdk import Card
 
 from card_recognizer.api.card_recognizer_pipeline import CardRecognizerPipeline
+from card_recognizer.classifier.core.card_prediction_result import (
+    CardPrediction,
+    CardPredictionResult,
+)
 from card_recognizer.classifier.core.word_classifier import WordClassifier
 from card_recognizer.eval.eval import (
     compute_acc_exclude_alt_art,
@@ -20,15 +24,20 @@ def _eval_prediction(
     set_name: str,
     card_files: List[str],
     inp: str,
-    pred: Tuple[int, float],
+    pred: CardPredictionResult,
 ) -> bool:
     """
     Helper function for evaluating predictions.
     """
     gt_card_num = card_files.index(os.path.join(set_name, os.path.basename(inp)))
-    pred = pred[0]
+    assert isinstance(pred, CardPredictionResult)
+    assert len(pred) == 1
+    card_pred = pred[0]
+    assert isinstance(card_pred, CardPrediction)
     return is_correct_exclude_alt_art(
-        pred=pred, gt=gt_card_num, cards_reference=card_reference
+        pred=card_pred.card_index_in_reference,
+        gt=gt_card_num,
+        cards_reference=card_reference,
     )
 
 
@@ -86,7 +95,7 @@ def main():
                 set_name,
                 card_files,
             )
-            eval_results = pipeline.evaluate(
+            result = pipeline.evaluate(
                 inputs=input_files,
                 eval_func=eval_prediction_func,
                 incorrect_pkl_path=os.path.join(
@@ -95,7 +104,14 @@ def main():
                 ),
                 mechanism="sequential",
             )
-            preds = [result[0][0] for result in eval_results]
+            assert isinstance(result, CardPredictionResult)
+            assert result.num_frames == len(input_files)
+            preds: List[Optional[int]] = [None for _ in range(result.num_frames)]
+            for card_pred in result:
+                assert isinstance(card_pred, CardPrediction)
+                frame_index = card_pred.frame_index
+                assert isinstance(frame_index, int)
+                preds[frame_index] = card_pred.card_index_in_reference
             acc, incorrect = compute_acc_exclude_alt_art(
                 preds=preds,
                 gt=gt,
