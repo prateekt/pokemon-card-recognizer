@@ -28,7 +28,9 @@ def _eval_prediction(
 ) -> bool:
     gt_card_num = card_files.index(os.path.basename(inp))
     assert isinstance(pred, CardPredictionResult)
-    assert len(pred) == 1
+    if len(pred) == 0:
+        return False
+    assert len(pred) == 1, print(pred)
     card_pred = pred[0]
     assert isinstance(card_pred, CardPrediction)
     return is_correct_exclude_alt_art(
@@ -87,7 +89,9 @@ def main():
                 result = ev_result[0]
                 if result is not None:
                     assert isinstance(result, CardPredictionResult)
-                    assert len(result) == 1
+                    if len(result) == 0:
+                        continue
+                    assert len(result) == 1, print(result)
                     card_pred = result[0]
                     preds[i] = card_pred.card_index_in_reference
             acc, incorrect = compute_acc_exclude_alt_art(
