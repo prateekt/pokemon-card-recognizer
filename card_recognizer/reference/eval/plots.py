@@ -3,6 +3,7 @@ from typing import Optional, List
 
 import ezplotly as ep
 import ezplotly_bio as epb
+import pandas as pd
 from ezplotly import EZPlotlyPlot
 from scipy.stats import entropy
 
@@ -100,4 +101,31 @@ def plot_classifier_sensitivity_curve(
         outfile=outfile,
         suppress_output=True,
         height=500,
+    )
+
+
+def plot_classifier_rules_performance(
+    tbl: pd.DataFrame, outfile: Optional[str] = None
+) -> None:
+    """
+    Plot performance of classifier rules from evaluation table.
+
+    param tbl: Evaluation data table
+    param outfile: Path to output file
+    """
+    h: List[Optional[EZPlotlyPlot]] = [None] * len(tbl.columns)
+    for i in range(len(h)):
+        h[i] = ep.bar(
+            x=tbl.index.values,
+            y=tbl[tbl.columns[i]],
+            xlabel="Pokemon Set",
+            ylabel="Accuracy",
+            name=tbl.columns[i],
+            text=[str(round(a, 2)) for a in tbl[tbl.columns[i]].values],
+            ylim=[0, 1.0],
+            y_dtick=0.25,
+            title="Performance of Classifier Rules",
+        )
+    ep.plot_all(
+        h, panels=[1] * len(h), showlegend=True, suppress_output=True, outfile=outfile
     )

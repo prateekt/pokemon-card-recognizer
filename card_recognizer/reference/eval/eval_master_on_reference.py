@@ -17,6 +17,7 @@ from card_recognizer.eval.eval import (
     is_correct_exclude_alt_art,
 )
 from card_recognizer.reference.core.build import ReferenceBuild
+from card_recognizer.reference.eval.plots import plot_classifier_rules_performance
 
 
 def _eval_prediction(
@@ -120,13 +121,19 @@ def main():
             acc_results.append(acc)
         results_df.loc[set_name] = acc_results
 
-    # output results sample_data frame to file
+    # output results sample_data frame to file and plot figure
     results_file_path = os.path.join(
         ReferenceBuild.get_path_to_data(),
         "eval_figs",
         "acc_master_model_on_reference.tsv",
     )
+    results_fig_path = os.path.join(
+        ReferenceBuild.get_path_to_data(),
+        "eval_figs",
+        "acc_master_model_on_reference.png",
+    )
     results_df.to_csv(results_file_path, sep="\t")
+    plot_classifier_rules_performance(tbl=results_df, outfile=results_fig_path)
 
 
 if __name__ == "__main__":
