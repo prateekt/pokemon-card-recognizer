@@ -22,12 +22,14 @@ class PullsFilter(Op):
         self,
         freq_t: int = 5,
         conf_t: float = 0.1,
+        num_cards_to_select: Optional[int] = 10,
         output_fig_path: Optional[str] = None,
         suppress_plotly_output: bool = True,
     ):
         super().__init__(func=self.filter_pull_series)
         self.freq_t = freq_t
         self.conf_t = conf_t
+        self.num_cards_to_select = num_cards_to_select
         self.output_fig_path = output_fig_path
         self.suppress_plotly_output = suppress_plotly_output
 
@@ -115,9 +117,10 @@ class PullsFilter(Op):
             for find in unique_cards
         ]
 
-        # tabulate max confidence scores per unique pull
+        # tabulate max confidence scores and selection scores per unique pull
         confidence_scores: List[List[float]] = list()
         max_confidence_scores: List[float] = list()
+        selection_scores: List[float] = list()
         for i in range(len(unique_cards)):
             frames = [
                 j
@@ -125,8 +128,10 @@ class PullsFilter(Op):
                 if pull.card_index_in_reference == unique_cards[i]
             ]
             conf = [frame_card_predictions[f].conf for f in frames]
+            max_conf_score = np.max(conf)
             confidence_scores.append(conf)
-            max_confidence_scores.append(np.max(conf))
+            max_confidence_scores.append(max_conf_score)
+            selection_scores.append(float(max_conf_score * card_frequencies[i]))
 
         # return
         return PullStats(
@@ -134,6 +139,7 @@ class PullsFilter(Op):
             card_frequencies=card_frequencies,
             confidence_scores=confidence_scores,
             max_confidence_scores=max_confidence_scores,
+            selection_scores=selection_scores,
             frame_card_predictions=frame_card_predictions,
             reference=reference,
         )
@@ -160,23 +166,33 @@ class PullsFilter(Op):
         unique_cards = pull_stats.unique_cards
         card_frequencies = pull_stats.card_frequencies
         max_confidence_scores = pull_stats.max_confidence_scores
+        selection_scores = pull_stats.selection_scores
         assert len(unique_cards) == len(card_frequencies)
         assert len(unique_cards) == len(max_confidence_scores)
 
-        # tabulate kept cards
-        kept_cards = set()
+        # run filter
+        unfiltered_cards_indicies: List[int] = list()
         for i, card_index in enumerate(unique_cards):
             if (
                 card_frequencies[i] >= self.freq_t
                 and max_confidence_scores[i] >= self.conf_t
             ):
-                kept_cards.add(card_index)
+                unfiltered_cards_indicies.append(card_index)
+
+        # run selection rule
+        sorted_card_indicies = np.argsort(
+            [selection_scores[i] for i in range(len(unfiltered_cards_indicies))]
+        )
+        selected_cards = [
+            unfiltered_cards_indicies[index]
+            for index in sorted_card_indicies[0 : self.num_cards_to_select]
+        ]
 
         # compute kept frames
         kept_frames = [
             pull
             for pull in frame_card_predictions
-            if pull.card_index_in_reference in kept_cards
+            if pull.card_index_in_reference in selected_cards
         ]
 
         # create output CardPredictionResult object

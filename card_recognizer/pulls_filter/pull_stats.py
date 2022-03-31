@@ -9,6 +9,7 @@ PullStats = namedtuple(
         "card_frequencies",
         "confidence_scores",
         "max_confidence_scores",
+        "selection_scores",
         "frame_card_predictions",
         "reference",
     ],

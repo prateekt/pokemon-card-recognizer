@@ -65,6 +65,7 @@ def plot_metrics(
     card_frequencies = pull_stats.card_frequencies
     frame_card_predictions = pull_stats.frame_card_predictions
     max_confidence_scores = pull_stats.max_confidence_scores
+    selection_scores = pull_stats.selection_scores
 
     # make labels
     unique_card_names = [
@@ -76,7 +77,7 @@ def plot_metrics(
     ]
 
     # card detection frequencies
-    h: List[Optional[EZPlotlyPlot]] = [None] * (len(unique_card_names) + 2)
+    h: List[Optional[EZPlotlyPlot]] = [None] * (len(unique_card_names) + 3)
     h[0] = ep.bar(
         x=unique_card_nums,
         y=card_frequencies,
@@ -97,11 +98,11 @@ def plot_metrics(
         h[i + 1] = ep.violin(
             y=conf_scores,
             name=unique_card_nums[i],
-            ylabel="Confidence Score",
+            ylabel="Conf. Score",
             title="Detection Confidence Scores Distribution",
         )
-    h[-1] = ep.bar(
-        x=unique_card_names,
+    h[-2] = ep.bar(
+        x=unique_card_nums,
         y=max_confidence_scores,
         ylabel="Max Conf.",
         x_dtick=1,
@@ -110,11 +111,19 @@ def plot_metrics(
         ylim=[0, 1.0],
         y_dtick=0.25,
     )
+    h[-1] = ep.bar(
+        x=unique_card_names,
+        y=selection_scores,
+        ylabel="Sel. Score",
+        x_dtick=1,
+        title="Selection Score",
+        text=[str(round(s, 2)) for s in selection_scores],
+    )
 
     # plot
     panels = [1]
     panels.extend([2 for _ in range(len(unique_card_names))])
-    panels.extend([3])
+    panels.extend([3, 4])
     ep.plot_all(
         h, panels=panels, height=600, outfile=outfile, suppress_output=suppress_output
     )

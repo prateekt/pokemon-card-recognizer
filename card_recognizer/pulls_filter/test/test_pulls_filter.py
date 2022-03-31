@@ -1,4 +1,5 @@
 import os
+import shutil
 import unittest
 
 from algo_ops.pipeline.pipeline import Pipeline
@@ -12,7 +13,7 @@ class TestPullsFilter(unittest.TestCase):
     def setUp(self) -> None:
         dir_path = os.path.dirname(os.path.realpath(__file__))
         self.sample_dir = os.path.join(dir_path, "sample_data")
-        self.pulls_filter = PullsFilter(freq_t=5, conf_t=0.1)
+        self.pulls_filter = PullsFilter(freq_t=5, conf_t=0.1, output_fig_path="figs")
         self.pulls_summary = PullsSummary()
 
     def test_pulls_filter(self) -> None:
@@ -55,3 +56,19 @@ class TestPullsFilter(unittest.TestCase):
         result = pulls_pipeline.exec(inp=frame_card_predictions)
         self.assertTrue(isinstance(result, list))
         self.assertEqual(len(result), 10)
+
+        # visualize
+        pulls_pipeline.vis()
+        self.assertTrue(os.path.exists(os.path.join("figs", "input_metrics.png")))
+        self.assertTrue(os.path.exists(os.path.join("figs", "output_metrics.png")))
+        self.assertTrue(
+            os.path.exists(
+                os.path.join("figs", "input_frame_prediction_time_series.png")
+            )
+        )
+        self.assertTrue(
+            os.path.exists(
+                os.path.join("figs", "output_frame_prediction_time_series.png")
+            )
+        )
+        shutil.rmtree("figs")
