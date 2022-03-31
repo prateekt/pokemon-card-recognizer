@@ -89,6 +89,7 @@ class CardRecognizerPipeline(Pipeline):
                 TextOp(ocr_pipeline.run_on_images),
                 self.classifier,
                 PullsFilter(
+                    conf_t=0.25,
                     suppress_plotly_output=suppress_plotly_output,
                 ),
                 PullsSummary(),
@@ -105,9 +106,9 @@ class CardRecognizerPipeline(Pipeline):
 
 
 if __name__ == "__main__":
-    pipeline = CardRecognizerPipeline(set_name="Master", mode=Mode.BOOSTER_PULLS_VIDEO)
+    pipeline = CardRecognizerPipeline(set_name="Brilliant Stars", mode=Mode.BOOSTER_PULLS_VIDEO)
     in_dir = os.sep + os.path.join(
-        "home", "borg1", "Desktop", "vivid_voltage_test_videos"
+        "media", "borg1", "Borg12TB", "card_recognizer_test_sets", 'brilliant_stars_booster_box_3_2022', 'new'
     )
     """
     in_file = os.sep + os.path.join("home", "borg1", "Desktop",
@@ -125,7 +126,10 @@ if __name__ == "__main__":
     )
     for video in videos:
         print(video)
-        pipeline.set_output_figs_path(output_figs_path=os.path.basename(video))
+        results_path = os.path.basename(video)
+        pipeline_pkl_path = os.path.join(results_path, os.path.basename(video) + '.pkl')
+        pipeline.set_output_figs_path(output_figs_path=results_path)
         result = pipeline.exec(inp=video)
         pipeline.vis()
+        pipeline.to_pickle(out_pkl_path=pipeline_pkl_path)
         print(result)
