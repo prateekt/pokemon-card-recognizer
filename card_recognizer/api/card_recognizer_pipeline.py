@@ -98,11 +98,16 @@ class CardRecognizerPipeline(Pipeline):
             raise ValueError("Unsupported mode: " + str(mode))
         super().__init__(ops=ops)
 
-    def set_output_figs_path(self, output_figs_path: Optional[str] = None):
+    def set_output_path(self, output_path: Optional[str] = None):
+        """
+        Set output path for results.
+        """
         for op_name in self.ops.keys():
             op = self.ops[op_name]
+            if isinstance(op, FFMPEGOp):
+                op.out_path = os.path.join(output_path, 'uncompressed_video_frames')
             if isinstance(op, PullsEstimator):
-                op.output_fig_path = output_figs_path
+                op.output_fig_path = output_path
 
 
 if __name__ == "__main__":
@@ -135,7 +140,7 @@ if __name__ == "__main__":
         print(video)
         results_path = os.path.basename(video)
         pipeline_pkl_path = os.path.join(results_path, os.path.basename(video) + ".pkl")
-        pipeline.set_output_figs_path(output_figs_path=results_path)
+        pipeline.set_output_path(output_path=results_path)
         result = pipeline.exec(inp=video)
         pipeline.vis()
         pipeline.to_pickle(out_pkl_path=pipeline_pkl_path)

@@ -4,7 +4,7 @@ from typing import List, Dict
 from pokemontcgsdk import Card
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
-from card_recognizer.infra.api.ptcgsdk import query_set_cards, download_card_images
+from card_recognizer.infra.ptcgsdk.ptcgsdk import query_set_cards, download_card_images
 from card_recognizer.reference.core.card_reference import CardReference
 from card_recognizer.reference.eval.plots import (
     plot_word_counts,
