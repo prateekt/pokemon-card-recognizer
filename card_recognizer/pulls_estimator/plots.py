@@ -5,7 +5,7 @@ import ezplotly as ep
 import numpy as np
 from ezplotly import EZPlotlyPlot
 
-from card_recognizer.pulls_filter.pull_stats import PullStats
+from card_recognizer.pulls_estimator.pull_stats import PullStats
 
 
 def plot_pull_time_series(

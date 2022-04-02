@@ -5,15 +5,15 @@ import unittest
 from algo_ops.pipeline.pipeline import Pipeline
 
 from card_recognizer.classifier.core.card_prediction_result import CardPredictionResult
-from card_recognizer.pulls_filter.pulls_filter import PullsFilter
-from card_recognizer.pulls_filter.pulls_summary import PullsSummary
+from card_recognizer.pulls_estimator.pulls_estimator import PullsEstimator
+from card_recognizer.pulls_estimator.pulls_summary import PullsSummary
 
 
-class TestPullsFilter(unittest.TestCase):
+class TestPullsEstimator(unittest.TestCase):
     def setUp(self) -> None:
         dir_path = os.path.dirname(os.path.realpath(__file__))
         self.sample_dir = os.path.join(dir_path, "sample_data")
-        self.pulls_filter = PullsFilter(freq_t=5, conf_t=0.1, output_fig_path="figs")
+        self.pulls_filter = PullsEstimator(freq_t=5, conf_t=0.1, output_fig_path="figs")
         self.pulls_summary = PullsSummary()
 
     def test_pulls_filter(self) -> None:
@@ -29,7 +29,7 @@ class TestPullsFilter(unittest.TestCase):
         frame_card_predictions.reference_set = "Master"
 
         # run filter
-        output_preds = self.pulls_filter.filter_pull_series(
+        output_preds = self.pulls_filter.estimate_pull_series(
             frame_card_predictions=frame_card_predictions
         )
         pulls_summary = self.pulls_summary.pulls_summary(

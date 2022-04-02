@@ -3,7 +3,7 @@ from typing import List
 from algo_ops.ops.text import TextOp
 
 from card_recognizer.classifier.core.card_prediction_result import CardPredictionResult
-from card_recognizer.pulls_filter.pulls_filter import PullsFilter
+from card_recognizer.pulls_estimator.pulls_estimator import PullsEstimator
 from card_recognizer.reference.core.build import ReferenceBuild
 
 
@@ -32,7 +32,7 @@ class PullsSummary(TextOp):
             raise ValueError("Unspecified reference.")
 
         # obtain unique cards
-        unique_cards = PullsFilter.tabulate_unique_cards(
+        unique_cards = PullsEstimator.tabulate_unique_cards(
             frame_card_predictions=frame_card_predictions
         )
         unique_card_names = [

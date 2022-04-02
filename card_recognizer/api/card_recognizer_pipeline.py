@@ -11,8 +11,8 @@ from ocr_ops.framework.op.ocr_op import OCRMethod
 from ocr_ops.instances import ocr
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
-from card_recognizer.pulls_filter.pulls_filter import PullsFilter
-from card_recognizer.pulls_filter.pulls_summary import PullsSummary
+from card_recognizer.pulls_estimator.pulls_estimator import PullsEstimator
+from card_recognizer.pulls_estimator.pulls_summary import PullsSummary
 from card_recognizer.reference.core.build import ReferenceBuild
 
 
@@ -60,7 +60,7 @@ class CardRecognizerPipeline(Pipeline):
             ops = [
                 TextOp(ocr_pipeline.run_on_images),
                 self.classifier,
-                PullsFilter(
+                PullsEstimator(
                     suppress_plotly_output=suppress_plotly_output,
                 ),
             ]
@@ -69,7 +69,7 @@ class CardRecognizerPipeline(Pipeline):
                 FFMPEGOp(),
                 TextOp(ocr_pipeline.run_on_images),
                 self.classifier,
-                PullsFilter(
+                PullsEstimator(
                     suppress_plotly_output=suppress_plotly_output,
                 ),
             ]
@@ -77,7 +77,7 @@ class CardRecognizerPipeline(Pipeline):
             ops = [
                 TextOp(ocr_pipeline.run_on_images),
                 self.classifier,
-                PullsFilter(
+                PullsEstimator(
                     freq_t=0,
                     suppress_plotly_output=suppress_plotly_output,
                 ),
@@ -88,7 +88,7 @@ class CardRecognizerPipeline(Pipeline):
                 FFMPEGOp(),
                 TextOp(ocr_pipeline.run_on_images),
                 self.classifier,
-                PullsFilter(
+                PullsEstimator(
                     conf_t=0.25,
                     suppress_plotly_output=suppress_plotly_output,
                 ),
@@ -101,7 +101,7 @@ class CardRecognizerPipeline(Pipeline):
     def set_output_figs_path(self, output_figs_path: Optional[str] = None):
         for op_name in self.ops.keys():
             op = self.ops[op_name]
-            if isinstance(op, PullsFilter):
+            if isinstance(op, PullsEstimator):
                 op.output_fig_path = output_figs_path
 
 

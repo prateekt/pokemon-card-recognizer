@@ -5,17 +5,17 @@ import numpy as np
 from algo_ops.ops.op import Op
 
 from card_recognizer.classifier.core.card_prediction_result import CardPredictionResult
-from card_recognizer.pulls_filter.plots import plot_pull_stats
-from card_recognizer.pulls_filter.pull_stats import PullStats
+from card_recognizer.pulls_estimator.plots import plot_pull_stats
+from card_recognizer.pulls_estimator.pull_stats import PullStats
 from card_recognizer.reference.core.build import ReferenceBuild
 
 
-class PullsFilter(Op):
+class PullsEstimator(Op):
     """
-    The PullsFilter takes as input a time series of predictions of cards for frames in a video. The time series is
-    represented as a CardPredictionResult object. The PullsFilter filters out likely false positives in the time
-    series based on frequencies of card detection and their confidence scores. The PullsFilter returns the cleaned
-    time series as a CardPredictionResult object.
+    The PullsEstimates the likely card pulls in a time series of image frames. It takes as input a time series of
+    predictions of cards for frames in a video. The time series is represented as a CardPredictionResult object. The
+    PullsFilter filters out likely false positives in the time series based on frequencies of card detection and
+    their confidence scores. The PullsFilter returns the cleaned time series as a CardPredictionResult object.
     """
 
     def __init__(
@@ -26,7 +26,7 @@ class PullsFilter(Op):
         output_fig_path: Optional[str] = None,
         suppress_plotly_output: bool = True,
     ):
-        super().__init__(func=self.filter_pull_series)
+        super().__init__(func=self.estimate_pull_series)
         self.freq_t = freq_t
         self.conf_t = conf_t
         self.num_cards_to_select = num_cards_to_select
@@ -34,6 +34,9 @@ class PullsFilter(Op):
         self.suppress_plotly_output = suppress_plotly_output
 
     def vis_input(self) -> None:
+        """
+        Visualize input statistics.
+        """
         if self.input is not None:
             input_stats = self.tabulate_pull_statistics(
                 frame_card_predictions=self.input
@@ -46,6 +49,9 @@ class PullsFilter(Op):
             )
 
     def vis(self) -> None:
+        """
+        Visualize output statistics.
+        """
         self.vis_input()
         if self.output is not None:
             output_stats = self.tabulate_pull_statistics(
@@ -101,7 +107,7 @@ class PullsFilter(Op):
             raise ValueError("Unspecified reference.")
 
         # tabulate unique cards in time series
-        unique_cards = PullsFilter.tabulate_unique_cards(
+        unique_cards = PullsEstimator.tabulate_unique_cards(
             frame_card_predictions=frame_card_predictions
         )
 
@@ -144,7 +150,7 @@ class PullsFilter(Op):
             reference=reference,
         )
 
-    def filter_pull_series(
+    def estimate_pull_series(
         self,
         frame_card_predictions: CardPredictionResult,
     ) -> CardPredictionResult:
@@ -171,21 +177,21 @@ class PullsFilter(Op):
         assert len(unique_cards) == len(max_confidence_scores)
 
         # run filter
-        unfiltered_cards_indicies: List[int] = list()
+        unfiltered_cards_indices: List[int] = list()
         for i, card_index in enumerate(unique_cards):
             if (
                 card_frequencies[i] >= self.freq_t
                 and max_confidence_scores[i] >= self.conf_t
             ):
-                unfiltered_cards_indicies.append(card_index)
+                unfiltered_cards_indices.append(card_index)
 
         # run selection rule
-        sorted_card_indicies = np.argsort(
-            [-1.0 * selection_scores[i] for i in range(len(unfiltered_cards_indicies))]
+        sorted_card_indices = np.argsort(
+            [-1.0 * selection_scores[i] for i in range(len(unfiltered_cards_indices))]
         )
         selected_cards = [
-            unfiltered_cards_indicies[index]
-            for index in sorted_card_indicies[0 : self.num_cards_to_select]
+            unfiltered_cards_indices[index]
+            for index in sorted_card_indices[0 : self.num_cards_to_select]
         ]
 
         # compute kept frames
