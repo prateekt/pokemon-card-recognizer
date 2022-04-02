@@ -12,6 +12,7 @@ pulls = recognizer.exec("/path/to/video")
 print(pulls)
 ```
 
+Benchmarks: https://docs.google.com/presentation/d/1nJKkQicFS1gC5c3fRBNyJIRX14930S1OZKWBiA9YtVw/edit?usp=sharing
 
 
     
