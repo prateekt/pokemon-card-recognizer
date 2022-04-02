@@ -1,6 +1,17 @@
 [build-system]
 requires = [
     "setuptools>=42",
-    "wheel"
+    "wheel",
+    "algo-ops",
+    "ocr-ops",
+    "ezplotly",
+    "numpy",
+    "pandas",
+    "pokemontcgsdk",
+    "nose",
+    "black",
+    "bidict",
+    "natsort",
+    "requests"
 ]
 build-backend = "setuptools.build_meta"
