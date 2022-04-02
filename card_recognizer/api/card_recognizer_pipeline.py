@@ -105,6 +105,6 @@ class CardRecognizerPipeline(Pipeline):
         for op_name in self.ops.keys():
             op = self.ops[op_name]
             if isinstance(op, FFMPEGOp):
-                op.out_path = os.path.join(output_path, 'uncompressed_video_frames')
+                op.out_path = os.path.join(output_path, "uncompressed_video_frames")
             if isinstance(op, PullsEstimator):
                 op.output_fig_path = output_path
