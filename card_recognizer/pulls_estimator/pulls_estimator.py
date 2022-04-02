@@ -12,10 +12,12 @@ from card_recognizer.reference.core.build import ReferenceBuild
 
 class PullsEstimator(Op):
     """
-    The PullsEstimates the likely card pulls in a time series of image frames. It takes as input a time series of
+    The PullsEstimator identifies the likely card pulls in a time series of image frames. It takes as input a time series of
     predictions of cards for frames in a video. The time series is represented as a CardPredictionResult object. The
-    PullsFilter filters out likely false positives in the time series based on frequencies of card detection and
-    their confidence scores. The PullsFilter returns the cleaned time series as a CardPredictionResult object.
+    PullsEstimator filters out likely false positives in the time series based on frequencies of card detection and
+    their confidence scores. The PullsEstimator then chooses the top-scoring cards based on the selection score:
+        selection_score = card_frequency * confidence_score
+    The PullsEstimator returns the estimated pulled cards in the video.
     """
 
     def __init__(
