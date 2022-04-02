@@ -61,6 +61,7 @@ class CardRecognizerPipeline(Pipeline):
                 PullsEstimator(
                     suppress_plotly_output=suppress_plotly_output,
                 ),
+                PullsSummary(),
             ]
         elif mode == Mode.PULLS_VIDEO:
             ops = [
@@ -70,6 +71,7 @@ class CardRecognizerPipeline(Pipeline):
                 PullsEstimator(
                     suppress_plotly_output=suppress_plotly_output,
                 ),
+                PullsSummary(),
             ]
         elif mode == Mode.BOOSTER_PULLS_IMAGE_DIR:
             ops = [
