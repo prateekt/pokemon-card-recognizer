@@ -106,9 +106,16 @@ class CardRecognizerPipeline(Pipeline):
 
 
 if __name__ == "__main__":
-    pipeline = CardRecognizerPipeline(set_name="Brilliant Stars", mode=Mode.BOOSTER_PULLS_VIDEO)
+    pipeline = CardRecognizerPipeline(
+        set_name="Brilliant Stars", mode=Mode.BOOSTER_PULLS_VIDEO
+    )
     in_dir = os.sep + os.path.join(
-        "media", "borg1", "Borg12TB", "card_recognizer_test_sets", 'brilliant_stars_booster_box_3_2022', 'new'
+        "media",
+        "borg1",
+        "Borg12TB",
+        "card_recognizer_test_sets",
+        "brilliant_stars_booster_box_3_2022",
+        "new",
     )
     """
     in_file = os.sep + os.path.join("home", "borg1", "Desktop",
@@ -127,7 +134,7 @@ if __name__ == "__main__":
     for video in videos:
         print(video)
         results_path = os.path.basename(video)
-        pipeline_pkl_path = os.path.join(results_path, os.path.basename(video) + '.pkl')
+        pipeline_pkl_path = os.path.join(results_path, os.path.basename(video) + ".pkl")
         pipeline.set_output_figs_path(output_figs_path=results_path)
         result = pipeline.exec(inp=video)
         pipeline.vis()

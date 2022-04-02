@@ -181,7 +181,7 @@ class PullsFilter(Op):
 
         # run selection rule
         sorted_card_indicies = np.argsort(
-            [-1.0*selection_scores[i] for i in range(len(unfiltered_cards_indicies))]
+            [-1.0 * selection_scores[i] for i in range(len(unfiltered_cards_indicies))]
         )
         selected_cards = [
             unfiltered_cards_indicies[index]
