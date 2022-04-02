@@ -4,26 +4,16 @@ import traceback
 from typing import List
 
 import requests
-import yaml
 from algo_ops.paraloop import paraloop
 from natsort import natsorted
 from pokemontcgsdk import Card, RestClient
 
 
-def init_api() -> None:
-    api_key_yaml = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "config", "api_key.yaml"
-    )
-    with open(api_key_yaml, "r") as fin:
-        data_loaded = yaml.safe_load(fin)
-    if "API_KEY" not in data_loaded:
-        raise ValueError("PTCGSDK API_KEY not specified in " + str(api_key_yaml))
-    else:
-        RestClient.configure(data_loaded["API_KEY"])
-
-
-# set up API key for Pokémon TCG API in module
-init_api()
+def init_api(api_key: str) -> None:
+    """
+    Init Pokemon TCG SDK client with API Key.
+    """
+    RestClient.configure(api_key=api_key)
 
 
 def query_set_cards(set_name: str) -> List[Card]:
