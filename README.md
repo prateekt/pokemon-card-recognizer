@@ -3,7 +3,7 @@
 Recognize a Pokemon Card in an image or video.
 
 ```python
-from card_recognizer.api.card_recognizer import 
+from card_recognizer.api.card_recognizer import CardRecognizer 
 recognizer = CardRecognizer(
     mode=Mode.PULLS_VIDEO
 )
