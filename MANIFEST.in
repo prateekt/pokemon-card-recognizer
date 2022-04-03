@@ -1,1 +1,2 @@
 include requirements.txt
+include card_recognizer/reference/data/ref_build/*.pkl

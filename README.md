@@ -2,7 +2,7 @@
 
 Recognize a Pokemon Card in an image.
 
-Pokemon Card Recognizer is a framework for identifying Pokemon cards in images based.
+Pokemon Card Recognizer is a framework for identifying Pokemon cards in images and videos.
 
 ```python
 recognizer = CardRecognizerPipeline(

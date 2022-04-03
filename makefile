@@ -15,3 +15,12 @@ eval_master_on_reference:
 
 eval_pipeline_on_reference:
 	python card_recognizer/reference/eval/eval_pipeline_on_reference.py
+
+build:
+	rm -rf dist
+	rm -rf build
+	rm -rf pokemon_card_recognizer.egg*
+	python setup.py sdist bdist_wheel
+
+deploy:
+	twine upload dist/*
