@@ -2,7 +2,7 @@ import os
 import shutil
 import unittest
 
-from card_recognizer.api.card_recognizer_pipeline import CardRecognizerPipeline, Mode
+from card_recognizer.api.card_recognizer import CardRecognizer, Mode
 from card_recognizer.classifier.core.card_prediction_result import (
     CardPredictionResult,
     CardPrediction,
@@ -19,7 +19,7 @@ class TestEndtoEnd(unittest.TestCase):
         """
         Tests card recognizer end to end on Klara image.
         """
-        recognizer = CardRecognizerPipeline(set_name="master", mode=Mode.SINGLE_IMAGE)
+        recognizer = CardRecognizer(set_name="master", mode=Mode.SINGLE_IMAGE)
         klara_path = os.path.join(self.single_frames_path, "klara.png")
         pred_result = recognizer.exec(inp=klara_path)
         self.assertTrue(isinstance(pred_result, CardPredictionResult))
@@ -37,7 +37,7 @@ class TestEndtoEnd(unittest.TestCase):
         """
         Tests card recognizer on images directory.
         """
-        recognizer = CardRecognizerPipeline(set_name="master", mode=Mode.IMAGE_DIR)
+        recognizer = CardRecognizer(set_name="master", mode=Mode.IMAGE_DIR)
         pred_result = recognizer.exec(inp=self.single_frames_path)
 
         # check that there is only one result (Klara, frame 0),
@@ -57,7 +57,7 @@ class TestEndtoEnd(unittest.TestCase):
         """
         Tests card recognizer on booster images directory.
         """
-        recognizer = CardRecognizerPipeline(
+        recognizer = CardRecognizer(
             set_name="master",
             mode=Mode.BOOSTER_PULLS_IMAGE_DIR,
         )

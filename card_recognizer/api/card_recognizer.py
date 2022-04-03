@@ -25,10 +25,10 @@ class Mode(Enum):
     BOOSTER_PULLS_VIDEO = 7
 
 
-class CardRecognizerPipeline(Pipeline):
+class CardRecognizer(Pipeline):
     def __init__(
         self,
-        set_name: str,
+        set_name: Optional[str] = "master",
         classification_method: str = "shared_words",
         mode: Mode = Mode.SINGLE_IMAGE,
         suppress_plotly_output: bool = True,

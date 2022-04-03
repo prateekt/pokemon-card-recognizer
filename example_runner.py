@@ -3,12 +3,10 @@ import os
 from natsort import natsorted
 from ocr_ops.dependency import sys_util
 
-from card_recognizer.api.card_recognizer_pipeline import CardRecognizerPipeline, Mode
+from card_recognizer.api.card_recognizer import CardRecognizer, Mode
 
 if __name__ == "__main__":
-    pipeline = CardRecognizerPipeline(
-        set_name="Brilliant Stars", mode=Mode.BOOSTER_PULLS_VIDEO
-    )
+    pipeline = CardRecognizer(set_name="Brilliant Stars", mode=Mode.BOOSTER_PULLS_VIDEO)
     in_dir = os.sep + os.path.join(
         "media",
         "borg1",

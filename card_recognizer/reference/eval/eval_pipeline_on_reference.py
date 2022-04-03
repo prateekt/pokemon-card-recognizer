@@ -6,7 +6,7 @@ import pandas as pd
 from natsort import natsorted
 from pokemontcgsdk import Card
 
-from card_recognizer.api.card_recognizer_pipeline import CardRecognizerPipeline
+from card_recognizer.api.card_recognizer import CardRecognizer
 from card_recognizer.classifier.core.card_prediction_result import (
     CardPredictionResult,
     CardPrediction,
@@ -66,7 +66,7 @@ def main():
         for classifier_rule in ["l1", "shared_words", "shared_words_rarity"]:
 
             # init pipeline
-            pipeline = CardRecognizerPipeline(
+            pipeline = CardRecognizer(
                 set_name=set_name, classification_method=classifier_rule
             )
             card_files = [
