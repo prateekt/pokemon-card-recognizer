@@ -12,12 +12,12 @@ from card_recognizer.reference.core.build import ReferenceBuild
 
 class PullsEstimator(Op):
     """
-    The PullsEstimator identifies the likely card pulls in a time series of image frames. It takes as input a time series of
-    predictions of cards for frames in a video. The time series is represented as a CardPredictionResult object. The
-    PullsEstimator filters out likely false positives in the time series based on frequencies of card detection and
-    their confidence scores. The PullsEstimator then chooses the top-scoring cards based on the selection score:
-        selection_score = card_frequency * confidence_score
-    The PullsEstimator returns the estimated pulled cards in the video.
+    The PullsEstimator identifies the likely card pulls in a time series of image frames. It takes as input a time
+    series of predictions of cards for frames in a video. The time series is represented as a CardPredictionResult
+    object. The PullsEstimator filters out likely false positives in the time series based on frequencies of card
+    detection and their confidence scores. The PullsEstimator then chooses the top-scoring cards based on the
+    selection score: selection_score = card_frequency * confidence_score The PullsEstimator returns the estimated
+    pulled cards in the video.
     """
 
     def __init__(
@@ -179,22 +179,24 @@ class PullsEstimator(Op):
         assert len(unique_cards) == len(max_confidence_scores)
 
         # run filter
-        unfiltered_cards_indices: List[int] = list()
+        kept_cards_indices: List[int] = list()
+        kept_selection_scores: List[float] = list()
         for i, card_index in enumerate(unique_cards):
             if (
                 card_frequencies[i] >= self.freq_t
                 and max_confidence_scores[i] >= self.conf_t
             ):
-                unfiltered_cards_indices.append(card_index)
+                kept_cards_indices.append(card_index)
+                kept_selection_scores.append(selection_scores[i])
 
         # run selection rule
         sorted_card_indices = np.argsort(
-            [-1.0 * selection_scores[i] for i in range(len(unfiltered_cards_indices))]
+            [-1.0 * kept_selection_scores[i] for i in range(len(kept_selection_scores))]
         )
-        selected_cards = [
-            unfiltered_cards_indices[index]
+        selected_cards = set([
+            kept_cards_indices[index]
             for index in sorted_card_indices[0 : self.num_cards_to_select]
-        ]
+        ])
 
         # compute kept frames
         kept_frames = [
