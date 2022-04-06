@@ -10,7 +10,7 @@ recognizer = CardRecognizer(
 pulls = recognizer.exec("/path/to/video")
 ```
 
-Example of a booster pack opening video:
+Example analysis of a booster pack opening video:
 
 ![](https://github.com/prateekt/pokemon-card-recognizer/blob/main/example2.png?raw=true)
 ![](https://github.com/prateekt/pokemon-card-recognizer/blob/16ac467082080230a0da9e3667d896951c3db681/example.png?raw=true)

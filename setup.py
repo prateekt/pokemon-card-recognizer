@@ -7,7 +7,7 @@ with open("requirements.txt") as f:
 
 setuptools.setup(
     name="pokemon-card-recognizer",
-    version="0.0.1.2.6",
+    version="0.0.1.2.7",
     author="Prateek Tandon",
     author_email="prateek1.tandon@gmail.com",
     description="Pokemon TCG Card Recognizer",
