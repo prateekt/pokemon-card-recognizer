@@ -193,10 +193,12 @@ class PullsEstimator(Op):
         sorted_card_indices = np.argsort(
             [-1.0 * kept_selection_scores[i] for i in range(len(kept_selection_scores))]
         )
-        selected_cards = set([
-            kept_cards_indices[index]
-            for index in sorted_card_indices[0 : self.num_cards_to_select]
-        ])
+        selected_cards = set(
+            [
+                kept_cards_indices[index]
+                for index in sorted_card_indices[0 : self.num_cards_to_select]
+            ]
+        )
 
         # compute kept frames
         kept_frames = [

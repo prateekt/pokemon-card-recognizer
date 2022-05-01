@@ -47,17 +47,24 @@ class PullsSummary(TextOp):
                 first_write = True
             else:
                 first_write = False
-            with open(self.summary_file, 'a') as fout:
+            with open(self.summary_file, "a") as fout:
                 if first_write:
-                    header_cols = ['P_'+str(i+1) for i in range(len(unique_card_names))]
-                    header = '\t'.join(header_cols)+'\n'
+                    header_cols = ["input_path"]
+                    header_cols.extend(
+                        ["P_" + str(i + 1) for i in range(len(unique_card_names))]
+                    )
+                    header = "\t".join(header_cols) + "\n"
                     fout.write(header)
-                line = '\t'.join(unique_card_names)+'\n'
+                line = str(self.input_video) + "\t"
+                line += "\t".join(unique_card_names) + "\n"
                 fout.write(line)
 
         # return
         return unique_card_names
 
-    def __init__(self, summary_file: Optional[str] = None):
+    def __init__(
+        self, input_video: Optional[str] = None, summary_file: Optional[str] = None
+    ):
         super().__init__(func=self.pulls_summary)
         self.summary_file = summary_file
+        self.input_video = input_video

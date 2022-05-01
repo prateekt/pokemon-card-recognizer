@@ -15,8 +15,11 @@ class TestPullsEstimator(unittest.TestCase):
         dir_path = os.path.dirname(os.path.realpath(__file__))
         self.sample_dir = os.path.join(dir_path, "sample_data")
         self.pulls_filter = PullsEstimator(freq_t=5, conf_t=0.1, output_fig_path="figs")
-        self.summary_file_path = 'summary_test.tsv'
-        self.pulls_summary = PullsSummary(self.summary_file_path)
+        self.summary_file_path = "summary_test.tsv"
+        self.test_input_video_path = "inp.avi"
+        self.pulls_summary = PullsSummary(
+            input_video=self.test_input_video_path, summary_file=self.summary_file_path
+        )
         if os.path.exists(self.summary_file_path):
             os.unlink(self.summary_file_path)
 
@@ -43,9 +46,9 @@ class TestPullsEstimator(unittest.TestCase):
 
         # check file
         self.assertTrue(os.path.exists(self.summary_file_path))
-        df = pd.read_csv(self.summary_file_path, sep='\t')
+        df = pd.read_csv(self.summary_file_path, sep="\t")
         self.assertEqual(len(df), 1)
-        self.assertEqual(len(df.columns), 10)
+        self.assertEqual(len(df.columns), 11)
         os.unlink(self.summary_file_path)
 
     def test_pulls_estimation_pipeline(self) -> None:

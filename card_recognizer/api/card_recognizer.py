@@ -1,12 +1,13 @@
 import os
 from enum import Enum
-from typing import Optional
+from typing import Optional, Any, List
 
 from algo_ops.ops.text import TextOp
 from algo_ops.pipeline.pipeline import Pipeline
 from ocr_ops.framework.op.ffmpeg_op import FFMPEGOp
 from ocr_ops.framework.op.ocr_op import OCRMethod
 from ocr_ops.instances import ocr
+from packaging.markers import Op
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
 from card_recognizer.pulls_estimator.pulls_estimator import PullsEstimator
@@ -98,22 +99,37 @@ class CardRecognizer(Pipeline):
             raise ValueError("Unsupported mode: " + str(mode))
         super().__init__(ops=ops)
 
+    def find_op_by_class(self, op_class: Any) -> Optional[Op]:
+        for op in self.ops.values():
+            if isinstance(op, op_class):
+                return op
+        return None
+
     def set_output_path(self, output_path: Optional[str] = None):
         """
         Set output path for results.
         """
-        for op_name in self.ops.keys():
-            op = self.ops[op_name]
-            if isinstance(op, FFMPEGOp):
-                op.out_path = os.path.join(output_path, "uncompressed_video_frames")
-            if isinstance(op, PullsEstimator):
-                op.output_fig_path = output_path
+        ffmpeg_op = self.find_op_by_class(op_class=FFMPEGOp)
+        if ffmpeg_op is not None:
+            ffmpeg_op.out_path = os.path.join(output_path, "uncompressed_video_frames")
+        pulls_estimator_op = self.find_op_by_class(op_class=PullsEstimator)
+        if pulls_estimator_op is not None:
+            pulls_estimator_op.output_fig_path = output_path
 
     def set_summary_file(self, summary_file: str):
         """
         Set summary file.
         """
-        for op_name in self.ops.keys():
-            op = self.ops[op_name]
-            if isinstance(op, PullsSummary):
-                op.summary_file = summary_file
+        pulls_summary_op = self.find_op_by_class(op_class=PullsSummary)
+        if pulls_summary_op is not None:
+            pulls_summary_op.summary_file = summary_file
+
+    def exec(self, inp: Any) -> Any:
+
+        # Set input video for logging purposes
+        pulls_summary_op = self.find_op_by_class(op_class=PullsSummary)
+        if pulls_summary_op is not None:
+            pulls_summary_op.input_video = inp
+
+        # call parent exec
+        return super().exec(inp=inp)

@@ -13,8 +13,8 @@ if __name__ == "__main__":
         "Borg12TB",
         "card_recognizer_test_sets",
         "brilliant_stars_booster_box_3_2022",
-        "new",
     )
+    pipeline.set_summary_file(summary_file=os.path.join(in_dir, "pulls_summary.tsv"))
     """
     in_file = os.sep + os.path.join("home", "borg1", "Desktop",
      "Y2Mate.is - Brilliant Stars Booster Box Opening PART 1-t8NtWA2_26M-1080p-1647284353120.mp4")
