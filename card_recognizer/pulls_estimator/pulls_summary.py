@@ -1,4 +1,5 @@
-from typing import List
+import os
+from typing import List, Optional
 
 from algo_ops.ops.text import TextOp
 
@@ -12,8 +13,8 @@ class PullsSummary(TextOp):
     Converts a time series of frame card predictions into a simple summary of pulled cards.
     """
 
-    @staticmethod
     def pulls_summary(
+        self,
         frame_card_predictions: CardPredictionResult,
     ) -> List[str]:
         """
@@ -39,7 +40,24 @@ class PullsSummary(TextOp):
             reference.cards[pull].name + " (#" + str(reference.cards[pull].number) + ")"
             for pull in unique_cards
         ]
+
+        # write row to summary file (if specified)
+        if self.summary_file is not None:
+            if not os.path.exists(self.summary_file):
+                first_write = True
+            else:
+                first_write = False
+            with open(self.summary_file, 'a') as fout:
+                if first_write:
+                    header_cols = ['P_'+str(i+1) for i in range(len(unique_card_names))]
+                    header = '\t'.join(header_cols)+'\n'
+                    fout.write(header)
+                line = '\t'.join(unique_card_names)+'\n'
+                fout.write(line)
+
+        # return
         return unique_card_names
 
-    def __init__(self):
+    def __init__(self, summary_file: Optional[str] = None):
         super().__init__(func=self.pulls_summary)
+        self.summary_file = summary_file
