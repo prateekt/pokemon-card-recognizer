@@ -1,13 +1,13 @@
 import os
 from enum import Enum
-from typing import Optional, Any, List
+from typing import Optional, Any
 
+from algo_ops.ops.op import Op
 from algo_ops.ops.text import TextOp
 from algo_ops.pipeline.pipeline import Pipeline
 from ocr_ops.framework.op.ffmpeg_op import FFMPEGOp
 from ocr_ops.framework.op.ocr_op import OCRMethod
 from ocr_ops.instances import ocr
-from packaging.markers import Op
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
 from card_recognizer.pulls_estimator.pulls_estimator import PullsEstimator
@@ -90,7 +90,6 @@ class CardRecognizer(Pipeline):
                 TextOp(ocr_pipeline.run_on_images),
                 self.classifier,
                 PullsEstimator(
-                    conf_t=0.25,
                     suppress_plotly_output=suppress_plotly_output,
                 ),
                 PullsSummary(),

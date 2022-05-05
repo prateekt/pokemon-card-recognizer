@@ -12,7 +12,13 @@ if __name__ == "__main__":
         "borg1",
         "Borg12TB",
         "card_recognizer_test_sets",
-        "brilliant_stars_booster_box_3_2022",
+        "brilliant_stars_booster_box_5_2022",
+    )
+    out_dir = os.sep + os.path.join(
+        "media",
+        "borg1",
+        "Borg12TB",
+        "card_rec_results"
     )
     pipeline.set_summary_file(summary_file=os.path.join(in_dir, "pulls_summary.tsv"))
     """
@@ -31,7 +37,7 @@ if __name__ == "__main__":
     )
     for video in videos:
         print(video)
-        results_path = os.path.basename(video)
+        results_path = os.path.join(out_dir, os.path.basename(video))
         pipeline_pkl_path = os.path.join(results_path, os.path.basename(video) + ".pkl")
         pipeline.set_output_path(output_path=results_path)
         result = pipeline.exec(inp=video)

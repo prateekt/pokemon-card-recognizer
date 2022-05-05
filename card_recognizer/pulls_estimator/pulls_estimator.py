@@ -196,7 +196,7 @@ class PullsEstimator(Op):
         selected_cards = set(
             [
                 kept_cards_indices[index]
-                for index in sorted_card_indices[0 : self.num_cards_to_select]
+                for index in sorted_card_indices[0: self.num_cards_to_select]
             ]
         )
 
