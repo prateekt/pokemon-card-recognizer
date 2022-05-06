@@ -16,7 +16,7 @@ class PullsEstimator(Op):
     series of predictions of cards for frames in a video. The time series is represented as a CardPredictionResult
     object. The PullsEstimator filters out likely false positives in the time series based on frequencies of card
     detection and their confidence scores. The PullsEstimator then chooses the top-scoring cards based on the
-    selection score: selection_score = card_frequency * confidence_score The PullsEstimator returns the estimated
+    selection score: selection_score = card_frequency * confidence_score. The PullsEstimator returns the estimated
     pulled cards in the video.
     """
 
