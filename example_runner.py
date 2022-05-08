@@ -14,12 +14,7 @@ if __name__ == "__main__":
         "card_recognizer_test_sets",
         "brilliant_stars_booster_box_5_2022",
     )
-    out_dir = os.sep + os.path.join(
-        "media",
-        "borg1",
-        "Borg12TB",
-        "card_rec_results"
-    )
+    out_dir = os.sep + os.path.join("media", "borg1", "Borg12TB", "card_rec_results")
     pipeline.set_summary_file(summary_file=os.path.join(in_dir, "pulls_summary.tsv"))
     """
     in_file = os.sep + os.path.join("home", "borg1", "Desktop",
