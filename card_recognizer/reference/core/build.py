@@ -168,7 +168,7 @@ class ReferenceBuild:
             plot_classifier_sensitivity_curve(
                 set_pkl_paths={
                     set_name: ReferenceBuild.get_set_pkl_path(set_name)
-                    for set_name in (ReferenceBuild.supported_card_sets() + ["Master"])
+                    for set_name in (ReferenceBuild.supported_card_sets() | {"Master"})
                 },
                 classifier_method=classifier_method,
                 outfile=os.path.join(

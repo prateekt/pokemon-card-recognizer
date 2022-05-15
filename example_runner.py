@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 
 from natsort import natsorted
@@ -6,6 +7,7 @@ from ocr_ops.dependency import sys_util
 from card_recognizer.api.card_recognizer import CardRecognizer, Mode
 
 if __name__ == "__main__":
+    timestamp = str(datetime.now())
     pipeline = CardRecognizer(set_name="Brilliant Stars", mode=Mode.BOOSTER_PULLS_VIDEO)
     in_dir = os.sep + os.path.join(
         "media",
@@ -15,7 +17,7 @@ if __name__ == "__main__":
         "brilliant_stars_booster_box_5_2022",
     )
     out_dir = os.sep + os.path.join("media", "borg1", "Borg12TB", "card_rec_results")
-    pipeline.set_summary_file(summary_file=os.path.join(in_dir, "pulls_summary.tsv"))
+    pipeline.set_summary_file(summary_file=os.path.join(in_dir, "pulls_summary_" + timestamp + ".tsv"))
     """
     in_file = os.sep + os.path.join("home", "borg1", "Desktop",
      "Y2Mate.is - Brilliant Stars Booster Box Opening PART 1-t8NtWA2_26M-1080p-1647284353120.mp4")
@@ -32,7 +34,7 @@ if __name__ == "__main__":
     )
     for video in videos:
         print(video)
-        results_path = os.path.join(out_dir, os.path.basename(video))
+        results_path = os.path.join(out_dir, os.path.basename(video), timestamp)
         pipeline_pkl_path = os.path.join(results_path, os.path.basename(video) + ".pkl")
         pipeline.set_output_path(output_path=results_path)
         result = pipeline.exec(inp=video)
