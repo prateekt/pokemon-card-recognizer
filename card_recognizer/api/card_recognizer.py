@@ -79,7 +79,7 @@ class CardRecognizer(Pipeline):
                 TextOp(ocr_pipeline.run_on_images),
                 self.classifier,
                 PullsEstimator(
-                    freq_t=0,
+                    freq_t=None,
                     suppress_plotly_output=suppress_plotly_output,
                 ),
                 PullsSummary(),
