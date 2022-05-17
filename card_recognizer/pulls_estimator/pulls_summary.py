@@ -38,12 +38,14 @@ class PullsSummary(TextOp):
         else:
             raise ValueError("Unspecified reference.")
 
-        # obtain unique cards
+        # obtain run card summary
         unique_card_names = [
             reference.cards[run.card_index].name
             + " (#"
             + str(reference.cards[run.card_index].number)
-            + ")"
+            + ") ["
+            + str(run.interval)
+            + "]"
             for run in card_predictions.runs
         ]
 
