@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import List, Dict
+from typing import List, Dict, Set
 
 from pokemontcgsdk import Card
 
@@ -19,18 +19,18 @@ from card_recognizer.reference.eval.plots import (
 
 class ReferenceBuild:
     @staticmethod
-    def supported_card_sets() -> List[str]:
+    def supported_card_sets() -> Set[str]:
         """
         Get list of supported set names.
         """
-        card_sets = [
+        card_sets = {
             "Vivid Voltage",
             "Darkness Ablaze",
             "Chilling Reign",
             "Evolving Skies",
             "Fusion Strike",
             "Brilliant Stars",
-        ]
+        }
         return card_sets
 
     @staticmethod
@@ -71,7 +71,22 @@ class ReferenceBuild:
         return full_path
 
     @staticmethod
-    def load(set_name: str) -> CardReference:
+    def get(set_name: str) -> CardReference:
+        """
+        Loads or obtains a pre-cached version of set reference.
+        """
+        if set_name not in ReferenceBuild.supported_card_sets() | {"Master", "master"}:
+            raise ValueError("Not a supported card reference set: " + str(set_name))
+        if not hasattr(ReferenceBuild, "loaded_references"):
+            ReferenceBuild.loaded_references = dict()
+        if set_name not in ReferenceBuild.loaded_references:
+            ReferenceBuild.loaded_references[set_name] = ReferenceBuild._load(
+                set_name=set_name
+            )
+        return ReferenceBuild.loaded_references[set_name]
+
+    @staticmethod
+    def _load(set_name: str) -> CardReference:
         """
         Load built reference for set.
         """
@@ -87,7 +102,7 @@ class ReferenceBuild:
             Dict mapping set name to CardReference object for set
         """
         return {
-            set_name: ReferenceBuild.load(set_name=set_name)
+            set_name: ReferenceBuild._load(set_name=set_name)
             for set_name in ReferenceBuild.supported_card_sets()
         }
 
@@ -153,7 +168,7 @@ class ReferenceBuild:
             plot_classifier_sensitivity_curve(
                 set_pkl_paths={
                     set_name: ReferenceBuild.get_set_pkl_path(set_name)
-                    for set_name in (ReferenceBuild.supported_card_sets() + ["Master"])
+                    for set_name in (ReferenceBuild.supported_card_sets() | {"Master"})
                 },
                 classifier_method=classifier_method,
                 outfile=os.path.join(
@@ -166,6 +181,6 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("USAGE: python build.py [PGTCGSDK_API_KEY]")
     else:
-        ptcgsdk_api_key = sys.argv[0]
-        ReferenceBuild.build(ptcgsdk_api_key=ptcgsdk_api_key)
+        ptcgsdk_api_key_val = sys.argv[0]
+        ReferenceBuild.build(ptcgsdk_api_key=ptcgsdk_api_key_val)
         ReferenceBuild.make_eval_plots()

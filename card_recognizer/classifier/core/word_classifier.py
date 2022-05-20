@@ -131,8 +131,9 @@ class WordClassifier(TextOp):
             if pred is not None:
                 pred.frame_index = i
         card_predictions = list(filter(None, raw_card_predictions))
-        prediction_result = CardPredictionResult(predictions=card_predictions)
-        prediction_result.num_frames = len(raw_card_predictions)
+        prediction_result = CardPredictionResult(
+            predictions=card_predictions, num_frames=len(raw_card_predictions)
+        )
         return prediction_result
 
     def classify(

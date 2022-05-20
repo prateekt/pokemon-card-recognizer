@@ -5,11 +5,15 @@ import ezplotly as ep
 import numpy as np
 from ezplotly import EZPlotlyPlot
 
-from card_recognizer.pulls_estimator.pull_stats import PullStats
+from card_recognizer.classifier.core.card_prediction_result import (
+    CardPredictionResult,
+    Run,
+)
+from card_recognizer.reference.core.build import ReferenceBuild
 
 
 def plot_pull_time_series(
-    pull_stats: PullStats,
+    frame_card_predictions: CardPredictionResult,
     outfile: Optional[str] = None,
     suppress_output: bool = True,
 ) -> None:
@@ -20,12 +24,7 @@ def plot_pull_time_series(
     outfile: Path to output file to save figure
     suppress_output: Whether to suppress output
     """
-
-    # unpack tuple
-    frame_card_predictions = pull_stats.frame_card_predictions
-    reference = pull_stats.reference
-
-    # make plot
+    reference = ReferenceBuild.get(frame_card_predictions.reference_set)
     y_labels = [None] * frame_card_predictions.num_frames
     for pull in frame_card_predictions:
         y_labels[pull.frame_index] = (
@@ -46,7 +45,7 @@ def plot_pull_time_series(
 
 
 def plot_metrics(
-    pull_stats: PullStats,
+    frame_card_predictions: CardPredictionResult,
     outfile: Optional[str] = None,
     suppress_output: bool = True,
 ) -> None:
@@ -59,21 +58,26 @@ def plot_metrics(
     suppress_output: Whether to suppress output
     """
 
-    # unpack tuple
-    unique_cards = pull_stats.unique_cards
-    reference = pull_stats.reference
-    card_frequencies = pull_stats.card_frequencies
-    frame_card_predictions = pull_stats.frame_card_predictions
-    max_confidence_scores = pull_stats.max_confidence_scores
-    selection_scores = pull_stats.selection_scores
+    # unpack results
+    runs = frame_card_predictions.runs
+    pulls = [run.card_index for run in runs]
+    reference = ReferenceBuild.get(frame_card_predictions.reference_set)
+    card_frequencies = [len(run) for run in runs]
+    max_confidence_scores = [run.max_confidence_score for run in runs]
+    selection_scores = [run.selection_score for run in runs]
 
     # make labels
     unique_card_names = [
-        reference.cards[pull].name + " (#" + str(reference.cards[pull].number) + ")"
-        for pull in unique_cards
+        reference.cards[pull].name
+        + " (#"
+        + str(reference.cards[pull].number)
+        + ") <br> frames "
+        + str(runs[i].interval)
+        for i, pull in enumerate(pulls)
     ]
     unique_card_nums = [
-        "#" + str(reference.cards[pull].number) for pull in unique_cards
+        "#" + str(reference.cards[pull].number) + ", [" + str(runs[i].interval) + "]"
+        for i, pull in enumerate(pulls)
     ]
 
     # card detection frequencies
@@ -92,7 +96,7 @@ def plot_metrics(
         frames = [
             j
             for j, pull in enumerate(frame_card_predictions)
-            if pull.card_index_in_reference == unique_cards[i]
+            if pull.card_index_in_reference == pulls[i]
         ]
         conf_scores = [frame_card_predictions[f].conf for f in frames]
         h[i + 1] = ep.violin(
@@ -130,7 +134,7 @@ def plot_metrics(
 
 
 def plot_error_surface(
-    pull_stats: PullStats,
+    runs: List[Run],
     outfile: Optional[str] = None,
     suppress_output: bool = True,
 ) -> None:
@@ -143,8 +147,8 @@ def plot_error_surface(
     """
 
     # unpack tuple
-    card_frequencies = pull_stats.card_frequencies
-    max_confidence_scores = pull_stats.max_confidence_scores
+    card_frequencies = [len(run) for run in runs]
+    max_confidence_scores = [run.max_confidence_score for run in runs]
 
     # plot error surface in filter tradeoff
     x_counts_range = list(range(0, np.max(card_frequencies)))
@@ -170,7 +174,7 @@ def plot_error_surface(
 
 
 def plot_pull_stats(
-    pull_stats: PullStats,
+    card_prediction_result: CardPredictionResult,
     output_fig_path: Optional[str] = None,
     suppress_plotly_output: bool = True,
     prefix: str = "out",
@@ -192,17 +196,17 @@ def plot_pull_stats(
         metrics_fig_path = None
         error_surface_fig_path = None
     plot_pull_time_series(
-        pull_stats=pull_stats,
+        frame_card_predictions=card_prediction_result,
         suppress_output=suppress_plotly_output,
         outfile=time_series_fig_path,
     )
     plot_metrics(
-        pull_stats=pull_stats,
+        frame_card_predictions=card_prediction_result,
         suppress_output=suppress_plotly_output,
         outfile=metrics_fig_path,
     )
     plot_error_surface(
-        pull_stats=pull_stats,
+        runs=card_prediction_result.runs,
         suppress_output=suppress_plotly_output,
         outfile=error_surface_fig_path,
     )
