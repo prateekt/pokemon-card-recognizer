@@ -65,7 +65,12 @@ class TestPullsEstimator(unittest.TestCase):
             card_predictions=output_preds
         )
         self.assertListEqual(
-            pulls_summary, ["Kakuna (#2)", "Beedrill (#3)", "Beedrill (#3)"]
+            pulls_summary,
+            [
+                "Exeggutor (#2) [0-6]",
+                "Shroomish (#3) [15-22]",
+                "Shroomish (#3) [30-36]",
+            ],
         )
 
         # check generated summary file
@@ -85,7 +90,14 @@ class TestPullsEstimator(unittest.TestCase):
 
         # run
         result = pulls_pipeline.exec(inp=self.pred_series)
-        self.assertListEqual(result, ["Kakuna (#2)", "Beedrill (#3)", "Beedrill (#3)"])
+        self.assertListEqual(
+            result,
+            [
+                "Exeggutor (#2) [0-6]",
+                "Shroomish (#3) [15-22]",
+                "Shroomish (#3) [30-36]",
+            ],
+        )
 
         # visualize
         pulls_pipeline.vis()

@@ -64,7 +64,7 @@ class TestEndtoEnd(unittest.TestCase):
         recognizer.set_output_path(output_path="out_figs")
         pred_result = recognizer.exec(inp=self.single_frames_path)
         self.assertEqual(len(pred_result), 1)
-        self.assertEqual(pred_result, ["Klara (#145)"])
+        self.assertEqual(pred_result, ["Klara (#145) [0-1]"])
 
         # test visualization capability and plot generation
         recognizer.vis()

@@ -75,7 +75,7 @@ class ReferenceBuild:
         """
         Loads or obtains a pre-cached version of set reference.
         """
-        if set_name not in ReferenceBuild.supported_card_sets() | {"Master"}:
+        if set_name not in ReferenceBuild.supported_card_sets() | {"Master", "master"}:
             raise ValueError("Not a supported card reference set: " + str(set_name))
         if not hasattr(ReferenceBuild, "loaded_references"):
             ReferenceBuild.loaded_references = dict()
