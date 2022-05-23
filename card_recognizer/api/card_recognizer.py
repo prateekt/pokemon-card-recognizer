@@ -73,6 +73,7 @@ class CardRecognizer(Pipeline):
                 PullsEstimator(
                     num_cards_to_select=None,
                     suppress_plotly_output=suppress_plotly_output,
+                    figs_paging=True,
                 ),
                 PullsSummary(),
             ]

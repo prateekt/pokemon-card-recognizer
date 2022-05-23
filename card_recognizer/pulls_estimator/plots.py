@@ -1,5 +1,6 @@
 import os
-from typing import Optional, List
+from pathlib import Path
+from typing import Optional, List, Dict
 
 import ezplotly as ep
 import numpy as np
@@ -10,6 +11,25 @@ from card_recognizer.classifier.core.card_prediction_result import (
     Run,
 )
 from card_recognizer.reference.core.build import ReferenceBuild
+
+
+def _dedup(strs: List[str]) -> List[str]:
+    """
+    De-duplicate time series to avoid labels overlap. Replace duplicates with index ordering.
+
+    param strs: Strings list to dedup
+
+    Return:
+        strs: de-duped strs
+    """
+    encountered: Dict[str, int] = dict()
+    for i, s in enumerate(strs):
+        if s in encountered.keys():
+            strs[i] += " (" + str(encountered[s] + 1) + ")"
+            encountered[s] += 1
+        else:
+            encountered[s] = 1
+    return strs
 
 
 def plot_pull_time_series(
@@ -75,10 +95,9 @@ def plot_metrics(
         + str(runs[i].interval)
         for i, pull in enumerate(pulls)
     ]
-    unique_card_nums = [
-        "#" + str(reference.cards[pull].number) + ", [" + str(runs[i].interval) + "]"
-        for i, pull in enumerate(pulls)
-    ]
+    unique_card_nums = _dedup(
+        ["#" + str(reference.cards[pull].number) for i, pull in enumerate(pulls)]
+    )
 
     # card detection frequencies
     h: List[Optional[EZPlotlyPlot]] = [None] * (len(unique_card_names) + 3)
@@ -133,6 +152,113 @@ def plot_metrics(
     )
 
 
+def plot_paged_metrics(
+    frame_card_predictions: CardPredictionResult,
+    num_runs_per_page: int = 10,
+    outfile: Optional[str] = None,
+    suppress_output: bool = True,
+) -> None:
+    """
+    Plots metrics such as card detection frequencies, confidence score distributions, and confidence score maximum
+    per card.
+
+    param pull_stats: Precomputed pull statistics
+    outfile: Path to output file to save figure
+    suppress_output: Whether to suppress output
+    """
+
+    # determine num pages
+    all_runs = frame_card_predictions.runs
+    num_pages = int(np.ceil(len(all_runs) / num_runs_per_page))
+
+    # make plot pages
+    for page_num in range(0, num_pages):
+
+        # determine data to put on page
+        start = page_num * num_runs_per_page
+        stop = (page_num + 1) * num_runs_per_page
+        runs = all_runs[start:stop]
+        pulls = [run.card_index for run in runs]
+        reference = ReferenceBuild.get(frame_card_predictions.reference_set)
+        card_frequencies = [len(run) for run in runs]
+        max_confidence_scores = [run.max_confidence_score for run in runs]
+        selection_scores = [run.selection_score for run in runs]
+        page_out_file = outfile
+        if page_out_file is not None:
+            base_file = Path(os.path.basename(outfile)).stem
+            new_base_file = base_file + "_page" + str(page_num + 1)
+            page_out_file = page_out_file.replace(base_file, new_base_file)
+
+        # make labels
+        pull_card_names = [
+            reference.cards[pull].name
+            + " (#"
+            + str(reference.cards[pull].number)
+            + ") <br> frames "
+            + str(runs[i].interval)
+            for i, pull in enumerate(pulls)
+        ]
+        pull_card_runs = _dedup(
+            ["#" + str(reference.cards[pull].number) for i, pull in enumerate(pulls)]
+        )
+
+        # card detection frequencies
+        h: List[Optional[EZPlotlyPlot]] = [None] * (len(runs) + 3)
+        h[0] = ep.bar(
+            x=pull_card_runs,
+            y=card_frequencies,
+            ylabel="Frame Count",
+            x_dtick=1,
+            title="Card Detection Frequency",
+            text=[str(c) for c in card_frequencies],
+        )
+
+        # conf score distributions and max
+        for i in range(len(pull_card_names)):
+            frames = [
+                j
+                for j, pull in enumerate(frame_card_predictions)
+                if pull.card_index_in_reference == pulls[i]
+            ]
+            conf_scores = [frame_card_predictions[f].conf for f in frames]
+            h[i + 1] = ep.violin(
+                y=conf_scores,
+                name=pull_card_runs[i],
+                ylabel="Conf. Score",
+                title="Detection Confidence Scores Distribution",
+            )
+        h[-2] = ep.bar(
+            x=pull_card_runs,
+            y=max_confidence_scores,
+            ylabel="Max Conf.",
+            x_dtick=1,
+            title="Max Confidence Score",
+            text=[str(round(s, 2)) for s in max_confidence_scores],
+            ylim=[0, 1.0],
+            y_dtick=0.25,
+        )
+        h[-1] = ep.bar(
+            x=pull_card_names,
+            y=selection_scores,
+            ylabel="Sel. Score",
+            x_dtick=1,
+            title="Selection Score",
+            text=[str(round(s, 2)) for s in selection_scores],
+        )
+
+        # plot
+        panels = [1]
+        panels.extend([2 for _ in range(len(pull_card_names))])
+        panels.extend([3, 4])
+        ep.plot_all(
+            h,
+            panels=panels,
+            height=600,
+            outfile=page_out_file,
+            suppress_output=suppress_output,
+        )
+
+
 def plot_error_surface(
     runs: List[Run],
     outfile: Optional[str] = None,
@@ -178,9 +304,16 @@ def plot_pull_stats(
     output_fig_path: Optional[str] = None,
     suppress_plotly_output: bool = True,
     prefix: str = "out",
+    figs_paging: bool = False,
 ) -> None:
     """
     Make all plots for pull statistics.
+
+    param card_prediction_result: CardPredictionResult to plot
+    output_fig_path: Path to where output figs should go
+    suppress_plotly_output: Whether plotly web output should be suppressed (False if using in Jupyter environment)
+    prefix: Fig prefix for output figs
+    figs_paging: Whether figs should be paged.
     """
     if output_fig_path is not None:
         os.makedirs(output_fig_path, exist_ok=True)
@@ -200,11 +333,18 @@ def plot_pull_stats(
         suppress_output=suppress_plotly_output,
         outfile=time_series_fig_path,
     )
-    plot_metrics(
-        frame_card_predictions=card_prediction_result,
-        suppress_output=suppress_plotly_output,
-        outfile=metrics_fig_path,
-    )
+    if figs_paging:
+        plot_paged_metrics(
+            frame_card_predictions=card_prediction_result,
+            suppress_output=suppress_plotly_output,
+            outfile=metrics_fig_path,
+        )
+    else:
+        plot_metrics(
+            frame_card_predictions=card_prediction_result,
+            suppress_output=suppress_plotly_output,
+            outfile=metrics_fig_path,
+        )
     plot_error_surface(
         runs=card_prediction_result.runs,
         suppress_output=suppress_plotly_output,

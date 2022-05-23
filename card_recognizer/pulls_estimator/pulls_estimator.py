@@ -25,18 +25,20 @@ class PullsEstimator(Op):
         self,
         freq_t: Optional[int] = 5,
         conf_t: Optional[float] = 0.1,
+        run_tol: Optional[int] = 10,
         num_cards_to_select: Optional[int] = 10,
         output_fig_path: Optional[str] = None,
         suppress_plotly_output: bool = True,
-        run_tol: Optional[int] = 10,
+        figs_paging: bool = False,
     ):
         super().__init__(func=self.estimate_pull_series)
         self.freq_t: Optional[int] = freq_t
         self.conf_t: Optional[float] = conf_t
+        self.run_tol: Optional[int] = run_tol
         self.num_cards_to_select = num_cards_to_select
         self.output_fig_path = output_fig_path
         self.suppress_plotly_output = suppress_plotly_output
-        self.run_tol = run_tol
+        self.figs_paging = figs_paging
 
     def vis_input(self) -> None:
         """
@@ -48,6 +50,7 @@ class PullsEstimator(Op):
                 output_fig_path=self.output_fig_path,
                 suppress_plotly_output=self.suppress_plotly_output,
                 prefix="input",
+                figs_paging=self.figs_paging,
             )
 
     def vis(self) -> None:
@@ -61,6 +64,7 @@ class PullsEstimator(Op):
                 output_fig_path=self.output_fig_path,
                 suppress_plotly_output=self.suppress_plotly_output,
                 prefix="output",
+                figs_paging=self.figs_paging,
             )
 
     def save_input(self, out_path: str) -> None:
