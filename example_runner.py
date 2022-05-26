@@ -8,14 +8,13 @@ from card_recognizer.api.card_recognizer import CardRecognizer, Mode
 
 if __name__ == "__main__":
     timestamp = str(datetime.now())
-    """
-    pipeline = CardRecognizer(set_name="Vivid Voltage", mode=Mode.BOOSTER_PULLS_VIDEO)
+    pipeline = CardRecognizer(set_name="Brilliant Stars", mode=Mode.BOOSTER_PULLS_VIDEO)
     in_dir = os.sep + os.path.join(
         "media",
         "borg1",
         "Borg12TB",
         "card_recognizer_test_sets",
-        "vivid_voltage_3_2022",
+        "brilliant_stars_booster_box_5_2022",
     )
     out_dir = os.sep + os.path.join("media", "borg1", "Borg12TB", "card_rec_results")
     pipeline.set_summary_file(summary_file=os.path.join(in_dir, "pulls_summary_" + timestamp + ".tsv"))    
@@ -53,3 +52,4 @@ if __name__ == "__main__":
     pipeline.vis()
     pipeline.to_pickle(out_pkl_path=pipeline_pkl_path)
     print(result)
+    """

@@ -20,6 +20,7 @@ class TestPullsEstimator(unittest.TestCase):
         dir_path = os.path.dirname(os.path.realpath(__file__))
         self.pulls_filter = PullsEstimator(freq_t=5, conf_t=0.1, output_fig_path="figs")
         self.summary_file_path = os.path.join(dir_path, "summary_test.tsv")
+        self.summary_file_path = os.path.join(dir_path, "summary_test.tsv")
         self.test_input_video_path = os.path.join(dir_path, "inp.avi")
         self.pulls_summary = PullsSummary(
             input_video=self.test_input_video_path, summary_file=self.summary_file_path
@@ -48,7 +49,7 @@ class TestPullsEstimator(unittest.TestCase):
             CardPrediction(card_index_in_reference=2, conf=0.9, frame_index=35),
         ]
         self.pred_series = CardPredictionResult(predictions=predictions, num_frames=50)
-        self.pred_series.reference_set = "Master"
+        self.pred_series.reference_set = "Brilliant Stars"
 
     def test_pulls_filter(self) -> None:
         """
