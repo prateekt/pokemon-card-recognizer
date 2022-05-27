@@ -65,9 +65,10 @@ def plot_pull_time_series(
 
 
 def plot_metrics(
+    runs: List[Run],
     frame_card_predictions: CardPredictionResult,
-    outfile: Optional[str] = None,
-    suppress_output: bool = True,
+    outfile: Optional[str],
+    suppress_output: bool,
 ) -> None:
     """
     Plots metrics such as card detection frequencies, confidence score distributions, and confidence score maximum
@@ -78,8 +79,7 @@ def plot_metrics(
     suppress_output: Whether to suppress output
     """
 
-    # unpack results
-    runs = frame_card_predictions.runs
+    # unpack
     pulls = [run.card_index for run in runs]
     reference = ReferenceBuild.get(frame_card_predictions.reference_set)
     card_frequencies = [len(run) for run in runs]
@@ -87,7 +87,7 @@ def plot_metrics(
     selection_scores = [run.selection_score for run in runs]
 
     # make labels
-    unique_card_names = [
+    pull_card_names = [
         reference.cards[pull].name
         + " (#"
         + str(reference.cards[pull].number)
@@ -95,14 +95,14 @@ def plot_metrics(
         + str(runs[i].interval)
         for i, pull in enumerate(pulls)
     ]
-    unique_card_nums = _dedup(
+    pull_card_runs = _dedup(
         ["#" + str(reference.cards[pull].number) for i, pull in enumerate(pulls)]
     )
 
     # card detection frequencies
-    h: List[Optional[EZPlotlyPlot]] = [None] * (len(unique_card_names) + 3)
+    h: List[Optional[EZPlotlyPlot]] = [None] * (len(runs) + 3)
     h[0] = ep.bar(
-        x=unique_card_nums,
+        x=pull_card_runs,
         y=card_frequencies,
         ylabel="Frame Count",
         x_dtick=1,
@@ -111,7 +111,7 @@ def plot_metrics(
     )
 
     # conf score distributions and max
-    for i in range(len(unique_card_names)):
+    for i in range(len(pull_card_names)):
         frames = [
             j
             for j, pull in enumerate(frame_card_predictions)
@@ -120,12 +120,12 @@ def plot_metrics(
         conf_scores = [frame_card_predictions[f].conf for f in frames]
         h[i + 1] = ep.violin(
             y=conf_scores,
-            name=unique_card_nums[i],
+            name=pull_card_runs[i],
             ylabel="Conf. Score",
             title="Detection Confidence Scores Distribution",
         )
     h[-2] = ep.bar(
-        x=unique_card_nums,
+        x=pull_card_runs,
         y=max_confidence_scores,
         ylabel="Max Conf.",
         x_dtick=1,
@@ -135,7 +135,7 @@ def plot_metrics(
         y_dtick=0.25,
     )
     h[-1] = ep.bar(
-        x=unique_card_names,
+        x=pull_card_names,
         y=selection_scores,
         ylabel="Sel. Score",
         x_dtick=1,
@@ -145,10 +145,14 @@ def plot_metrics(
 
     # plot
     panels = [1]
-    panels.extend([2 for _ in range(len(unique_card_names))])
+    panels.extend([2 for _ in range(len(pull_card_names))])
     panels.extend([3, 4])
     ep.plot_all(
-        h, panels=panels, height=600, outfile=outfile, suppress_output=suppress_output
+        h,
+        panels=panels,
+        height=600,
+        outfile=outfile,
+        suppress_output=suppress_output,
     )
 
 
@@ -177,83 +181,17 @@ def plot_paged_metrics(
         # determine data to put on page
         start = page_num * num_runs_per_page
         stop = (page_num + 1) * num_runs_per_page
-        runs = all_runs[start:stop]
-        pulls = [run.card_index for run in runs]
-        reference = ReferenceBuild.get(frame_card_predictions.reference_set)
-        card_frequencies = [len(run) for run in runs]
-        max_confidence_scores = [run.max_confidence_score for run in runs]
-        selection_scores = [run.selection_score for run in runs]
+        page_runs = all_runs[start:stop]
         page_out_file = outfile
         if page_out_file is not None:
             base_file = Path(os.path.basename(outfile)).stem
             new_base_file = base_file + "_page" + str(page_num + 1)
             page_out_file = page_out_file.replace(base_file, new_base_file)
 
-        # make labels
-        pull_card_names = [
-            reference.cards[pull].name
-            + " (#"
-            + str(reference.cards[pull].number)
-            + ") <br> frames "
-            + str(runs[i].interval)
-            for i, pull in enumerate(pulls)
-        ]
-        pull_card_runs = _dedup(
-            ["#" + str(reference.cards[pull].number) for i, pull in enumerate(pulls)]
-        )
-
-        # card detection frequencies
-        h: List[Optional[EZPlotlyPlot]] = [None] * (len(runs) + 3)
-        h[0] = ep.bar(
-            x=pull_card_runs,
-            y=card_frequencies,
-            ylabel="Frame Count",
-            x_dtick=1,
-            title="Card Detection Frequency",
-            text=[str(c) for c in card_frequencies],
-        )
-
-        # conf score distributions and max
-        for i in range(len(pull_card_names)):
-            frames = [
-                j
-                for j, pull in enumerate(frame_card_predictions)
-                if pull.card_index_in_reference == pulls[i]
-            ]
-            conf_scores = [frame_card_predictions[f].conf for f in frames]
-            h[i + 1] = ep.violin(
-                y=conf_scores,
-                name=pull_card_runs[i],
-                ylabel="Conf. Score",
-                title="Detection Confidence Scores Distribution",
-            )
-        h[-2] = ep.bar(
-            x=pull_card_runs,
-            y=max_confidence_scores,
-            ylabel="Max Conf.",
-            x_dtick=1,
-            title="Max Confidence Score",
-            text=[str(round(s, 2)) for s in max_confidence_scores],
-            ylim=[0, 1.0],
-            y_dtick=0.25,
-        )
-        h[-1] = ep.bar(
-            x=pull_card_names,
-            y=selection_scores,
-            ylabel="Sel. Score",
-            x_dtick=1,
-            title="Selection Score",
-            text=[str(round(s, 2)) for s in selection_scores],
-        )
-
-        # plot
-        panels = [1]
-        panels.extend([2 for _ in range(len(pull_card_names))])
-        panels.extend([3, 4])
-        ep.plot_all(
-            h,
-            panels=panels,
-            height=600,
+        # make page
+        plot_metrics(
+            runs=page_runs,
+            frame_card_predictions=frame_card_predictions,
             outfile=page_out_file,
             suppress_output=suppress_output,
         )
@@ -341,6 +279,7 @@ def plot_pull_stats(
         )
     else:
         plot_metrics(
+            runs=card_prediction_result.runs,
             frame_card_predictions=card_prediction_result,
             suppress_output=suppress_plotly_output,
             outfile=metrics_fig_path,
