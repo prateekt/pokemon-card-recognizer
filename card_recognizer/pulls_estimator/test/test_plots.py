@@ -35,6 +35,7 @@ class TestPlotPaging(unittest.TestCase):
             predictions=predictions, num_frames=num_frames, run_tol=0
         )
         self.pred_series.reference_set = "Master"
+        self.clear_plots = True
 
     def test_paging(self):
         """
@@ -52,4 +53,5 @@ class TestPlotPaging(unittest.TestCase):
             )
 
     def tearDown(self) -> None:
-        shutil.rmtree(self.figs_path)
+        if self.clear_plots:
+            shutil.rmtree(self.figs_path)

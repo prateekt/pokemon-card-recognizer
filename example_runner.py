@@ -17,7 +17,9 @@ if __name__ == "__main__":
         "brilliant_stars_booster_box_5_2022",
     )
     out_dir = os.sep + os.path.join("media", "borg1", "Borg12TB", "card_rec_results")
-    pipeline.set_summary_file(summary_file=os.path.join(in_dir, "pulls_summary_" + timestamp + ".tsv"))    
+    pipeline.set_summary_file(
+        summary_file=os.path.join(in_dir, "pulls_summary_" + timestamp + ".tsv")
+    )
     videos = natsorted(
         [
             os.path.join(in_dir, video)
