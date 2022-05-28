@@ -30,6 +30,7 @@ class ReferenceBuild:
             "Evolving Skies",
             "Fusion Strike",
             "Brilliant Stars",
+            "Astral Radiance",
         }
         return card_sets
 
