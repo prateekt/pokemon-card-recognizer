@@ -3,7 +3,7 @@ conda_dev:
 	conda env create -f conda_osx.yaml
 
 conda_deploy:
-	conda env remove -n card_rec_py39
+	conda env remove -n card_rec_env
 	conda env create -f conda_linux.yaml
 
 build_reference:
