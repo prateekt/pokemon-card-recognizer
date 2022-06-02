@@ -2,6 +2,7 @@ import os
 import sys
 from typing import List, Dict, Set
 
+import algo_ops.plot.settings as plot_settings
 from pokemontcgsdk import Card
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
@@ -192,6 +193,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("USAGE: python build.py [PGTCGSDK_API_KEY]")
     else:
+        plot_settings.SUPPRESS_PLOTS = True
         ptcgsdk_api_key_val = sys.argv[0]
         ReferenceBuild.build(ptcgsdk_api_key=ptcgsdk_api_key_val)
         ReferenceBuild.make_eval_plots()

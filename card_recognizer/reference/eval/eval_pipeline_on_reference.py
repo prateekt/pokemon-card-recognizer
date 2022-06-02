@@ -2,6 +2,7 @@ import functools
 import os
 from typing import List, Optional
 
+import algo_ops.plot.settings as plot_settings
 import pandas as pd
 from natsort import natsorted
 from pokemontcgsdk import Card
@@ -48,6 +49,9 @@ def main():
     Script to evaluate each individual set model accuracy on all set card images. Reports an accuracy per set and per
     rule for each model tested on the correct set.
     """
+
+    # set plot settings
+    plot_settings.SUPPRESS_PLOTS = True
 
     # create results sample_data frame
     results_df = pd.DataFrame(
