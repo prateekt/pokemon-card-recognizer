@@ -1,15 +1,15 @@
 import os
-import shutil
-import unittest
 import random
+import unittest
+
+import algo_ops.plot.settings as plot_settings
+from algo_ops.dependency.tester_util import clean_paths
 
 from card_recognizer.classifier.core.card_prediction_result import (
     CardPrediction,
     CardPredictionResult,
 )
-from card_recognizer.pulls_estimator.plots import (
-    plot_paged_metrics,
-)
+from card_recognizer.pulls_estimator.plots import plot_paged_metrics
 
 
 class TestPlotPaging(unittest.TestCase):
@@ -17,6 +17,9 @@ class TestPlotPaging(unittest.TestCase):
         """
         Setup synthetic time series to test plot paging.
         """
+
+        # setup plot settings for testing
+        plot_settings.SUPPRESS_PLOTS = True
 
         # setup paths
         dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -54,4 +57,4 @@ class TestPlotPaging(unittest.TestCase):
 
     def tearDown(self) -> None:
         if self.clear_plots:
-            shutil.rmtree(self.figs_path)
+            clean_paths(dirs=(self.figs_path,))

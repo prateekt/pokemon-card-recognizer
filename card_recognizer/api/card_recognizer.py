@@ -3,10 +3,9 @@ from enum import Enum
 from typing import Optional, Any
 
 from algo_ops.ops.op import Op
-from algo_ops.ops.text import TextOp
 from algo_ops.pipeline.pipeline import Pipeline
 from ocr_ops.framework.op.ffmpeg_op import FFMPEGOp
-from ocr_ops.framework.op.ocr_op import OCRMethod
+from ocr_ops.framework.pipeline.ocr_pipeline import OCRMethod
 from ocr_ops.instances import ocr
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
@@ -32,7 +31,6 @@ class CardRecognizer(Pipeline):
         set_name: Optional[str] = "master",
         classification_method: str = "shared_words",
         mode: Mode = Mode.SINGLE_IMAGE,
-        suppress_plotly_output: bool = True,
     ):
 
         # load classifier
@@ -44,58 +42,54 @@ class CardRecognizer(Pipeline):
         )
 
         # load OCR pipeline
-        ocr_pipeline = ocr.basic_ocr_with_text_cleaning_pipeline(
-            vocab_words=self.classifier.reference.vocab(), ocr_method=OCRMethod.EASYOCR
+        self.ocr_pipeline = ocr.basic_ocr_with_text_cleaning_pipeline(
+            vocab_words=self.classifier.reference.vocab(),
+            ocr_method=OCRMethod.EASYOCR,
         )
 
         # make pipeline
         if mode == Mode.VIDEO:
-            ops = [FFMPEGOp(), TextOp(ocr_pipeline.run_on_images), self.classifier]
+            ops = [FFMPEGOp(), self.ocr_pipeline, self.classifier]
         elif mode == Mode.SINGLE_IMAGE:
-            ops = [ocr_pipeline, self.classifier]
+            ops = [self.ocr_pipeline, self.classifier]
         elif mode == Mode.IMAGE_DIR:
-            ops = [TextOp(ocr_pipeline.run_on_images), self.classifier]
+            ops = [self.ocr_pipeline, self.classifier]
         elif mode == Mode.PULLS_IMAGE_DIR:
             ops = [
-                TextOp(ocr_pipeline.run_on_images),
+                self.ocr_pipeline,
                 self.classifier,
                 PullsEstimator(
                     num_cards_to_select=None,
-                    suppress_plotly_output=suppress_plotly_output,
                 ),
                 PullsSummary(),
             ]
         elif mode == Mode.PULLS_VIDEO:
             ops = [
                 FFMPEGOp(),
-                TextOp(ocr_pipeline.run_on_images),
+                self.ocr_pipeline,
                 self.classifier,
                 PullsEstimator(
                     num_cards_to_select=None,
-                    suppress_plotly_output=suppress_plotly_output,
                     figs_paging=True,
                 ),
                 PullsSummary(),
             ]
         elif mode == Mode.BOOSTER_PULLS_IMAGE_DIR:
             ops = [
-                TextOp(ocr_pipeline.run_on_images),
+                self.ocr_pipeline,
                 self.classifier,
                 PullsEstimator(
-                    freq_t=None,
-                    conf_t=None,
-                    suppress_plotly_output=suppress_plotly_output,
+                    min_run_length=None,
+                    min_run_conf=None,
                 ),
                 PullsSummary(),
             ]
         elif mode == Mode.BOOSTER_PULLS_VIDEO:
             ops = [
                 FFMPEGOp(),
-                TextOp(ocr_pipeline.run_on_images),
+                self.ocr_pipeline,
                 self.classifier,
-                PullsEstimator(
-                    suppress_plotly_output=suppress_plotly_output,
-                ),
+                PullsEstimator(),
                 PullsSummary(),
             ]
         else:
@@ -118,6 +112,8 @@ class CardRecognizer(Pipeline):
         pulls_estimator_op = self.find_op_by_class(op_class=PullsEstimator)
         if pulls_estimator_op is not None:
             pulls_estimator_op.output_fig_path = output_path
+        autosave_path = os.path.join(output_path, "ocr_bounding_boxes")
+        self.ocr_pipeline.autosave_img_path = autosave_path
 
     def set_summary_file(self, summary_file: str):
         """

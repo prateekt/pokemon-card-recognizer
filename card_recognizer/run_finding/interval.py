@@ -7,6 +7,11 @@ class Interval:
     """
 
     def __init__(self, start: int, end: int):
+        """
+        param start: Start (inclusive) of interval
+        param end: End (exclusive) of interval
+        """
+
         if start < 0:
             raise ValueError("Range start must be >= 0.")
         if end < 0:
@@ -36,6 +41,11 @@ class Run:
     def __init__(
         self, interval: Interval, card_index: int, confidence_scores: Dict[int, float]
     ):
+        """
+        param interval: The interval of the run
+        param card_index: The run is of this card index
+        confidence_scores: Dict mapping frame number -> confidence score
+        """
         self.interval = interval
         self.card_index = card_index
         self.confidence_scores = confidence_scores

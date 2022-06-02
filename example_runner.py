@@ -1,8 +1,8 @@
-from datetime import datetime
 import os
+from datetime import datetime
 
+from algo_ops.dependency import sys_util
 from natsort import natsorted
-from ocr_ops.dependency import sys_util
 
 from card_recognizer.api.card_recognizer import CardRecognizer, Mode
 

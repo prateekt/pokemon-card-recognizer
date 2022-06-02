@@ -13,11 +13,17 @@ class PullsSummary(TextOp):
     """
 
     def __init__(
-        self, input_video: Optional[str] = None, summary_file: Optional[str] = None
+        self,
+        summary_file: Optional[str] = None,
+        input_file: Optional[str] = None,
     ):
+        """
+        param summary_file: Path to where summary file should be written. If None, no summary file is written.
+        param input_file: If applicable, path to input file being processed (e.g. a video file).
+        """
         super().__init__(func=self.make_pulls_summary)
         self.summary_file = summary_file
-        self.input_video = input_video
+        self.input_file = input_file
 
     def make_pulls_summary(
         self,
@@ -26,7 +32,7 @@ class PullsSummary(TextOp):
         """
         Simply lists the unique pulled cards in the runs.
 
-        param frame_card_predictions: The card predictions in frames.
+        param card_predictions: The card predictions in frames.
 
         Returns:
             Listing of pulled Pokémon cards
@@ -63,7 +69,7 @@ class PullsSummary(TextOp):
                     )
                     header = "\t".join(header_cols) + "\n"
                     file_out.write(header)
-                line = str(self.input_video) + "\t"
+                line = str(self.input_file) + "\t"
                 line += "\t".join(unique_card_names) + "\n"
                 file_out.write(line)
 

@@ -75,6 +75,11 @@ class ReferenceBuild:
     def get(set_name: str) -> CardReference:
         """
         Loads or obtains a pre-cached version of set reference.
+
+        param set_name: The set to get
+
+        Return:
+            Set Card Reference
         """
         if set_name not in ReferenceBuild.supported_card_sets() | {"Master", "master"}:
             raise ValueError("Not a supported card reference set: " + str(set_name))
@@ -90,6 +95,11 @@ class ReferenceBuild:
     def _load(set_name: str) -> CardReference:
         """
         Load built reference for set.
+
+        param set_name: The set to load
+
+        Return:
+            Set Card Reference
         """
         ref_build_path = ReferenceBuild.get_set_pkl_path(set_name=set_name)
         return CardReference.load_from_pickle(pkl_path=ref_build_path)
@@ -113,7 +123,7 @@ class ReferenceBuild:
         Downloads images and builds reference for all card sets.
 
         param ptcgsdk_api_key: The API key for PTCGSDK
-        param download_images: Whether to download images or skip if already downloaded
+        param download_images: Whether to download images (or skip if already downloaded)
         """
 
         # init pokemon sdk API

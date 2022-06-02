@@ -1,6 +1,8 @@
 import os
-import shutil
 import unittest
+
+import algo_ops.plot.settings as plot_settings
+from algo_ops.dependency.tester_util import clean_paths
 
 from card_recognizer.api.card_recognizer import CardRecognizer, Mode
 from card_recognizer.classifier.core.card_prediction_result import (
@@ -11,6 +13,11 @@ from card_recognizer.classifier.core.card_prediction_result import (
 
 class TestEndtoEnd(unittest.TestCase):
     def setUp(self) -> None:
+
+        # suppress plotting for testing
+        plot_settings.SUPPRESS_PLOTS = True
+
+        # paths
         self.single_frames_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "single_images"
         )
@@ -22,6 +29,9 @@ class TestEndtoEnd(unittest.TestCase):
         recognizer = CardRecognizer(set_name="master", mode=Mode.SINGLE_IMAGE)
         klara_path = os.path.join(self.single_frames_path, "klara.png")
         pred_result = recognizer.exec(inp=klara_path)
+
+        # check that there is only one result (Klara, frame 0),
+        # and that the no-call frame was not returned as a result.
         self.assertTrue(isinstance(pred_result, CardPredictionResult))
         self.assertEqual(len(pred_result), 1)
         card_pred = pred_result[0]
@@ -40,10 +50,9 @@ class TestEndtoEnd(unittest.TestCase):
         recognizer = CardRecognizer(set_name="master", mode=Mode.IMAGE_DIR)
         pred_result = recognizer.exec(inp=self.single_frames_path)
 
-        # check that there is only one result (Klara, frame 0),
-        # and that the no-call frame was not returned as a result.
+        # without filters, there should be two results. The first is Klara.
         self.assertTrue(isinstance(pred_result, CardPredictionResult))
-        self.assertEqual(len(pred_result), 1)
+        self.assertEqual(len(pred_result), 2)
         card_pred = pred_result[0]
         self.assertTrue(isinstance(card_pred, CardPrediction))
         self.assertEqual(card_pred.frame_index, 0)
@@ -63,8 +72,10 @@ class TestEndtoEnd(unittest.TestCase):
         )
         recognizer.set_output_path(output_path="out_figs")
         pred_result = recognizer.exec(inp=self.single_frames_path)
-        self.assertEqual(len(pred_result), 1)
-        self.assertEqual(pred_result, ["Klara (#145) [0-1]"])
+        self.assertEqual(len(pred_result), 2)
+        self.assertEqual(
+            pred_result, ["Klara (#145) [0-1]", "Dracozolt VMAX (#59) [1-2]"]
+        )
 
         # test visualization capability and plot generation
         recognizer.vis()
@@ -81,4 +92,4 @@ class TestEndtoEnd(unittest.TestCase):
         )
         self.assertTrue(os.path.exists(os.path.join("out_figs", "input_metrics.png")))
         self.assertTrue(os.path.exists(os.path.join("out_figs", "output_metrics.png")))
-        shutil.rmtree("out_figs")
+        clean_paths(dirs=("out_figs",))

@@ -1,6 +1,7 @@
 from typing import Dict
 from typing import Optional, List
 
+import algo_ops.plot.settings as plot_settings
 import ezplotly as ep
 import ezplotly_bio as epb
 import pandas as pd
@@ -20,7 +21,7 @@ def plot_word_entropies(
     """
     Plot world entropies for a particular card reference.
 
-    param set_name: The name of the set
+    param reference: The card reference
     outfile: File to output figure to
     """
     word_probs = reference.ref_mat / reference.ref_mat.sum(axis=0)
@@ -41,6 +42,7 @@ def plot_word_counts(
     """
     Plot word count distribution for sets.
 
+    param references: Dict mapping reference name -> CardReference object
     param outfile: Path to file output figure
     """
     h: List[Optional[EZPlotlyPlot]] = [None] * len(references.keys())
@@ -58,7 +60,7 @@ def plot_word_counts(
         panels=[1] * len(references.keys()),
         showlegend=True,
         outfile=outfile,
-        suppress_output=True,
+        suppress_output=plot_settings.SUPPRESS_PLOTS,
     )
 
 
@@ -99,7 +101,7 @@ def plot_classifier_sensitivity_curve(
         panels=[1] * len(h),
         showlegend=True,
         outfile=outfile,
-        suppress_output=True,
+        suppress_output=plot_settings.SUPPRESS_PLOTS,
         height=500,
     )
 
@@ -127,5 +129,9 @@ def plot_classifier_rules_performance(
             title="Performance of Classifier Rules",
         )
     ep.plot_all(
-        h, panels=[1] * len(h), showlegend=True, suppress_output=True, outfile=outfile
+        h,
+        panels=[1] * len(h),
+        showlegend=True,
+        suppress_output=plot_settings.SUPPRESS_PLOTS,
+        outfile=outfile,
     )

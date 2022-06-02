@@ -26,6 +26,9 @@ def _eval_prediction(
     inp: str,
     pred: CardPredictionResult,
 ) -> bool:
+    """
+    Helper function for evaluating predictions.
+    """
     gt_card_num = card_files.index(os.path.basename(inp))
     assert isinstance(pred, CardPredictionResult)
     if len(pred) == 0:
@@ -63,12 +66,14 @@ def main():
 
         # test different classifier rules
         acc_results: List[float] = list()
-        for classifier_rule in ["l1", "shared_words", "shared_words_rarity"]:
+        for classifier_rule in ("l1", "shared_words", "shared_words_rarity"):
 
             # init pipeline
             pipeline = CardRecognizer(
                 set_name=set_name, classification_method=classifier_rule
             )
+
+            # evaluate pipeline on card files
             card_files = [
                 os.path.basename(card.images.large)
                 for card in pipeline.classifier.reference.cards

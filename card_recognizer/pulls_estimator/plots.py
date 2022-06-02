@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from typing import Optional, List, Dict
 
+import algo_ops.plot.settings as plot_settings
 import ezplotly as ep
 import numpy as np
 from ezplotly import EZPlotlyPlot
@@ -35,14 +36,12 @@ def _dedup(strs: List[str]) -> List[str]:
 def plot_pull_time_series(
     frame_card_predictions: CardPredictionResult,
     outfile: Optional[str] = None,
-    suppress_output: bool = True,
 ) -> None:
     """
     Plot time series of card detections.
 
-    param pull_stats: Precomputed pull statistics
+    param frame_card_predictions: CardPredictionResult to plot
     outfile: Path to output file to save figure
-    suppress_output: Whether to suppress output
     """
     reference = ReferenceBuild.get(frame_card_predictions.reference_set)
     y_labels = [None] * frame_card_predictions.num_frames
@@ -61,22 +60,23 @@ def plot_pull_time_series(
         y_dtick=1,
         title="Pokemon Cards Shown in Video",
     )
-    ep.plot_all(h, height=500, outfile=outfile, suppress_output=suppress_output)
+    ep.plot_all(
+        h, height=500, outfile=outfile, suppress_output=plot_settings.SUPPRESS_PLOTS
+    )
 
 
 def plot_metrics(
     runs: List[Run],
     frame_card_predictions: CardPredictionResult,
     outfile: Optional[str],
-    suppress_output: bool,
 ) -> None:
     """
     Plots metrics such as card detection frequencies, confidence score distributions, and confidence score maximum
     per card.
 
-    param pull_stats: Precomputed pull statistics
-    outfile: Path to output file to save figure
-    suppress_output: Whether to suppress output
+    param runs: List of card runs to plot
+    param frame_card_predictions: CardPredictionResult to plot
+    param outfile: Path to output file to save figure
     """
 
     # unpack
@@ -152,7 +152,7 @@ def plot_metrics(
         panels=panels,
         height=600,
         outfile=outfile,
-        suppress_output=suppress_output,
+        suppress_output=plot_settings.SUPPRESS_PLOTS,
     )
 
 
@@ -160,15 +160,14 @@ def plot_paged_metrics(
     frame_card_predictions: CardPredictionResult,
     num_runs_per_page: int = 10,
     outfile: Optional[str] = None,
-    suppress_output: bool = True,
 ) -> None:
     """
     Plots metrics such as card detection frequencies, confidence score distributions, and confidence score maximum
     per card.
 
-    param pull_stats: Precomputed pull statistics
+    param frame_card_predictions: CardPredictionResult to plot
+    param num_runs_per_page: The number of runs to put on a fig page
     outfile: Path to output file to save figure
-    suppress_output: Whether to suppress output
     """
 
     # determine num pages
@@ -193,21 +192,18 @@ def plot_paged_metrics(
             runs=page_runs,
             frame_card_predictions=frame_card_predictions,
             outfile=page_out_file,
-            suppress_output=suppress_output,
         )
 
 
 def plot_error_surface(
     runs: List[Run],
     outfile: Optional[str] = None,
-    suppress_output: bool = True,
 ) -> None:
     """
     Plots error surface.
 
-    param pull_stats: Precomputed pull statistics
-    outfile: Path to output file to save figure
-    suppress_output: Whether to suppress output
+    param runs: List of card runs to plot
+    param outfile: Path to output file to save figure
     """
 
     # unpack tuple
@@ -234,13 +230,14 @@ def plot_error_surface(
         ylabel="Confidence Score Threshold",
         title="Error Surface",
     )
-    ep.plot_all(h, height=300, outfile=outfile, suppress_output=suppress_output)
+    ep.plot_all(
+        h, height=300, outfile=outfile, suppress_output=plot_settings.SUPPRESS_PLOTS
+    )
 
 
 def plot_pull_stats(
     card_prediction_result: CardPredictionResult,
     output_fig_path: Optional[str] = None,
-    suppress_plotly_output: bool = True,
     prefix: str = "out",
     figs_paging: bool = False,
 ) -> None:
@@ -249,7 +246,6 @@ def plot_pull_stats(
 
     param card_prediction_result: CardPredictionResult to plot
     output_fig_path: Path to where output figs should go
-    suppress_plotly_output: Whether plotly web output should be suppressed (False if using in Jupyter environment)
     prefix: Fig prefix for output figs
     figs_paging: Whether figs should be paged.
     """
@@ -268,24 +264,20 @@ def plot_pull_stats(
         error_surface_fig_path = None
     plot_pull_time_series(
         frame_card_predictions=card_prediction_result,
-        suppress_output=suppress_plotly_output,
         outfile=time_series_fig_path,
     )
     if figs_paging:
         plot_paged_metrics(
             frame_card_predictions=card_prediction_result,
-            suppress_output=suppress_plotly_output,
             outfile=metrics_fig_path,
         )
     else:
         plot_metrics(
             runs=card_prediction_result.runs,
             frame_card_predictions=card_prediction_result,
-            suppress_output=suppress_plotly_output,
             outfile=metrics_fig_path,
         )
     plot_error_surface(
         runs=card_prediction_result.runs,
-        suppress_output=suppress_plotly_output,
         outfile=error_surface_fig_path,
     )

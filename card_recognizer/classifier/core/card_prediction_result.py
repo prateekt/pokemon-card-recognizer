@@ -73,6 +73,11 @@ class CardPredictionResult(PickleableObject):
         run_tol: int = 5,
         num_frames: Optional[int] = None,
     ):
+        """
+        param predictions: The list of card predictions made
+        run_tol: When defining runs, the run tolerance to noise parameter
+        num_frames: The number of frames processed in the video or image directory (if applicable)
+        """
         self.predictions: List[CardPrediction] = predictions
         self.input_path: Optional[str] = None
         self.num_frames: Optional[int] = num_frames
@@ -96,12 +101,13 @@ class CardPredictionResult(PickleableObject):
         self, interval: Interval, card_index: int
     ) -> List[CardPrediction]:
         """
-        Query card predictions in interval.
+        Query card predictions in interval of a particular card.
 
         param interval: The frame index interval in time series to query
+        param card_index: The card index to look for
 
         Return:
-            List of card predictions in range
+            List of card predictions of card_index in frame interval
         """
         preds_in_range: List[CardPrediction] = list()
         for card_pred in self.predictions:
@@ -118,9 +124,10 @@ class CardPredictionResult(PickleableObject):
         self, interval: Interval, card_index: int
     ) -> Dict[int, float]:
         """
-        Query confidence scores in interval.
+        Query confidence scores in interval of a particular card.
 
         param range: The frame index range to query
+        param card_index: The card index to look for
 
         Return:
             conf_in_range: Dict mapping frame_index -> conf score
@@ -177,7 +184,7 @@ class CardPredictionResult(PickleableObject):
         """
         Finds runs of a card detection in consecutive frames.
 
-        param frame_card_predictions: Frame-wise prediction of cards
+        param run_tol: How many frames consecutively can be noise predictions to collapse one run into another.
 
         Returns:
             List of detected card runs

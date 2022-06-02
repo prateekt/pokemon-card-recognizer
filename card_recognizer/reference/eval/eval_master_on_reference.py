@@ -75,10 +75,13 @@ def main():
         # test different classifier rules
         acc_results: List[float] = list()
         for classifier_rule in WordClassifier.get_supported_classifier_methods():
+
             # init pipeline
             pipeline = CardRecognizer(
                 set_name="master", classification_method=classifier_rule
             )
+
+            # evaluate on card files
             card_files = [
                 os.path.join(
                     _correct_set_name(card.set.name),

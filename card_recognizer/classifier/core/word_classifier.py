@@ -4,6 +4,7 @@ from typing import List, Optional, Union
 import numpy as np
 from algo_ops.ops.text import TextOp
 from algo_ops.paraloop import paraloop
+from ocr_ops.framework.struct.ocr_result import OCRResult
 
 from card_recognizer.classifier.core.card_prediction_result import (
     CardPrediction,
@@ -28,6 +29,11 @@ class WordClassifier(TextOp):
         vect_method: str = "basic",
         classification_method: str = "shared_words",
     ):
+        """
+        param ref_pkl_path: Path to reference pickled model
+        param vect_method: Method used to convert words to vector
+        param method: The classification method to identify card number from the word vector
+        """
         super().__init__(func=self.classify)
 
         # load reference and vocab
@@ -58,7 +64,7 @@ class WordClassifier(TextOp):
         """
         Sets up classification rule function to method.
 
-        param method: The classification method to use
+        param method: The classification method to identify card number from the word vector
         """
         if method == "l1":
             self.classification_func = functools.partial(
@@ -83,10 +89,8 @@ class WordClassifier(TextOp):
         """
         Classify a single OCR result.
 
-        param classification_func: The classification function to identify card number
-            from the word vector
-        param ocr_result: The raw OCR result
         param include_probs: Whether to include probabilities for all cards
+        ocr_words: List of input words to classify
 
         return:
             prediction: CardPrediction object if card was detected or None if no vocab words were detected in image.
@@ -120,6 +124,10 @@ class WordClassifier(TextOp):
         """
         Classify multiple OCR results.
 
+        ocr_words: List of input words to classify
+        param include_probs: Whether to include probabilities for all cards
+        param mechanism: Paraloop mechanism to use to produce multiple predictions
+
         return:
             card_prediction_result: CardPredictionResult object
         """
@@ -138,16 +146,34 @@ class WordClassifier(TextOp):
 
     def classify(
         self,
-        ocr_words: Union[List[str], List[List[str]]],
+        ocr_words: Union[OCRResult, List[OCRResult], List[str], List[List[str]]],
         include_probs: bool = False,
         mechanism: str = "pool",
     ) -> CardPredictionResult:
         """
         Classify OCR result(s).
 
+        ocr_words: OCRResult, List of OCR Results or Lists of input words to classify
+        param include_probs: Whether to include probabilities for all cards
+        param mechanism: Paraloop mechanism to use to produce multiple predictions
+
         return:
             card_prediction_result: CardPredictionResult object for classification task
         """
+
+        # unpack OCRResult and List[OCRResult]
+        if isinstance(ocr_words, OCRResult):
+            # extract OCRResult into List[str]
+            ocr_words = ocr_words.words
+        elif (
+            isinstance(ocr_words, list)
+            and len(ocr_words) > 0
+            and isinstance(ocr_words[0], OCRResult)
+        ):
+            # extract List[OCRResult] into List[List[str]]
+            ocr_words = [text_box.words for text_box in ocr_words]
+
+        # handle processing of List[str] and List[List[str]] cases
         if len(ocr_words) == 0:
             rtn = CardPredictionResult(predictions=[])
         elif not isinstance(ocr_words[0], list):

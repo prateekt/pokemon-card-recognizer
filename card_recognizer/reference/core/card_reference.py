@@ -16,6 +16,7 @@ class CardReference(PickleableObject):
         (generally a card set like Fusion Strike).
 
         param cards: List of card objects
+        param name: The name of the set
         """
 
         # create vocabulary

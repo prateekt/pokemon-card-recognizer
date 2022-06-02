@@ -1,6 +1,8 @@
 import os
 import unittest
 
+from algo_ops.dependency.tester_util import clean_paths
+
 from card_recognizer.classifier.core.card_prediction_result import (
     CardPrediction,
     CardPredictionResult,
@@ -46,4 +48,4 @@ class TestCardPredictionResult(unittest.TestCase):
         self.assertTrue(len(loaded_obj), 3)
         self.assertEqual(loaded_obj[1].frame_index, None)
         self.assertEqual(loaded_obj[2].conf, 1.0)
-        os.unlink("test.pkl")
+        clean_paths(files=("test.pkl",))

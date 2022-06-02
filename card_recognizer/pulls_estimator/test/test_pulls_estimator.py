@@ -1,8 +1,9 @@
 import os
-import shutil
 import unittest
 
+import algo_ops.plot.settings as plot_settings
 import pandas as pd
+from algo_ops.dependency.tester_util import clean_paths
 from algo_ops.pipeline.pipeline import Pipeline
 
 from card_recognizer.classifier.core.card_prediction_result import (
@@ -14,18 +15,30 @@ from card_recognizer.pulls_estimator.pulls_summary import PullsSummary
 
 
 class TestPullsEstimator(unittest.TestCase):
+    @staticmethod
+    def _clean_env() -> None:
+        clean_paths(
+            dirs=("figs", "pulls_pipeline_profile", "test_output_save"),
+            files=("summary_test.tsv",),
+        )
+
     def setUp(self) -> None:
+
+        # disable dynamic plotting
+        plot_settings.SUPPRESS_PLOTS = True
 
         # setup paths
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        self.pulls_filter = PullsEstimator(freq_t=5, conf_t=0.1, output_fig_path="figs")
-        self.summary_file_path = os.path.join(dir_path, "summary_test.tsv")
-        self.summary_file_path = os.path.join(dir_path, "summary_test.tsv")
         self.test_input_video_path = os.path.join(dir_path, "inp.avi")
-        self.pulls_summary = PullsSummary(
-            input_video=self.test_input_video_path, summary_file=self.summary_file_path
+        self._clean_env()
+
+        # setup pipeline components
+        self.pulls_estimator = PullsEstimator(
+            min_run_length=5, min_run_conf=0.1, output_figs_path="figs"
         )
-        self.figs_path = os.path.join(dir_path, "figs")
+        self.pulls_summary = PullsSummary(
+            input_file=self.test_input_video_path, summary_file="summary_test.tsv"
+        )
 
         # make synthetic card prediction series
         predictions = [
@@ -51,14 +64,14 @@ class TestPullsEstimator(unittest.TestCase):
         self.pred_series = CardPredictionResult(predictions=predictions, num_frames=50)
         self.pred_series.reference_set = "Brilliant Stars"
 
-    def test_pulls_filter(self) -> None:
+    def test_pulls_estimator(self) -> None:
         """
-        Test basic functionality.
+        Test basic functionality of pulls estimator.
         """
 
         # run filter
         self.assertEqual(len(self.pred_series.runs), 6)
-        output_preds = self.pulls_filter.estimate_pull_series(
+        output_preds = self.pulls_estimator.estimate_pull_series(
             frame_card_predictions=self.pred_series
         )
         self.assertEqual(len(output_preds.runs), 3)
@@ -75,11 +88,10 @@ class TestPullsEstimator(unittest.TestCase):
         )
 
         # check generated summary file
-        self.assertTrue(os.path.exists(self.summary_file_path))
-        df = pd.read_csv(self.summary_file_path, sep="\t")
+        self.assertTrue(os.path.exists("summary_test.tsv"))
+        df = pd.read_csv("summary_test.tsv", sep="\t")
         self.assertEqual(len(df), 1)
         self.assertEqual(len(df.columns), 4)
-        os.unlink(self.summary_file_path)
 
     def test_pulls_estimation_pipeline(self) -> None:
         """
@@ -87,7 +99,19 @@ class TestPullsEstimator(unittest.TestCase):
         """
 
         # setup pulls estimation pipeline
-        pulls_pipeline = Pipeline(ops=[self.pulls_filter, self.pulls_summary])
+        pulls_pipeline = Pipeline(ops=[self.pulls_estimator, self.pulls_summary])
+        self.assertEqual(pulls_pipeline.input, None)
+        self.assertEqual(pulls_pipeline.output, None)
+        self.assertTrue(pulls_pipeline.ops, [self.pulls_estimator, self.pulls_summary])
+        for method in (
+            pulls_pipeline.vis,
+            pulls_pipeline.vis_input,
+            pulls_pipeline.save_input,
+            pulls_pipeline.save_output,
+            pulls_pipeline.vis_profile,
+        ):
+            with self.assertRaises(ValueError):
+                method()
 
         # run
         result = pulls_pipeline.exec(inp=self.pred_series)
@@ -101,6 +125,8 @@ class TestPullsEstimator(unittest.TestCase):
         )
 
         # visualize
+        with self.assertRaises(ValueError):
+            pulls_pipeline.vis_input()
         pulls_pipeline.vis()
         self.assertTrue(os.path.exists(os.path.join("figs", "input_metrics.png")))
         self.assertTrue(os.path.exists(os.path.join("figs", "output_metrics.png")))
@@ -115,14 +141,30 @@ class TestPullsEstimator(unittest.TestCase):
             )
         )
 
+        # save input/output
+        with self.assertRaises(ValueError):
+            pulls_pipeline.save_input()
+        pulls_pipeline.save_output(out_path="test_output_save")
+        self.assertEqual(len(os.listdir("test_output_save")), 3)
+
+        # vis profile
+        pulls_pipeline.vis_profile(profiling_figs_path="pulls_pipeline_profile")
+        for file in (
+            "['estimate_pull_series', 'make_pulls_summary']",
+            "['estimate_pull_series', 'make_pulls_summary']_violin",
+            "estimate_pull_series",
+            "make_pulls_summary",
+        ):
+            print(file)
+            self.assertTrue(
+                os.path.exists(os.path.join("pulls_pipeline_profile", file + ".png"))
+            )
+
         # check generated summary file
-        self.assertTrue(os.path.exists(self.summary_file_path))
-        df = pd.read_csv(self.summary_file_path, sep="\t")
+        self.assertTrue(os.path.exists("summary_test.tsv"))
+        df = pd.read_csv("summary_test.tsv", sep="\t")
         self.assertEqual(len(df), 1)
         self.assertEqual(len(df.columns), 4)
 
     def tearDown(self) -> None:
-        if os.path.exists(self.summary_file_path):
-            os.unlink(self.summary_file_path)
-        if os.path.exists(self.figs_path):
-            shutil.rmtree(self.figs_path)
+        self._clean_env()

@@ -13,6 +13,9 @@ class Vocab:
     """
 
     def __init__(self, card_words: Dict[int, List[str]]):
+        """
+        card_words: Dict mapping card # in set -> list of words in card
+        """
         self._words: bidict[str, int] = self._build_vocab(card_words=card_words)
         self.size = len(self._words)
         self.word_transforms: bidict[str, str] = self.compute_word_transforms()
@@ -41,7 +44,7 @@ class Vocab:
         Creates vocabulary from card words from all cards in set.
 
         param card_words: Dict that maps card # in set -> list of card words.
-        param min_word_length: The minimum character length for a word
+        param min_word_length: The minimum character length for a word to be considered a real world
 
         return:
             vocab: Bidirectional dict that maps vocab word <-> word index in vocabulary

@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 import numpy as np
-from algo_ops.ops.op import Op
+from algo_ops.ops.text import TextOp
 
 from card_recognizer.classifier.core.card_prediction_result import (
     CardPredictionResult,
@@ -11,7 +11,7 @@ from card_recognizer.classifier.core.card_prediction_result import (
 from card_recognizer.pulls_estimator.plots import plot_pull_stats
 
 
-class PullsEstimator(Op):
+class PullsEstimator(TextOp):
     """
     The PullsEstimator identifies the likely card pulls in a time series of image frames. It takes as input a time
     series of predictions of cards for frames in a video. The time series is represented as a CardPredictionResult
@@ -23,55 +23,57 @@ class PullsEstimator(Op):
 
     def __init__(
         self,
-        freq_t: Optional[int] = 5,
-        conf_t: Optional[float] = 0.1,
+        min_run_length: Optional[int] = 5,
+        min_run_conf: Optional[float] = 0.1,
         run_tol: Optional[int] = 10,
         num_cards_to_select: Optional[int] = 10,
-        output_fig_path: Optional[str] = None,
-        suppress_plotly_output: bool = True,
+        output_figs_path: Optional[str] = None,
         figs_paging: bool = False,
     ):
+        """
+        param freq_t: The minimum length of a run to keep it as a card run detection (if None,
+            turn off filter and allow all runs to pass)
+        param conf_t: The minimum confidence score of a run to keep it as a card run detection (if None,
+            turn off filter and allow all runs to pass)
+        param run_tol: The number of consecutive noisy frames to tolerate within a run
+        param num_cards_to_select; The number of card pulls to estimate (if None, there is no limit)
+        param output_figs_path: Path to where output figs should go
+        figs_paging: Whether figs should be paged
+        """
         super().__init__(func=self.estimate_pull_series)
-        self.freq_t: Optional[int] = freq_t
-        self.conf_t: Optional[float] = conf_t
+        self.freq_t: Optional[int] = min_run_length
+        self.conf_t: Optional[float] = min_run_conf
         self.run_tol: Optional[int] = run_tol
         self.num_cards_to_select = num_cards_to_select
-        self.output_fig_path = output_fig_path
-        self.suppress_plotly_output = suppress_plotly_output
+        self.output_fig_path = output_figs_path
         self.figs_paging = figs_paging
 
     def vis_input(self) -> None:
         """
         Visualize input statistics.
         """
-        if self.input is not None:
-            plot_pull_stats(
-                card_prediction_result=self.input,
-                output_fig_path=self.output_fig_path,
-                suppress_plotly_output=self.suppress_plotly_output,
-                prefix="input",
-                figs_paging=self.figs_paging,
-            )
+        if self.input is None:
+            raise ValueError("There is no input to be visualized.")
+        plot_pull_stats(
+            card_prediction_result=self.input,
+            output_fig_path=self.output_fig_path,
+            prefix="input",
+            figs_paging=self.figs_paging,
+        )
 
     def vis(self) -> None:
         """
         Visualize output statistics.
         """
+        if self.output is None:
+            raise ValueError("There is no output to be visualized.")
         self.vis_input()
-        if self.output is not None:
-            plot_pull_stats(
-                card_prediction_result=self.output,
-                output_fig_path=self.output_fig_path,
-                suppress_plotly_output=self.suppress_plotly_output,
-                prefix="output",
-                figs_paging=self.figs_paging,
-            )
-
-    def save_input(self, out_path: str) -> None:
-        pass
-
-    def save_output(self, out_path) -> None:
-        pass
+        plot_pull_stats(
+            card_prediction_result=self.output,
+            output_fig_path=self.output_fig_path,
+            prefix="output",
+            figs_paging=self.figs_paging,
+        )
 
     def _apply_filter(self, runs: List[Run]) -> List[Run]:
         """
@@ -152,7 +154,7 @@ class PullsEstimator(Op):
         """
         Estimates
 
-        param input_card_frame_predictions: CardPredictionResult object containing card frame predictions
+        param frame_card_predictions: CardPredictionResult object containing card frame predictions
 
         Returns:
             Filtered CardPredictionResult with frames removed for filtered-out (false positive) cards
