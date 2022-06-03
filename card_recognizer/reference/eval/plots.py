@@ -1,7 +1,6 @@
 from typing import Dict
 from typing import Optional, List
 
-import algo_ops.plot.settings as plot_settings
 import ezplotly as ep
 import ezplotly_bio as epb
 import pandas as pd
@@ -60,7 +59,6 @@ def plot_word_counts(
         panels=[1] * len(references.keys()),
         showlegend=True,
         outfile=outfile,
-        suppress_output=plot_settings.SUPPRESS_PLOTS,
     )
 
 
@@ -101,7 +99,6 @@ def plot_classifier_sensitivity_curve(
         panels=[1] * len(h),
         showlegend=True,
         outfile=outfile,
-        suppress_output=plot_settings.SUPPRESS_PLOTS,
         height=500,
     )
 
@@ -132,6 +129,5 @@ def plot_classifier_rules_performance(
         h,
         panels=[1] * len(h),
         showlegend=True,
-        suppress_output=plot_settings.SUPPRESS_PLOTS,
         outfile=outfile,
     )

@@ -2,7 +2,7 @@ import os
 import sys
 from typing import List, Dict, Set
 
-import algo_ops.plot.settings as plot_settings
+import ezplotly.settings as plot_settings
 from pokemontcgsdk import Card
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier

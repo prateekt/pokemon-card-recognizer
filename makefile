@@ -1,10 +1,6 @@
 conda_dev:
 	conda env remove -n card_rec_env
-	conda env create -f conda_osx.yaml
-
-conda_deploy:
-	conda env remove -n card_rec_env
-	conda env create -f conda_linux.yaml
+	conda env create -f conda.yaml
 
 build_reference:
 	rm -rf card_recognizer/reference/data

@@ -2,7 +2,7 @@ import functools
 import os
 from typing import List, Optional
 
-import algo_ops.plot.settings as plot_settings
+import ezplotly.settings as plot_settings
 import pandas as pd
 from natsort import natsorted
 from pokemontcgsdk import Card

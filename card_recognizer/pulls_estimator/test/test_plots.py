@@ -2,7 +2,7 @@ import os
 import random
 import unittest
 
-import algo_ops.plot.settings as plot_settings
+import ezplotly.settings as plot_settings
 from algo_ops.dependency.tester_util import clean_paths
 
 from card_recognizer.classifier.core.card_prediction_result import (

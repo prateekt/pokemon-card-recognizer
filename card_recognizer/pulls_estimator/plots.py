@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from typing import Optional, List, Dict
 
-import algo_ops.plot.settings as plot_settings
+import ezplotly.settings as plot_settings
 import ezplotly as ep
 import numpy as np
 from ezplotly import EZPlotlyPlot

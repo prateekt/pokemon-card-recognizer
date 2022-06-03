@@ -1,7 +1,7 @@
 import os
 import unittest
 
-import algo_ops.plot.settings as plot_settings
+import ezplotly.settings as plot_settings
 import pandas as pd
 from algo_ops.dependency.tester_util import clean_paths
 from algo_ops.pipeline.pipeline import Pipeline
