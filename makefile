@@ -2,6 +2,10 @@ conda_dev:
 	conda env remove -n card_rec_env
 	conda env create -f conda.yaml
 
+conda_deploy:
+	conda env remove -n card_rec_env
+	conda env create -f conda_deploy.yaml
+
 build_reference:
 	rm -rf card_recognizer/reference/data
 	python card_recognizer/reference/core/build.py $(API_KEY)

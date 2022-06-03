@@ -4,8 +4,6 @@ ezplotly
 numpy
 pandas
 pokemontcgsdk
-nose
-black
 bidict
 natsort
 requests
