@@ -1,4 +1,5 @@
 import os
+import random
 import sys
 from typing import List, Dict, Set
 
@@ -193,7 +194,14 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("USAGE: python build.py [PGTCGSDK_API_KEY]")
     else:
+
+        # setup
         plot_settings.SUPPRESS_PLOTS = True
+        random.seed(0)
+
+        # build reference
         ptcgsdk_api_key_val = sys.argv[0]
         ReferenceBuild.build(ptcgsdk_api_key=ptcgsdk_api_key_val)
+
+        # evaluate plots
         ReferenceBuild.make_eval_plots()
