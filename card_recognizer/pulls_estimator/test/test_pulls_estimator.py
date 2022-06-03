@@ -19,7 +19,10 @@ class TestPullsEstimator(unittest.TestCase):
     def _clean_env() -> None:
         clean_paths(
             dirs=("figs", "pulls_pipeline_profile", "test_output_save"),
-            files=("summary_test.tsv",),
+            files=(
+                "summary_test.tsv",
+                "test.pkl",
+            ),
         )
 
     def setUp(self) -> None:
@@ -165,6 +168,9 @@ class TestPullsEstimator(unittest.TestCase):
         df = pd.read_csv("summary_test.tsv", sep="\t")
         self.assertEqual(len(df), 1)
         self.assertEqual(len(df.columns), 4)
+
+        # test pickle
+        pulls_pipeline.to_pickle("test.pkl")
 
     def tearDown(self) -> None:
         self._clean_env()

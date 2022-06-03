@@ -12,6 +12,9 @@ from card_recognizer.classifier.core.card_prediction_result import (
 
 
 class TestEndtoEnd(unittest.TestCase):
+    def _clean_env(self) -> None:
+        clean_paths(dirs=("out_figs",), files=("test.pkl",))
+
     def setUp(self) -> None:
 
         # suppress plotting for testing
@@ -21,14 +24,27 @@ class TestEndtoEnd(unittest.TestCase):
         self.single_frames_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "single_images"
         )
+        self._clean_env()
+
+    def tearDown(self) -> None:
+        self._clean_env()
 
     def test_end_to_end_klara(self) -> None:
         """
         Tests card recognizer end to end on Klara image.
         """
+
+        # init card recognizer
         recognizer = CardRecognizer(set_name="master", mode=Mode.SINGLE_IMAGE)
+        self.assertEqual(recognizer.input, None)
+        self.assertEqual(recognizer.output, None)
+        self.assertEqual(len(recognizer.execution_times), 0)
+
+        # test on klara image
         klara_path = os.path.join(self.single_frames_path, "klara.png")
         pred_result = recognizer.exec(inp=klara_path)
+        self.assertEqual(recognizer.input, klara_path)
+        self.assertEqual(pred_result, recognizer.output)
 
         # check that there is only one result (Klara, frame 0),
         # and that the no-call frame was not returned as a result.
@@ -42,6 +58,9 @@ class TestEndtoEnd(unittest.TestCase):
             card_prediction=card_pred
         )
         self.assertEqual(card.name, "Klara")
+
+        # test pickle
+        recognizer.to_pickle("test.pkl")
 
     def test_end_to_end_image_dir(self) -> None:
         """
@@ -61,6 +80,9 @@ class TestEndtoEnd(unittest.TestCase):
             card_prediction=card_pred
         )
         self.assertEqual(card.name, "Klara")
+
+        # test pickle
+        recognizer.to_pickle("test.pkl")
 
     def test_end_to_end_booster_dir(self) -> None:
         """
@@ -90,4 +112,6 @@ class TestEndtoEnd(unittest.TestCase):
         )
         self.assertTrue(os.path.exists(os.path.join("out_figs", "input_metrics.png")))
         self.assertTrue(os.path.exists(os.path.join("out_figs", "output_metrics.png")))
-        clean_paths(dirs=("out_figs",))
+
+        # test pickle
+        recognizer.to_pickle("test.pkl")

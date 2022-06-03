@@ -4,6 +4,7 @@ from typing import Optional, Any
 
 from algo_ops.ops.op import Op
 from algo_ops.pipeline.pipeline import Pipeline
+from ocr_ops.framework.op.abstract_ocr_op import EasyOCROp
 from ocr_ops.framework.op.ffmpeg_op import FFMPEGOp
 from ocr_ops.framework.pipeline.ocr_pipeline import OCRMethod
 from ocr_ops.instances import ocr
@@ -132,3 +133,18 @@ class CardRecognizer(Pipeline):
 
         # call parent exec
         return super().exec(inp=inp)
+
+    def to_pickle(self, out_pkl_path: str) -> None:
+
+        # temporarily remove un-pickleable elements
+        easy_ocr_instance = None
+        if isinstance(self.ocr_pipeline.ocr_op, EasyOCROp):
+            easy_ocr_instance = self.ocr_pipeline.ocr_op.easy_ocr_reader
+            self.ocr_pipeline.ocr_op.easy_ocr_reader = None
+
+        # super call to pickle
+        super().to_pickle(out_pkl_path=out_pkl_path)
+
+        # restore state
+        if isinstance(self.ocr_pipeline.ocr_op, EasyOCROp):
+            self.ocr_pipeline.ocr_op.easy_ocr_reader = easy_ocr_instance
