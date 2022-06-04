@@ -49,6 +49,8 @@ def _correct_set_name(proposed_set_name: str) -> str:
     """
     if proposed_set_name == "Brilliant Stars Trainer Gallery":
         return "Brilliant Stars"
+    elif proposed_set_name == "Astral Radiance Trainer Gallery":
+        return "Astral Radiance"
     else:
         return proposed_set_name
 
