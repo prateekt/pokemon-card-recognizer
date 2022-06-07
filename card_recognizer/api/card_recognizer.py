@@ -32,6 +32,9 @@ class CardRecognizer(Pipeline):
         set_name: Optional[str] = "master",
         classification_method: str = "shared_words",
         mode: Mode = Mode.SINGLE_IMAGE,
+        min_run_length: Optional[int] = 5,
+        min_run_conf: Optional[float] = 0.1,
+        run_tol: Optional[int] = 10,
     ):
 
         # load classifier
@@ -60,6 +63,9 @@ class CardRecognizer(Pipeline):
                 self.ocr_pipeline,
                 self.classifier,
                 PullsEstimator(
+                    min_run_length=min_run_length,
+                    min_run_conf=min_run_conf,
+                    run_tol=run_tol,
                     num_cards_to_select=None,
                 ),
                 PullsSummary(),
@@ -70,6 +76,9 @@ class CardRecognizer(Pipeline):
                 self.ocr_pipeline,
                 self.classifier,
                 PullsEstimator(
+                    min_run_length=min_run_length,
+                    min_run_conf=min_run_conf,
+                    run_tol=run_tol,
                     num_cards_to_select=None,
                     figs_paging=True,
                 ),
@@ -80,8 +89,9 @@ class CardRecognizer(Pipeline):
                 self.ocr_pipeline,
                 self.classifier,
                 PullsEstimator(
-                    min_run_length=None,
-                    min_run_conf=None,
+                    min_run_length=min_run_length,
+                    min_run_conf=min_run_conf,
+                    run_tol=run_tol,
                 ),
                 PullsSummary(),
             ]
@@ -90,7 +100,11 @@ class CardRecognizer(Pipeline):
                 FFMPEGOp(),
                 self.ocr_pipeline,
                 self.classifier,
-                PullsEstimator(),
+                PullsEstimator(
+                    min_run_length=min_run_length,
+                    min_run_conf=min_run_conf,
+                    run_tol=run_tol,
+                ),
                 PullsSummary(),
             ]
         else:
@@ -114,13 +128,15 @@ class CardRecognizer(Pipeline):
         if pulls_estimator_op is not None:
             pulls_estimator_op.output_fig_path = output_path
         autosave_path = os.path.join(output_path, "ocr_bounding_boxes")
-        self.ocr_pipeline.autosave_img_path = autosave_path
+        self.ocr_pipeline.ocr_op.autosave_img_path = autosave_path
 
     def set_summary_file(self, summary_file: str):
         """
         Set summary file.
         """
         pulls_summary_op = self.find_op_by_class(op_class=PullsSummary)
+        if pulls_summary_op is None:
+            raise ValueError("There is no pulls summary op found in this pipeline.")
         if pulls_summary_op is not None:
             pulls_summary_op.summary_file = summary_file
 

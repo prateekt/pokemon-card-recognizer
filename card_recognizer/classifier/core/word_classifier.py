@@ -53,6 +53,10 @@ class WordClassifier(TextOp):
         self.classification_func = None
         self.set_classification_method(method=self.classification_method)
 
+        # define input / output
+        self.input: Optional[List[List[str]]] = None
+        self.output: Optional[CardPredictionResult] = None
+
     @staticmethod
     def get_supported_classifier_methods() -> List[str]:
         """
@@ -146,7 +150,7 @@ class WordClassifier(TextOp):
 
     def classify(
         self,
-        ocr_words: Union[OCRResult, List[OCRResult], List[str], List[List[str]]],
+        ocr_results: Union[List[OCRResult], List[List[str]]],
         include_probs: bool = False,
         mechanism: str = "pool",
     ) -> CardPredictionResult:
@@ -160,31 +164,28 @@ class WordClassifier(TextOp):
         return:
             card_prediction_result: CardPredictionResult object for classification task
         """
-
-        # unpack OCRResult and List[OCRResult]
-        if isinstance(ocr_words, OCRResult):
-            # extract OCRResult into List[str]
-            ocr_words = ocr_words.words
-        elif (
-            isinstance(ocr_words, list)
-            and len(ocr_words) > 0
-            and isinstance(ocr_words[0], OCRResult)
-        ):
+        if not isinstance(ocr_results, list):
+            raise ValueError("Unrecognized input: " + str(ocr_results))
+        if len(ocr_results) == 0:
+            return CardPredictionResult(predictions=[])
+        if isinstance(ocr_results[0], OCRResult):
             # extract List[OCRResult] into List[List[str]]
-            ocr_words = [text_box.words for text_box in ocr_words]
+            ocr_results = [text_box.words for text_box in ocr_results]
+            self.input: List[List[str]] = ocr_results
+        assert isinstance(self.input, list) and len(self.input) > 0
 
-        # handle processing of List[str] and List[List[str]] cases
-        if len(ocr_words) == 0:
-            rtn = CardPredictionResult(predictions=[])
-        elif not isinstance(ocr_words[0], list):
-            pred = self._classify_one(ocr_words=ocr_words, include_probs=include_probs)
+        # run classifier on List[List[str]]
+        if len(self.input) == 1:
+            pred = self._classify_one(
+                ocr_words=self.input[0], include_probs=include_probs
+            )
             if pred is None:
                 rtn = CardPredictionResult(predictions=[])
             else:
                 rtn = CardPredictionResult(predictions=[pred])
         else:
             rtn = self._classify_multiple(
-                ocr_words=ocr_words, include_probs=include_probs, mechanism=mechanism
+                ocr_words=self.input, include_probs=include_probs, mechanism=mechanism
             )
         rtn.reference_set = self.reference.name
         return rtn
