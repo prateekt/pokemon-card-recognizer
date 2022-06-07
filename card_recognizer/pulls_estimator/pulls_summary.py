@@ -21,9 +21,15 @@ class PullsSummary(TextOp):
         param summary_file: Path to where summary file should be written. If None, no summary file is written.
         param input_file: If applicable, path to input file being processed (e.g. a video file).
         """
+
+        # set params
         super().__init__(func=self.make_pulls_summary)
         self.summary_file = summary_file
         self.input_file = input_file
+
+        # define input/output types
+        self.input: Optional[CardPredictionResult] = None
+        self.output: Optional[List[str]] = None
 
     def make_pulls_summary(
         self,

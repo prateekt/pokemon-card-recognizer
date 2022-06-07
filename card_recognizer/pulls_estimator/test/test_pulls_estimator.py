@@ -158,7 +158,6 @@ class TestPullsEstimator(unittest.TestCase):
             "estimate_pull_series",
             "make_pulls_summary",
         ):
-            print(file)
             self.assertTrue(
                 os.path.exists(os.path.join("pulls_pipeline_profile", file + ".png"))
             )

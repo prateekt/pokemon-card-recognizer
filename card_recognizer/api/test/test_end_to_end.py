@@ -2,7 +2,9 @@ import os
 import unittest
 
 import ezplotly.settings as plot_settings
+import pandas as pd
 from algo_ops.dependency.tester_util import clean_paths
+from ocr_ops.framework.op.ffmpeg_op import FFMPEGOp
 
 from card_recognizer.api.card_recognizer import CardRecognizer, Mode
 from card_recognizer.classifier.core.card_prediction_result import (
@@ -12,8 +14,9 @@ from card_recognizer.classifier.core.card_prediction_result import (
 
 
 class TestEndtoEnd(unittest.TestCase):
-    def _clean_env(self) -> None:
-        clean_paths(dirs=("out_figs",), files=("test.pkl",))
+    @staticmethod
+    def _clean_env() -> None:
+        clean_paths(dirs=("out_figs",), files=("test.pkl", "summary.txt"))
 
     def setUp(self) -> None:
 
@@ -21,9 +24,9 @@ class TestEndtoEnd(unittest.TestCase):
         plot_settings.SUPPRESS_PLOTS = True
 
         # paths
-        self.single_frames_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "single_images"
-        )
+        dirpath = os.path.dirname(os.path.abspath(__file__))
+        self.single_frames_path = os.path.join(dirpath, "single_images")
+        self.video_path = os.path.join(dirpath, "video", "test.avi")
         self._clean_env()
 
     def tearDown(self) -> None:
@@ -43,6 +46,8 @@ class TestEndtoEnd(unittest.TestCase):
         # test on klara image
         klara_path = os.path.join(self.single_frames_path, "klara.png")
         pred_result = recognizer.exec(inp=klara_path)
+        self.assertTrue(isinstance(recognizer.input, str))
+        self.assertTrue(isinstance(recognizer.output, CardPredictionResult))
         self.assertEqual(recognizer.input, klara_path)
         self.assertEqual(pred_result, recognizer.output)
 
@@ -64,7 +69,7 @@ class TestEndtoEnd(unittest.TestCase):
 
     def test_end_to_end_image_dir(self) -> None:
         """
-        Tests card recognizer on images directory.
+        Tests card recognizer on directory of images.
         """
         recognizer = CardRecognizer(set_name="master", mode=Mode.IMAGE_DIR)
         pred_result = recognizer.exec(inp=self.single_frames_path)
@@ -91,6 +96,8 @@ class TestEndtoEnd(unittest.TestCase):
         recognizer = CardRecognizer(
             set_name="master",
             mode=Mode.BOOSTER_PULLS_IMAGE_DIR,
+            min_run_length=None,
+            min_run_conf=None,
         )
         recognizer.set_output_path(output_path="out_figs")
         pred_result = recognizer.exec(inp=self.single_frames_path)
@@ -115,3 +122,45 @@ class TestEndtoEnd(unittest.TestCase):
 
         # test pickle
         recognizer.to_pickle("test.pkl")
+
+    def test_end_to_end_video(self) -> None:
+        """
+        Test card recognizer on video.
+        """
+
+        # setup recognizer
+        recognizer = CardRecognizer(
+            set_name="master",
+            mode=Mode.PULLS_VIDEO,
+            min_run_length=None,
+            min_run_conf=None,
+        )
+        ffmpeg_op = recognizer.ops[list(recognizer.ops.keys())[0]]
+        assert isinstance(ffmpeg_op, FFMPEGOp)
+        ffmpeg_op.fps = 1
+        recognizer.set_output_path(output_path="out_figs")
+        recognizer.set_summary_file(summary_file="summary.txt")
+
+        # test running
+        pred_result = recognizer.exec(inp=self.video_path)
+        self.assertEqual(recognizer.input, self.video_path)
+        self.assertEqual(recognizer.output, pred_result)
+        self.assertEqual(pred_result, ["Klara (#145) [1-2]"])
+        self.assertEqual(len(pred_result), 1)
+
+        # check created directory structure
+        self.assertTrue(os.path.exists("out_figs"))
+        self.assertTrue(
+            os.path.exists(os.path.join("out_figs", "uncompressed_video_frames"))
+        )
+        self.assertEqual(
+            len(os.listdir(os.path.join("out_figs", "uncompressed_video_frames"))), 3
+        )
+
+        # check summary file
+        self.assertTrue(os.path.exists("summary.txt"))
+        summary_df = pd.read_csv("summary.txt", sep="\t")
+        self.assertEqual(len(summary_df), 1)
+        self.assertEqual(summary_df.columns.to_list(), ["input_path", "P_1"])
+        self.assertEqual(summary_df.input_path[0], "None")
+        self.assertEqual(summary_df.P_1[0], "Klara (#145) [1-2]")

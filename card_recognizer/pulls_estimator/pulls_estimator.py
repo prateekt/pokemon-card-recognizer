@@ -40,6 +40,8 @@ class PullsEstimator(TextOp):
         param output_figs_path: Path to where output figs should go
         figs_paging: Whether figs should be paged
         """
+
+        # set params
         super().__init__(func=self.estimate_pull_series)
         self.freq_t: Optional[int] = min_run_length
         self.conf_t: Optional[float] = min_run_conf
@@ -47,6 +49,10 @@ class PullsEstimator(TextOp):
         self.num_cards_to_select = num_cards_to_select
         self.output_fig_path = output_figs_path
         self.figs_paging = figs_paging
+
+        # define input/output types
+        self.input: Optional[CardPredictionResult] = None
+        self.output: Optional[CardPredictionResult] = None
 
     def vis_input(self) -> None:
         """
@@ -152,7 +158,7 @@ class PullsEstimator(TextOp):
         frame_card_predictions: CardPredictionResult,
     ) -> CardPredictionResult:
         """
-        Estimates
+        Estimates series of pulled cards in a stream of card detections in images.
 
         param frame_card_predictions: CardPredictionResult object containing card frame predictions
 
