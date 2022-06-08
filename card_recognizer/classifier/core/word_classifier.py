@@ -171,7 +171,7 @@ class WordClassifier(TextOp):
         if isinstance(ocr_results[0], OCRResult):
             # extract List[OCRResult] into List[List[str]]
             ocr_results = [text_box.words for text_box in ocr_results]
-            self.input: List[List[str]] = ocr_results
+        self.input: List[List[str]] = ocr_results
         assert isinstance(self.input, list) and len(self.input) > 0
 
         # run classifier on List[List[str]]
