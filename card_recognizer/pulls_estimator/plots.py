@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 from typing import Optional, List, Dict
 
-import ezplotly.settings as plot_settings
 import ezplotly as ep
+import ezplotly.settings as plot_settings
 import numpy as np
 from ezplotly import EZPlotlyPlot
 

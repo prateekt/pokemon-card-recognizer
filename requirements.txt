@@ -7,3 +7,6 @@ pokemontcgsdk
 bidict
 natsort
 requests
+black
+twine
+nose
