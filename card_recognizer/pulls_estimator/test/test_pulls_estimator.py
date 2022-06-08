@@ -39,9 +39,7 @@ class TestPullsEstimator(unittest.TestCase):
         self.pulls_estimator = PullsEstimator(
             min_run_length=5, min_run_conf=0.1, output_figs_path="figs"
         )
-        self.pulls_summary = PullsSummary(
-            input_file=self.test_input_video_path, summary_file="summary_test.tsv"
-        )
+        self.pulls_summary = PullsSummary(summary_file="summary_test.tsv")
 
         # make synthetic card prediction series
         predictions = [
@@ -66,6 +64,7 @@ class TestPullsEstimator(unittest.TestCase):
         ]
         self.pred_series = CardPredictionResult(predictions=predictions, num_frames=50)
         self.pred_series.reference_set = "Brilliant Stars"
+        self.pred_series.input_path = 'test_path'
 
     def test_pulls_estimator(self) -> None:
         """
@@ -166,7 +165,8 @@ class TestPullsEstimator(unittest.TestCase):
         self.assertTrue(os.path.exists("summary_test.tsv"))
         df = pd.read_csv("summary_test.tsv", sep="\t")
         self.assertEqual(len(df), 1)
-        self.assertEqual(len(df.columns), 4)
+        self.assertListEqual(df.columns.tolist(), ['input_path', 'P_1', 'P_2', 'P_3'])
+        self.assertEqual(df.input_path[0], 'test_path')
 
         # test pickle
         pulls_pipeline.to_pickle("test.pkl")
