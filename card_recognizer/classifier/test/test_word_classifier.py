@@ -30,7 +30,7 @@ class TestWordClassifier(unittest.TestCase):
         plotting_settings.SUPPRESS_PLOTS = True
 
         # check that reference build has been setup
-        self.master_model_pkl = ReferenceBuild.get_set_pkl_path(set_name="master")
+        self.master_model_pkl = ReferenceBuild.get_set_pkl_path(set_name="Brilliant Stars")
         self.assertTrue(os.path.exists(self.master_model_pkl))
 
         # setup input
@@ -65,11 +65,11 @@ class TestWordClassifier(unittest.TestCase):
         self.assertEqual(classifier.input, [self.test_input])
         self.assertEqual(output, classifier.output)
         self.assertEqual(output.num_frames, None)
-        self.assertEqual(output.reference_set, "master")
-        self.assertEqual(output.unique_cards, [755])
+        self.assertEqual(output.reference_set, "Brilliant Stars")
+        self.assertEqual(output.unique_cards, [17])
         self.assertEqual(len(output), 1)
         self.assertTrue(isinstance(output[0], CardPrediction))
-        self.assertEqual(output[0].card_index_in_reference, 755)
+        self.assertEqual(output[0].card_index_in_reference, 17)
 
         # test vis and save input
         classifier.vis()
@@ -91,11 +91,11 @@ class TestWordClassifier(unittest.TestCase):
         output2 = classifier.exec(inp=ocr_result_input)
         self.assertEqual(output2, classifier.output)
         self.assertEqual(output2.num_frames, None)
-        self.assertEqual(output2.reference_set, "master")
-        self.assertEqual(output2.unique_cards, [755])
+        self.assertEqual(output2.reference_set, "Brilliant Stars")
+        self.assertEqual(output2.unique_cards, [17])
         self.assertEqual(len(output2), 1)
         self.assertTrue(isinstance(output2[0], CardPrediction))
-        self.assertEqual(output2[0].card_index_in_reference, 755)
+        self.assertEqual(output2[0].card_index_in_reference, 17)
 
     def test_classify_multiple(self) -> None:
         """
@@ -105,7 +105,7 @@ class TestWordClassifier(unittest.TestCase):
         output = classifier.exec(inp=[self.test_input, self.test_input])
         self.assertTrue(isinstance(output, CardPredictionResult))
         self.assertEqual(len(output), 2)
-        self.assertEqual(output.unique_cards, [755])
+        self.assertEqual(output.unique_cards, [17])
         self.assertEqual(len(output.runs), 1)
         self.assertEqual(output.runs[0].interval, Interval(start=0, end=2))
-        self.assertEqual(output.runs[0].card_index, 755)
+        self.assertEqual(output.runs[0].card_index, 17)
