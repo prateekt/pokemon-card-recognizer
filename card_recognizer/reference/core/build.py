@@ -200,8 +200,8 @@ if __name__ == "__main__":
         random.seed(0)
 
         # build reference
-        #        ptcgsdk_api_key_val = sys.argv[0]
-        #        ReferenceBuild.build(ptcgsdk_api_key=ptcgsdk_api_key_val)
+        ptcgsdk_api_key_val = sys.argv[0]
+        ReferenceBuild.build(ptcgsdk_api_key=ptcgsdk_api_key_val)
 
         # evaluate plots
         ReferenceBuild.make_eval_plots()
