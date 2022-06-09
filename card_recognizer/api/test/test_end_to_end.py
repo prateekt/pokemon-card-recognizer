@@ -162,5 +162,5 @@ class TestEndtoEnd(unittest.TestCase):
         summary_df = pd.read_csv("summary.txt", sep="\t")
         self.assertEqual(len(summary_df), 1)
         self.assertEqual(summary_df.columns.to_list(), ["input_path", "P_1"])
-        self.assertEqual(summary_df.input_path[0], "None")
+        self.assertEqual(summary_df.input_path[0], self.video_path)
         self.assertEqual(summary_df.P_1[0], "Klara (#145) [1-2]")

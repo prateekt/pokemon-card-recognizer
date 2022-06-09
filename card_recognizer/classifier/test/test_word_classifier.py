@@ -6,7 +6,7 @@ import numpy as np
 from algo_ops.dependency.tester_util import clean_paths
 from algo_ops.ops.cv import ImageResult
 from algo_ops.ops.op import Op
-from ocr_ops.framework.struct.ocr_result import OCRResult
+from ocr_ops.framework.op.result.ocr_result import OCRImageResult, OCRPipelineResult
 
 from card_recognizer.classifier.core.card_prediction_result import (
     CardPredictionResult,
@@ -30,7 +30,9 @@ class TestWordClassifier(unittest.TestCase):
         plotting_settings.SUPPRESS_PLOTS = True
 
         # check that reference build has been setup
-        self.master_model_pkl = ReferenceBuild.get_set_pkl_path(set_name="Brilliant Stars")
+        self.master_model_pkl = ReferenceBuild.get_set_pkl_path(
+            set_name="Brilliant Stars"
+        )
         self.assertTrue(os.path.exists(self.master_model_pkl))
 
         # setup input
@@ -70,6 +72,7 @@ class TestWordClassifier(unittest.TestCase):
         self.assertEqual(len(output), 1)
         self.assertTrue(isinstance(output[0], CardPrediction))
         self.assertEqual(output[0].card_index_in_reference, 17)
+        self.assertEqual(output.input_path, None)
 
         # test vis and save input
         classifier.vis()
@@ -83,12 +86,15 @@ class TestWordClassifier(unittest.TestCase):
             os.path.exists(os.path.join("algo_ops_profile", "classify.png"))
         )
 
-        # test input wrapped in OCRResult
+        # test input wrapped in OCRPipelineResult
         input_img = ImageResult(img=np.array([0.0]))
-        ocr_result_input = [
-            OCRResult.from_text_list(texts=self.test_input, input_img=input_img)
+        ocr_image_results = [
+            OCRImageResult.from_text_list(texts=self.test_input, input_img=input_img)
         ]
-        output2 = classifier.exec(inp=ocr_result_input)
+        ocr_pipeline_result = OCRPipelineResult(
+            ocr_image_results=ocr_image_results, input_path="test.avi"
+        )
+        output2 = classifier.exec(inp=ocr_pipeline_result)
         self.assertEqual(output2, classifier.output)
         self.assertEqual(output2.num_frames, None)
         self.assertEqual(output2.reference_set, "Brilliant Stars")
@@ -96,6 +102,7 @@ class TestWordClassifier(unittest.TestCase):
         self.assertEqual(len(output2), 1)
         self.assertTrue(isinstance(output2[0], CardPrediction))
         self.assertEqual(output2[0].card_index_in_reference, 17)
+        self.assertEqual(output2.input_path, "test.avi")
 
     def test_classify_multiple(self) -> None:
         """
@@ -109,3 +116,4 @@ class TestWordClassifier(unittest.TestCase):
         self.assertEqual(len(output.runs), 1)
         self.assertEqual(output.runs[0].interval, Interval(start=0, end=2))
         self.assertEqual(output.runs[0].card_index, 17)
+        self.assertEqual(output.input_path, None)

@@ -123,7 +123,9 @@ class CardRecognizer(Pipeline):
         """
         ffmpeg_op = self.find_op_by_class(op_class=FFMPEGOp)
         if ffmpeg_op is not None:
-            ffmpeg_op.out_path = os.path.join(output_path, "uncompressed_video_frames")
+            ffmpeg_op.image_out_path = os.path.join(
+                output_path, "uncompressed_video_frames"
+            )
         pulls_estimator_op = self.find_op_by_class(op_class=PullsEstimator)
         if pulls_estimator_op is not None:
             pulls_estimator_op.output_fig_path = output_path
@@ -139,16 +141,6 @@ class CardRecognizer(Pipeline):
             raise ValueError("There is no pulls summary op found in this pipeline.")
         if pulls_summary_op is not None:
             pulls_summary_op.summary_file = summary_file
-
-    def exec(self, inp: Any) -> Any:
-
-        # Set input video for logging purposes
-        pulls_summary_op = self.find_op_by_class(op_class=PullsSummary)
-        if pulls_summary_op is not None:
-            pulls_summary_op.input_video = inp
-
-        # call parent exec
-        return super().exec(inp=inp)
 
     def to_pickle(self, out_pkl_path: str) -> None:
 

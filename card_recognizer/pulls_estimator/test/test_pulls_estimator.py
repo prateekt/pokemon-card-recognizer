@@ -39,9 +39,7 @@ class TestPullsEstimator(unittest.TestCase):
         self.pulls_estimator = PullsEstimator(
             min_run_length=5, min_run_conf=0.1, output_figs_path="figs"
         )
-        self.pulls_summary = PullsSummary(
-            input_file=self.test_input_video_path, summary_file="summary_test.tsv"
-        )
+        self.pulls_summary = PullsSummary(summary_file="summary_test.tsv")
 
         # make synthetic card prediction series
         predictions = [
@@ -66,6 +64,7 @@ class TestPullsEstimator(unittest.TestCase):
         ]
         self.pred_series = CardPredictionResult(predictions=predictions, num_frames=50)
         self.pred_series.reference_set = "Brilliant Stars"
+        self.pred_series.input_path = "example.avi"
 
     def test_pulls_estimator(self) -> None:
         """
@@ -95,6 +94,11 @@ class TestPullsEstimator(unittest.TestCase):
         df = pd.read_csv("summary_test.tsv", sep="\t")
         self.assertEqual(len(df), 1)
         self.assertEqual(len(df.columns), 4)
+        self.assertListEqual(df.columns.to_list(), ["input_path", "P_1", "P_2", "P_3"])
+        self.assertEqual(df.input_path[0], "example.avi")
+        self.assertEqual(df.P_1[0], "Exeggutor (#2) [0-6]")
+        self.assertEqual(df.P_2[0], "Shroomish (#3) [15-22]")
+        self.assertEqual(df.P_3[0], "Shroomish (#3) [30-36]")
 
     def test_pulls_estimation_pipeline(self) -> None:
         """
@@ -167,9 +171,17 @@ class TestPullsEstimator(unittest.TestCase):
         df = pd.read_csv("summary_test.tsv", sep="\t")
         self.assertEqual(len(df), 1)
         self.assertEqual(len(df.columns), 4)
+        self.assertEqual(len(df), 1)
+        self.assertEqual(len(df.columns), 4)
+        self.assertListEqual(df.columns.to_list(), ["input_path", "P_1", "P_2", "P_3"])
+        self.assertEqual(df.input_path[0], "example.avi")
+        self.assertEqual(df.P_1[0], "Exeggutor (#2) [0-6]")
+        self.assertEqual(df.P_2[0], "Shroomish (#3) [15-22]")
+        self.assertEqual(df.P_3[0], "Shroomish (#3) [30-36]")
 
         # test pickle
         pulls_pipeline.to_pickle("test.pkl")
+        self.assertTrue(os.path.exists("test.pkl"))
 
     def tearDown(self) -> None:
         self._clean_env()

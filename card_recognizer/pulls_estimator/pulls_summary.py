@@ -15,7 +15,6 @@ class PullsSummary(TextOp):
     def __init__(
         self,
         summary_file: Optional[str] = None,
-        input_file: Optional[str] = None,
     ):
         """
         param summary_file: Path to where summary file should be written. If None, no summary file is written.
@@ -25,7 +24,6 @@ class PullsSummary(TextOp):
         # set params
         super().__init__(func=self.make_pulls_summary)
         self.summary_file = summary_file
-        self.input_file = input_file
 
         # define input/output types
         self.input: Optional[CardPredictionResult] = None
@@ -75,7 +73,7 @@ class PullsSummary(TextOp):
                     )
                     header = "\t".join(header_cols) + "\n"
                     file_out.write(header)
-                line = str(self.input_file) + "\t"
+                line = str(card_predictions.input_path) + "\t"
                 line += "\t".join(unique_card_names) + "\n"
                 file_out.write(line)
 

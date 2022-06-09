@@ -4,7 +4,7 @@ from typing import List, Optional, Union
 import numpy as np
 from algo_ops.ops.text import TextOp
 from algo_ops.paraloop import paraloop
-from ocr_ops.framework.struct.ocr_result import OCRResult
+from ocr_ops.framework.op.result.ocr_result import OCRPipelineResult, OCRImageResult
 
 from card_recognizer.classifier.core.card_prediction_result import (
     CardPrediction,
@@ -150,7 +150,7 @@ class WordClassifier(TextOp):
 
     def classify(
         self,
-        ocr_results: Union[List[OCRResult], List[List[str]]],
+        ocr_results: Union[List[List[str]], List[OCRImageResult], OCRPipelineResult],
         include_probs: bool = False,
         mechanism: str = "pool",
     ) -> CardPredictionResult:
@@ -164,11 +164,16 @@ class WordClassifier(TextOp):
         return:
             card_prediction_result: CardPredictionResult object for classification task
         """
-        if not isinstance(ocr_results, list):
-            raise ValueError("Unrecognized input: " + str(ocr_results))
+        if isinstance(ocr_results, OCRPipelineResult):
+            # extract OCRPipelineResult into List[OCRResult]
+            input_path = ocr_results.input_path
+            ocr_results = ocr_results.ocr_image_results
+        else:
+            input_path = None
+        assert isinstance(ocr_results, list)
         if len(ocr_results) == 0:
             return CardPredictionResult(predictions=[])
-        if isinstance(ocr_results[0], OCRResult):
+        if isinstance(ocr_results[0], OCRImageResult):
             # extract List[OCRResult] into List[List[str]]
             ocr_results = [text_box.words for text_box in ocr_results]
         self.input: List[List[str]] = ocr_results
@@ -188,4 +193,5 @@ class WordClassifier(TextOp):
                 ocr_words=self.input, include_probs=include_probs, mechanism=mechanism
             )
         rtn.reference_set = self.reference.name
+        rtn.input_path = input_path
         return rtn
