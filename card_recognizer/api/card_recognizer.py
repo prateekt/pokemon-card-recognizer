@@ -130,7 +130,7 @@ class CardRecognizer(Pipeline):
         if pulls_estimator_op is not None:
             pulls_estimator_op.output_fig_path = output_path
         autosave_path = os.path.join(output_path, "ocr_bounding_boxes")
-        self.ocr_pipeline.ocr_op.autosave_img_path = autosave_path
+        self.ocr_pipeline.ocr_op.autosave_output_img_path = autosave_path
 
     def set_summary_file(self, summary_file: str):
         """

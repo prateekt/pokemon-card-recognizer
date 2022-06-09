@@ -5,16 +5,24 @@ from algo_ops.dependency import sys_util
 from natsort import natsorted
 
 from card_recognizer.api.card_recognizer import CardRecognizer, Mode
+import algo_ops.ops.settings as algo_ops_settings
+import ezplotly.settings as ezplotly_settings
 
 if __name__ == "__main__":
+
+    # setup settings
+    ezplotly_settings.SUPPRESS_PLOTS = True
+    algo_ops_settings.DEBUG_MODE = True
     timestamp = str(datetime.now())
-    pipeline = CardRecognizer(set_name="Brilliant Stars", mode=Mode.BOOSTER_PULLS_VIDEO)
+
+    # init pipeline and paths
+    pipeline = CardRecognizer(set_name="Astral Radiance", mode=Mode.BOOSTER_PULLS_VIDEO)
     in_dir = os.sep + os.path.join(
         "media",
         "borg1",
         "Borg12TB",
         "card_recognizer_test_sets",
-        "brilliant_stars_booster_box_5_2022",
+        "astral_radiance_1_pack_blisters_5_28_2022",
     )
     out_dir = os.sep + os.path.join("media", "borg1", "Borg12TB", "card_rec_results")
     pipeline.set_summary_file(
@@ -27,6 +35,8 @@ if __name__ == "__main__":
             if sys_util.is_video_file(video)
         ]
     )
+
+    # loop over videos
     for video in videos:
         print(video)
         results_path = os.path.join(out_dir, os.path.basename(video), timestamp)
