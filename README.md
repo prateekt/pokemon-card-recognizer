@@ -14,7 +14,7 @@ Example analysis of a booster pack opening video:
 
 ![](https://github.com/prateekt/pokemon-card-recognizer/blob/75409e8ecdc32256dfc4a0a8243782152fdd406b/example2.png?raw=true)
 ![](https://github.com/prateekt/pokemon-card-recognizer/blob/75409e8ecdc32256dfc4a0a8243782152fdd406b/example.png?raw=true)
-https://github.com/prateekt/pokemon-card-recognizer/blob/75409e8ecdc32256dfc4a0a8243782152fdd406b/example.png
+
 Benchmarks: https://docs.google.com/presentation/d/10--ByPMkb6OnwhdJqrPBOhMqMDLk3pliL27znlQ_jUo/edit?usp=sharing
 
 
