@@ -33,6 +33,7 @@ class ReferenceBuild:
             "Fusion Strike",
             "Brilliant Stars",
             "Astral Radiance",
+            "Pokémon GO"
         }
         return card_sets
 
