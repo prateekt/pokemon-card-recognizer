@@ -26,10 +26,18 @@ class ReferenceBuild:
         Get list of supported set names.
         """
         card_sets = {
+            "Base",
+            "Jungle",
+            "Fossil",
+            "Gym Heroes",
+            "Southern Islands",
+            "Forbidden Light",
+            "McDonald's Collection 2021",
             "Vivid Voltage",
             "Darkness Ablaze",
             "Chilling Reign",
             "Evolving Skies",
+            "Celebrations",
             "Fusion Strike",
             "Brilliant Stars",
             "Astral Radiance",
