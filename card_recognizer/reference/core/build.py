@@ -34,7 +34,8 @@ class ReferenceBuild:
             "Brilliant Stars",
             "Astral Radiance",
             "Pokémon GO",
-            "Lost Origin"
+            "Lost Origin",
+            "Silver Tempest",
         }
         return card_sets
 
