@@ -16,13 +16,13 @@ if __name__ == "__main__":
     timestamp = str(datetime.now())
 
     # init pipeline and paths
-    pipeline = CardRecognizer(set_name="Lost Origin", mode=Mode.BOOSTER_PULLS_VIDEO)
+    pipeline = CardRecognizer(set_name="Silver Tempest", mode=Mode.BOOSTER_PULLS_VIDEO)
     in_dir = os.sep + os.path.join(
         "media",
         "borg1",
         "Borg12TB",
         "card_recognizer_test_sets",
-        "lost_origin_prerelease_8-28-2022",
+        "silver_tempest_3_pack_promos_11-13-2022",
     )
     out_dir = os.sep + os.path.join("media", "borg1", "Borg12TB", "card_rec_results")
     pipeline.set_summary_file(
