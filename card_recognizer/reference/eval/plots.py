@@ -59,6 +59,8 @@ def plot_word_counts(
         panels=[1] * len(references.keys()),
         showlegend=True,
         outfile=outfile,
+        height=500,
+        width=800
     )
 
 

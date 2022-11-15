@@ -34,7 +34,8 @@ class ReferenceBuild:
             "Brilliant Stars",
             "Astral Radiance",
             "Pokémon GO",
-            "Lost Origin"
+            "Lost Origin",
+            "Silver Tempest",
         }
         return card_sets
 
@@ -161,7 +162,7 @@ class ReferenceBuild:
             reference.to_pickle(out_pkl_path=out_pkl_path)
 
         # build master reference
-        print("Building master reference..")
+        print("Building master reference...")
         out_pkl_path = os.path.join(ReferenceBuild.get_path(), "master.pkl")
         master_reference = CardReference(cards=master_set, name="master")
         master_reference.to_pickle(out_pkl_path=out_pkl_path)
