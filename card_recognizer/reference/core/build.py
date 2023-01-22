@@ -36,6 +36,7 @@ class ReferenceBuild:
             "Pokémon GO",
             "Lost Origin",
             "Silver Tempest",
+            "Crown Zenith"
         }
         return card_sets
 
