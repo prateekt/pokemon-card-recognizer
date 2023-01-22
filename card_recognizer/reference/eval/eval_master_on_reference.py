@@ -55,6 +55,8 @@ def _correct_set_name(proposed_set_name: str) -> str:
         return "Lost Origin"
     elif proposed_set_name == "Silver Tempest Trainer Gallery":
         return "Silver Tempest"
+    elif proposed_set_name == "Crown Zenith Galarian Gallery":
+        return "Crown Zenith"
     else:
         return proposed_set_name
 
