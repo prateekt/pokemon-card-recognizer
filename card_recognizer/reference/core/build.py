@@ -26,9 +26,18 @@ class ReferenceBuild:
         Get list of supported set names.
         """
         card_sets = {
-            "Vivid Voltage",
+            "Base",
+            "Jungle",
+            "Fossil",
+            "Base Set 2",
+            "Team Rocket",
+            "Gym Heroes",
+            "Gym Challenge",
             "Darkness Ablaze",
+            "Vivid Voltage",
+            "Shining Fates",
             "Chilling Reign",
+            "Celebrations",
             "Evolving Skies",
             "Fusion Strike",
             "Brilliant Stars",
@@ -137,7 +146,7 @@ class ReferenceBuild:
 
         # loop over sets to build set-specific references
         master_set: List[Card] = list()
-        for set_name in ReferenceBuild.supported_card_sets():
+        for set_name in sorted(ReferenceBuild.supported_card_sets()):
             # query cards in set
             print(set_name + ": Querying set...")
             cards = query_set_cards(set_name=set_name)
