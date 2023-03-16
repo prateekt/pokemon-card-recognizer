@@ -129,7 +129,7 @@ def main():
             preds: List[Optional[int]] = [None for _ in range(len(input_files))]
             for i, ev_result in enumerate(eval_result):
                 result = ev_result[0]
-                if result is not None:
+                if result is not None and len(result) != 0:
                     assert isinstance(result, CardPredictionResult)
                     assert len(result) == 1
                     card_pred = result[0]
