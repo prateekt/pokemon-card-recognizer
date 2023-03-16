@@ -33,7 +33,9 @@ def _eval_prediction(
     """
     gt_card_num = card_files.index(os.path.join(set_name, os.path.basename(inp)))
     assert isinstance(pred, CardPredictionResult)
-    assert len(pred) == 1
+    assert len(pred) <= 1
+    if len(pred) == 0:
+        return False
     card_pred = pred[0]
     assert isinstance(card_pred, CardPrediction)
     return is_correct_exclude_alt_art(
@@ -47,7 +49,11 @@ def _correct_set_name(proposed_set_name: str) -> str:
     """
     Helper function to identify correct set name.
     """
-    if proposed_set_name == "Brilliant Stars Trainer Gallery":
+    if proposed_set_name == 'Team Rocket Returns':
+        return "Team Rocket"
+    elif proposed_set_name == 'Celebrations: Classic Collection':
+        return "Celebrations"
+    elif proposed_set_name == "Brilliant Stars Trainer Gallery":
         return "Brilliant Stars"
     elif proposed_set_name == "Astral Radiance Trainer Gallery":
         return "Astral Radiance"
