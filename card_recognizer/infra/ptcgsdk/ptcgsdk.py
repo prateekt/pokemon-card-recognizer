@@ -1,17 +1,31 @@
 import functools
 import os
 import traceback
-from typing import List
+from typing import List, Dict
 
+import pokemontcgsdk
 import requests
 from algo_ops.paraloop import paraloop
 from natsort import natsorted
 from pokemontcgsdk import Card, RestClient
 
+# sets singleton
+available_card_sets = None
+
+
+def get_available_card_set_names_to_ids() -> Dict[str, str]:
+    """
+    Returns a dictionary of card set names to card set IDs.
+    """
+    global available_card_sets
+    if available_card_sets is None:
+        available_card_sets = {card_set.name: card_set.id for card_set in pokemontcgsdk.Set.all()}
+    return available_card_sets
+
 
 def init_api(api_key: str) -> None:
     """
-    Init Pokemon TCG SDK client with API Key.
+    Init Pokémon TCG SDK client with API Key.
     """
     RestClient.configure(api_key=api_key)
 
@@ -25,7 +39,10 @@ def query_set_cards(set_name: str) -> List[Card]:
     return:
         cards: List of Card objects in the card set
     """
-    cards = Card.where(q='set.name:"' + set_name + '"')
+    if set_name not in get_available_card_set_names_to_ids():
+        raise ValueError('Card set name not found: ' + set_name)
+    set_id = get_available_card_set_names_to_ids()[set_name]
+    cards = Card.where(q='set.id:"' + set_id + '"')
     card_numbers = natsorted([card.number for card in cards])
     cards.sort(key=lambda card: card_numbers.index(card.number))
     return cards
