@@ -8,7 +8,7 @@ conda_deploy:
 
 build_reference:
 	rm -rf card_recognizer/reference/data
-	python card_recognizer/reference/core/build.py $(API_KEY)
+	python card_recognizer/reference/core/build.py $(PGTCGSDK_API_KEY)
 
 eval_master_on_reference:
 	python card_recognizer/reference/eval/eval_master_on_reference.py
@@ -24,3 +24,10 @@ build:
 
 deploy:
 	twine upload dist/*
+
+clean:
+	rm -rf dist
+	rm -rf build
+	rm -rf pokemon_card_recognizer.egg*
+	rm -rf .pytest_cache
+
