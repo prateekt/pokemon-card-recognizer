@@ -1,8 +1,9 @@
 import os
 import random
 import sys
-from typing import List, Dict, Set
+from typing import List, Dict
 
+from ordered_set import OrderedSet
 import ezplotly.settings as plot_settings
 from pokemontcgsdk import Card
 
@@ -21,11 +22,11 @@ from card_recognizer.reference.eval.plots import (
 
 class ReferenceBuild:
     @staticmethod
-    def supported_card_sets() -> Set[str]:
+    def supported_card_sets() -> OrderedSet[str]:
         """
         Get list of supported set names.
         """
-        card_sets = {
+        card_sets = OrderedSet([
             "Base",
             "Jungle",
             "Fossil",
@@ -33,6 +34,13 @@ class ReferenceBuild:
             "Team Rocket",
             "Gym Heroes",
             "Gym Challenge",
+            "Neo Genesis",
+            "Neo Discovery",
+            "Southern Islands",
+            "Neo Revelation",
+            "Neo Destiny",
+            "Forbidden Light",
+            "Cosmic Eclipse",
             "Darkness Ablaze",
             "Vivid Voltage",
             "Shining Fates",
@@ -46,7 +54,7 @@ class ReferenceBuild:
             "Lost Origin",
             "Silver Tempest",
             "Crown Zenith"
-        }
+        ])
         return card_sets
 
     @staticmethod
@@ -146,7 +154,7 @@ class ReferenceBuild:
 
         # loop over sets to build set-specific references
         master_set: List[Card] = list()
-        for set_name in sorted(ReferenceBuild.supported_card_sets()):
+        for set_name in ReferenceBuild.supported_card_sets():
             # query cards in set
             print(set_name + ": Querying set...")
             cards = query_set_cards(set_name=set_name)

@@ -53,6 +53,10 @@ def plot_word_counts(
             name=set_name,
             title="# of Words Per Card",
             histnorm="probability",
+            min_bin=0.0,
+            max_bin=100.0,
+            bin_size=2.0,
+            ylim=[0.0, 0.2]
         )
     ep.plot_all(
         h,
@@ -60,7 +64,8 @@ def plot_word_counts(
         showlegend=True,
         outfile=outfile,
         height=500,
-        width=800
+        width=800,
+        paging={"num_plots_per_subplot": 10, "num_subplots_per_page": 1}
     )
 
 
@@ -102,6 +107,7 @@ def plot_classifier_sensitivity_curve(
         showlegend=True,
         outfile=outfile,
         height=500,
+        paging={"num_plots_per_subplot": 10, "num_subplots_per_page": 1}
     )
 
 
@@ -132,4 +138,5 @@ def plot_classifier_rules_performance(
         panels=[1] * len(h),
         showlegend=True,
         outfile=outfile,
+        paging={"num_plots_per_subplot": 10, "num_subplots_per_page": 1}
     )
