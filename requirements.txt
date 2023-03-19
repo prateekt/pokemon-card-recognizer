@@ -9,4 +9,4 @@ natsort
 requests
 black
 twine
-nose
+nose2
