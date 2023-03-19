@@ -70,7 +70,7 @@ def classify_shared_words(ref_mat: np.array, v: np.array) -> Tuple[int, np.array
     """
     scores = ((ref_mat > 0) & (v > 0)).sum(axis=1)
     prob = scores / (ref_mat > 0).sum(axis=1)
-    card_number_prediction = scores.argmax()
+    card_number_prediction = prob.argmax()
     return card_number_prediction, prob
 
 
