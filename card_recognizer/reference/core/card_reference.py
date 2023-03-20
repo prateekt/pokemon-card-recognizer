@@ -12,7 +12,7 @@ from card_recognizer.classifier.core.vocab import Vocab
 class CardReference(PickleableObject):
     def __init__(self, cards: List[Card], name: str):
         """
-        Data structure to represent the "reference" for Pokemon card listing
+        Data structure to represent the "reference" for Pokémon card listing
         (generally a card set like Fusion Strike).
 
         param cards: List of card objects

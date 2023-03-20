@@ -25,11 +25,10 @@ class TestWordClassifier(unittest.TestCase):
         )
 
     def setUp(self) -> None:
-
         # suppress plotting
         plotting_settings.SUPPRESS_PLOTS = True
 
-        # check that reference build has been setup
+        # check that reference build has been set up
         self.master_model_pkl = ReferenceBuild.get_set_pkl_path(
             set_name="Brilliant Stars"
         )

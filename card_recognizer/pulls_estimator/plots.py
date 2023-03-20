@@ -176,7 +176,6 @@ def plot_paged_metrics(
 
     # make plot pages
     for page_num in range(0, num_pages):
-
         # determine data to put on page
         start = page_num * num_runs_per_page
         stop = (page_num + 1) * num_runs_per_page

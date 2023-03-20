@@ -56,7 +56,7 @@ def plot_word_counts(
             min_bin=0.0,
             max_bin=100.0,
             bin_size=2.0,
-            ylim=[0.0, 0.2]
+            ylim=[0.0, 0.2],
         )
     ep.plot_all(
         h,
@@ -65,7 +65,7 @@ def plot_word_counts(
         outfile=outfile,
         height=500,
         width=800,
-        paging={"num_plots_per_subplot": 10, "num_subplots_per_page": 1}
+        paging={"num_plots_per_subplot": 10, "num_subplots_per_page": 1},
     )
 
 
@@ -107,7 +107,7 @@ def plot_classifier_sensitivity_curve(
         showlegend=True,
         outfile=outfile,
         height=500,
-        paging={"num_plots_per_subplot": 10, "num_subplots_per_page": 1}
+        paging={"num_plots_per_subplot": 10, "num_subplots_per_page": 1},
     )
 
 
@@ -126,21 +126,24 @@ def plot_classifier_rules_performance(
         h: List[Optional[EZPlotlyPlot]] = [None] * len(tbl.columns)
         for i in range(len(h)):
             h[i] = ep.bar(
-                x=tbl.index.values[page_index:page_index+num_sets_per_page],
-                y=tbl[tbl.columns[i]][page_index:page_index+num_sets_per_page],
+                x=tbl.index.values[page_index : page_index + num_sets_per_page],
+                y=tbl[tbl.columns[i]][page_index : page_index + num_sets_per_page],
                 xlabel="Pokemon Set",
                 ylabel="Accuracy",
                 name=tbl.columns[i],
-                text=[str(round(a, 2)) for a in tbl[tbl.columns[i]].values[page_index:page_index+num_sets_per_page]],
+                text=[
+                    str(round(a, 2))
+                    for a in tbl[tbl.columns[i]].values[
+                        page_index : page_index + num_sets_per_page
+                    ]
+                ],
                 ylim=[0, 1.0],
                 y_dtick=0.25,
                 title="Performance of Classifier Rules",
             )
         if outfile is not None:
             outfile_ext = "." + outfile.split(".")[-1]
-            new_outfile = outfile.replace(
-                outfile_ext, f"_{page_index}" + outfile_ext
-            )
+            new_outfile = outfile.replace(outfile_ext, f"_{page_index}" + outfile_ext)
         else:
             new_outfile = None
         ep.plot_all(

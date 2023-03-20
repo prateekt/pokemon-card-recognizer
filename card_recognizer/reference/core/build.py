@@ -26,35 +26,37 @@ class ReferenceBuild:
         """
         Get list of supported set names.
         """
-        card_sets = OrderedSet([
-            "Base",
-            "Jungle",
-            "Fossil",
-            "Base Set 2",
-            "Team Rocket",
-            "Gym Heroes",
-            "Gym Challenge",
-            "Neo Genesis",
-            "Neo Discovery",
-            "Southern Islands",
-            "Neo Revelation",
-            "Neo Destiny",
-            "Forbidden Light",
-            "Cosmic Eclipse",
-            "Darkness Ablaze",
-            "Vivid Voltage",
-            "Shining Fates",
-            "Chilling Reign",
-            "Celebrations",
-            "Evolving Skies",
-            "Fusion Strike",
-            "Brilliant Stars",
-            "Astral Radiance",
-            "Pokémon GO",
-            "Lost Origin",
-            "Silver Tempest",
-            "Crown Zenith"
-        ])
+        card_sets = OrderedSet(
+            [
+                "Base",
+                "Jungle",
+                "Fossil",
+                "Base Set 2",
+                "Team Rocket",
+                "Gym Heroes",
+                "Gym Challenge",
+                "Neo Genesis",
+                "Neo Discovery",
+                "Southern Islands",
+                "Neo Revelation",
+                "Neo Destiny",
+                "Forbidden Light",
+                "Cosmic Eclipse",
+                "Darkness Ablaze",
+                "Vivid Voltage",
+                "Shining Fates",
+                "Chilling Reign",
+                "Celebrations",
+                "Evolving Skies",
+                "Fusion Strike",
+                "Brilliant Stars",
+                "Astral Radiance",
+                "Pokémon GO",
+                "Lost Origin",
+                "Silver Tempest",
+                "Crown Zenith",
+            ]
+        )
         return card_sets
 
     @staticmethod
@@ -213,9 +215,8 @@ class ReferenceBuild:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("USAGE: python build.py [PGTCGSDK_API_KEY]")
+        print("USAGE: python build.py [PTCGSDK_API_KEY]")
     else:
-
         # setup
         plot_settings.SUPPRESS_PLOTS = True
         random.seed(0)

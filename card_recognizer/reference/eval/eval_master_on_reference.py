@@ -49,9 +49,9 @@ def _correct_set_name(proposed_set_name: str) -> str:
     """
     Helper function to identify correct set name.
     """
-    if proposed_set_name == 'Team Rocket Returns':
+    if proposed_set_name == "Team Rocket Returns":
         return "Team Rocket"
-    elif proposed_set_name == 'Celebrations: Classic Collection':
+    elif proposed_set_name == "Celebrations: Classic Collection":
         return "Celebrations"
     elif proposed_set_name == "Brilliant Stars Trainer Gallery":
         return "Brilliant Stars"
@@ -80,7 +80,6 @@ def main():
         {rule: [] for rule in WordClassifier.get_supported_classifier_methods()}
     )
     for set_name in ReferenceBuild.supported_card_sets():
-
         # define paths
         set_prefix = set_name.lower().replace(" ", "_")
         images_path = os.path.join(
@@ -93,7 +92,6 @@ def main():
         # test different classifier rules
         acc_results: List[float] = list()
         for classifier_rule in WordClassifier.get_supported_classifier_methods():
-
             # init pipeline
             pipeline = CardRecognizer(
                 set_name="master", classification_method=classifier_rule
