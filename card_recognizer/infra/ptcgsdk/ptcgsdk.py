@@ -65,7 +65,7 @@ def _download_card_image(out_path: str, num_trials: int, card: Card) -> None:
             print("Downloading " + str(file_name))
             outfile = os.path.join(out_path, file_name)
             with open(outfile, "wb") as file_out:
-                file_out.write(requests.get(url).content)
+                file_out.write(requests.get(url, timeout=10).content)
             return
         except:
             print("Trial #" + str(trial_num) + " for " + str(url) + " not successful.")
