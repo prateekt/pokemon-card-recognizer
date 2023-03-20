@@ -118,10 +118,10 @@ def main():
             eval_result = pipeline.evaluate(
                 inputs=input_files,
                 eval_func=eval_prediction_func,
-                incorrect_pkl_path=os.path.join(
-                    ReferenceBuild.get_path_to_data(),
-                    "incorrect_master_reference_preds",
-                ),
+#               incorrect_pkl_path=os.path.join(
+#                    ReferenceBuild.get_path_to_data(),
+#                    "incorrect_master_reference_preds",
+#               ),
                 mechanism="sequential",
             )
             preds: List[Optional[int]] = [None for _ in range(len(input_files))]
