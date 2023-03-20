@@ -13,20 +13,19 @@ from card_recognizer.classifier.core.card_prediction_result import (
 )
 
 
-class TestEndtoEnd(unittest.TestCase):
+class TestEndToEnd(unittest.TestCase):
     @staticmethod
     def _clean_env() -> None:
         clean_paths(dirs=("out_figs",), files=("test.pkl", "summary.txt"))
 
     def setUp(self) -> None:
-
         # suppress plotting for testing
         plot_settings.SUPPRESS_PLOTS = True
 
         # paths
-        dirpath = os.path.dirname(os.path.abspath(__file__))
-        self.single_frames_path = os.path.join(dirpath, "single_images")
-        self.video_path = os.path.join(dirpath, "video", "test.avi")
+        dir_path = os.path.dirname(os.path.abspath(__file__))
+        self.single_frames_path = os.path.join(dir_path, "single_images")
+        self.video_path = os.path.join(dir_path, "video", "test.avi")
         self._clean_env()
 
     def tearDown(self) -> None:

@@ -36,7 +36,6 @@ class CardRecognizer(Pipeline):
         min_run_conf: Optional[float] = 0.1,
         run_tol: Optional[int] = 10,
     ):
-
         # load classifier
         ref_pkl_path = ReferenceBuild.get_set_pkl_path(set_name=set_name)
         self.classifier = WordClassifier(
@@ -143,7 +142,6 @@ class CardRecognizer(Pipeline):
             pulls_summary_op.summary_file = summary_file
 
     def to_pickle(self, out_pkl_path: str) -> None:
-
         # temporarily remove un-pickleable elements
         easy_ocr_instance = None
         if isinstance(self.ocr_pipeline.ocr_op, EasyOCROp):

@@ -9,7 +9,6 @@ import algo_ops.ops.settings as algo_ops_settings
 import ezplotly.settings as ezplotly_settings
 
 if __name__ == "__main__":
-
     # setup settings
     ezplotly_settings.SUPPRESS_PLOTS = True
     algo_ops_settings.DEBUG_MODE = True

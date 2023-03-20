@@ -33,7 +33,9 @@ def _eval_prediction(
     """
     gt_card_num = card_files.index(os.path.join(set_name, os.path.basename(inp)))
     assert isinstance(pred, CardPredictionResult)
-    assert len(pred) == 1
+    assert len(pred) <= 1
+    if len(pred) == 0:
+        return False
     card_pred = pred[0]
     assert isinstance(card_pred, CardPrediction)
     return is_correct_exclude_alt_art(
@@ -47,7 +49,11 @@ def _correct_set_name(proposed_set_name: str) -> str:
     """
     Helper function to identify correct set name.
     """
-    if proposed_set_name == "Brilliant Stars Trainer Gallery":
+    if proposed_set_name == "Team Rocket Returns":
+        return "Team Rocket"
+    elif proposed_set_name == "Celebrations: Classic Collection":
+        return "Celebrations"
+    elif proposed_set_name == "Brilliant Stars Trainer Gallery":
         return "Brilliant Stars"
     elif proposed_set_name == "Astral Radiance Trainer Gallery":
         return "Astral Radiance"
@@ -74,7 +80,6 @@ def main():
         {rule: [] for rule in WordClassifier.get_supported_classifier_methods()}
     )
     for set_name in ReferenceBuild.supported_card_sets():
-
         # define paths
         set_prefix = set_name.lower().replace(" ", "_")
         images_path = os.path.join(
@@ -87,7 +92,6 @@ def main():
         # test different classifier rules
         acc_results: List[float] = list()
         for classifier_rule in WordClassifier.get_supported_classifier_methods():
-
             # init pipeline
             pipeline = CardRecognizer(
                 set_name="master", classification_method=classifier_rule
@@ -114,16 +118,16 @@ def main():
             eval_result = pipeline.evaluate(
                 inputs=input_files,
                 eval_func=eval_prediction_func,
-                incorrect_pkl_path=os.path.join(
-                    ReferenceBuild.get_path_to_data(),
-                    "incorrect_master_reference_preds",
-                ),
+#               incorrect_pkl_path=os.path.join(
+#                    ReferenceBuild.get_path_to_data(),
+#                    "incorrect_master_reference_preds",
+#               ),
                 mechanism="sequential",
             )
             preds: List[Optional[int]] = [None for _ in range(len(input_files))]
             for i, ev_result in enumerate(eval_result):
                 result = ev_result[0]
-                if result is not None:
+                if result is not None and len(result) != 0:
                     assert isinstance(result, CardPredictionResult)
                     assert len(result) == 1
                     card_pred = result[0]

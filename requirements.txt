@@ -1,10 +1,12 @@
 algo-ops
 ocr-ops
 ezplotly
+scipy
 numpy
 pandas
 pokemontcgsdk
 bidict
+ordered_set
 natsort
 requests
 black

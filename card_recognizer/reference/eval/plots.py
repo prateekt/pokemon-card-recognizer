@@ -18,7 +18,7 @@ def plot_word_entropies(
     reference: CardReference, outfile: Optional[str] = None
 ) -> None:
     """
-    Plot world entropies for a particular card reference.
+    Plot word entropies for a particular card reference.
 
     param reference: The card reference
     outfile: File to output figure to
@@ -53,6 +53,10 @@ def plot_word_counts(
             name=set_name,
             title="# of Words Per Card",
             histnorm="probability",
+            min_bin=0.0,
+            max_bin=100.0,
+            bin_size=2.0,
+            ylim=[0.0, 0.2],
         )
     ep.plot_all(
         h,
@@ -60,7 +64,8 @@ def plot_word_counts(
         showlegend=True,
         outfile=outfile,
         height=500,
-        width=800
+        width=800,
+        paging={"num_plots_per_subplot": 10, "num_subplots_per_page": 1},
     )
 
 
@@ -102,6 +107,7 @@ def plot_classifier_sensitivity_curve(
         showlegend=True,
         outfile=outfile,
         height=500,
+        paging={"num_plots_per_subplot": 10, "num_subplots_per_page": 1},
     )
 
 
@@ -114,22 +120,35 @@ def plot_classifier_rules_performance(
     param tbl: Evaluation data table
     param outfile: Path to output file
     """
-    h: List[Optional[EZPlotlyPlot]] = [None] * len(tbl.columns)
-    for i in range(len(h)):
-        h[i] = ep.bar(
-            x=tbl.index.values,
-            y=tbl[tbl.columns[i]],
-            xlabel="Pokemon Set",
-            ylabel="Accuracy",
-            name=tbl.columns[i],
-            text=[str(round(a, 2)) for a in tbl[tbl.columns[i]].values],
-            ylim=[0, 1.0],
-            y_dtick=0.25,
-            title="Performance of Classifier Rules",
+    num_card_sets = len(tbl.index)
+    num_sets_per_page = 10
+    for page_index in range(0, num_card_sets, num_sets_per_page):
+        h: List[Optional[EZPlotlyPlot]] = [None] * len(tbl.columns)
+        for i in range(len(h)):
+            h[i] = ep.bar(
+                x=tbl.index.values[page_index : page_index + num_sets_per_page],
+                y=tbl[tbl.columns[i]][page_index : page_index + num_sets_per_page],
+                xlabel="Pokemon Set",
+                ylabel="Accuracy",
+                name=tbl.columns[i],
+                text=[
+                    str(round(a, 2))
+                    for a in tbl[tbl.columns[i]].values[
+                        page_index : page_index + num_sets_per_page
+                    ]
+                ],
+                ylim=[0, 1.0],
+                y_dtick=0.25,
+                title="Performance of Classifier Rules",
+            )
+        if outfile is not None:
+            outfile_ext = "." + outfile.split(".")[-1]
+            new_outfile = outfile.replace(outfile_ext, f"_{int(page_index/10)}" + outfile_ext)
+        else:
+            new_outfile = None
+        ep.plot_all(
+            h,
+            panels=[1] * len(h),
+            showlegend=True,
+            outfile=new_outfile,
         )
-    ep.plot_all(
-        h,
-        panels=[1] * len(h),
-        showlegend=True,
-        outfile=outfile,
-    )

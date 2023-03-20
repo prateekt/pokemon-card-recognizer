@@ -26,7 +26,6 @@ class TestPullsEstimator(unittest.TestCase):
         )
 
     def setUp(self) -> None:
-
         # disable dynamic plotting
         plot_settings.SUPPRESS_PLOTS = True
 

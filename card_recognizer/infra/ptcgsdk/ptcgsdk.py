@@ -1,17 +1,33 @@
 import functools
 import os
 import traceback
-from typing import List
+from typing import List, Dict
 
+import pokemontcgsdk
 import requests
 from algo_ops.paraloop import paraloop
 from natsort import natsorted
 from pokemontcgsdk import Card, RestClient
 
+# sets singleton
+available_card_sets = None
+
+
+def get_available_card_set_names_to_ids() -> Dict[str, str]:
+    """
+    Returns a dictionary of card set names to card set IDs.
+    """
+    global available_card_sets
+    if available_card_sets is None:
+        available_card_sets = {
+            card_set.name: card_set.id for card_set in pokemontcgsdk.Set.all()
+        }
+    return available_card_sets
+
 
 def init_api(api_key: str) -> None:
     """
-    Init Pokemon TCG SDK client with API Key.
+    Init Pokémon TCG SDK client with API Key.
     """
     RestClient.configure(api_key=api_key)
 
@@ -25,7 +41,10 @@ def query_set_cards(set_name: str) -> List[Card]:
     return:
         cards: List of Card objects in the card set
     """
-    cards = Card.where(q='set.name:"' + set_name + '"')
+    if set_name not in get_available_card_set_names_to_ids():
+        raise ValueError("Card set name not found: " + set_name)
+    set_id = get_available_card_set_names_to_ids()[set_name]
+    cards = Card.where(q='set.id:"' + set_id + '"')
     card_numbers = natsorted([card.number for card in cards])
     cards.sort(key=lambda card: card_numbers.index(card.number))
     return cards
@@ -43,20 +62,22 @@ def _download_card_image(out_path: str, num_trials: int, card: Card) -> None:
     while trial_num < num_trials:
         try:
             file_name = os.path.basename(url)
-            print('Downloading ' + str(file_name))
+            print("Downloading " + str(file_name))
             outfile = os.path.join(out_path, file_name)
             with open(outfile, "wb") as file_out:
-                file_out.write(requests.get(url).content)
+                file_out.write(requests.get(url, timeout=10).content)
             return
         except:
-            print('Trial #' + str(trial_num) + ' for ' + str(url) + ' not successful.')
+            print("Trial #" + str(trial_num) + " for " + str(url) + " not successful.")
             traceback.print_exc()
             trial_num += 1
     if trial_num == num_trials:
-        print('All trials for ' + str(url) + ' failed.')
+        print("All trials for " + str(url) + " failed.")
 
 
-def download_card_images(cards: List[Card], out_path: str, num_trials: int = 10) -> None:
+def download_card_images(
+    cards: List[Card], out_path: str, num_trials: int = 10
+) -> None:
     """
     Downloads card images to an output path for a particular card set.
 

@@ -10,7 +10,6 @@ from card_recognizer.run_finding.run_finding import (
 
 class TestRunFinding(unittest.TestCase):
     def test_uninterrupted_runs(self) -> None:
-
         # test basic
         series = [1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 3]
         runs_1 = find_uninterrupted_runs(series=series, query_elem=1)
@@ -56,7 +55,6 @@ class TestRunFinding(unittest.TestCase):
         self.assertListEqual(runs_3, [Interval(2, 3)])
 
     def test_stitcher(self) -> None:
-
         # basic test
         runs = [
             Interval(0, 1),
@@ -87,7 +85,6 @@ class TestRunFinding(unittest.TestCase):
             stitch_with_tol(runs, tol=-1)
 
     def test_find_runs_with_tol(self) -> None:
-
         # test basic
         series = [1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 3]
         self.assertListEqual(

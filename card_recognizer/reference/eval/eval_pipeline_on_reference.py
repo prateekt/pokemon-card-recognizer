@@ -58,7 +58,6 @@ def main():
         {rule: [] for rule in WordClassifier.get_supported_classifier_methods()}
     )
     for set_name in ReferenceBuild.supported_card_sets():
-
         # define paths
         set_prefix = set_name.lower().replace(" ", "_")
         images_path = os.path.join(
@@ -71,7 +70,6 @@ def main():
         # test different classifier rules
         acc_results: List[float] = list()
         for classifier_rule in ("l1", "shared_words", "shared_words_rarity"):
-
             # init pipeline
             pipeline = CardRecognizer(
                 set_name=set_name, classification_method=classifier_rule

@@ -73,15 +73,15 @@ def compute_classification_sensitivity(
 
     Returns:
         num_words: Sequence of word number trials
-        accs: The accuracy at each word number of randomly generated words
+        acc: The accuracy at each word number of randomly generated words
     """
     # compute acc by num random words curve
     num_words = np.array([nw for nw in range(1, num_max_words + 1)], dtype=int)
-    accs = np.zeros((len(num_words),), dtype=float)
+    acc = np.zeros((len(num_words),), dtype=float)
     for i, nw in enumerate(num_words):
         trial_func = functools.partial(_run_classifier_trial, classifier, nw)
         results = paraloop.loop(
             func=trial_func, params=list(range(num_trials)), mechanism="sequential"
         )
-        accs[i] = np.sum(results) / num_trials * 100.0
-    return num_words, accs
+        acc[i] = np.sum(results) / num_trials * 100.0
+    return num_words, acc
