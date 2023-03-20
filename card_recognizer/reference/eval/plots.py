@@ -18,7 +18,7 @@ def plot_word_entropies(
     reference: CardReference, outfile: Optional[str] = None
 ) -> None:
     """
-    Plot world entropies for a particular card reference.
+    Plot word entropies for a particular card reference.
 
     param reference: The card reference
     outfile: File to output figure to
