@@ -143,7 +143,9 @@ def plot_classifier_rules_performance(
             )
         if outfile is not None:
             outfile_ext = "." + outfile.split(".")[-1]
-            new_outfile = outfile.replace(outfile_ext, f"_{int(page_index/10)}" + outfile_ext)
+            new_outfile = outfile.replace(
+                outfile_ext, f"_{int(page_index/10)}" + outfile_ext
+            )
         else:
             new_outfile = None
         ep.plot_all(

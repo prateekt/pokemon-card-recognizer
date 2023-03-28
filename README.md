@@ -15,7 +15,18 @@ Example analysis of a booster pack opening video:
 ![](https://github.com/prateekt/pokemon-card-recognizer/blob/75409e8ecdc32256dfc4a0a8243782152fdd406b/example2.png?raw=true)
 ![](https://github.com/prateekt/pokemon-card-recognizer/blob/75409e8ecdc32256dfc4a0a8243782152fdd406b/example.png?raw=true)
 
-Benchmarks: https://docs.google.com/presentation/d/1Q6PzJpqyyLFvtkLGoCFeXaHYOauOzeF_umx8V3w4fV8/edit?usp=sharing
+<b>Benchmarks</b>: https://docs.google.com/presentation/d/1Q6PzJpqyyLFvtkLGoCFeXaHYOauOzeF_umx8V3w4fV8/edit?usp=sharing
 
+<b>Installation:</b>
 
-    
+```
+pip install pokemon-card-recognizer
+```    
+
+<b>Building Card Reference:</b>
+
+You can use the prebuilt card references for various Pokemon card sets or build it yourself using
+```commandline
+python card_recognizer/reference/core/build.py [PTCGSDK_API_KEY]
+```
+where `PTCGSDK_API_KEY` is your PTCGSDK API key. You can get one here: https://pokemontcg.io/.
