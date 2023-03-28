@@ -134,4 +134,3 @@ dmypy.json
 # repo specific
 .idea/
 card_recognizer/reference/data/card_images
-card_recognizer/reference/data/ref_build/master.pkl
