@@ -49,10 +49,9 @@ class TestPlotPaging(unittest.TestCase):
             outfile=os.path.join(self.figs_path, "metrics.png"),
         )
         for i in [1, 2, 3]:
+            file = os.path.join(self.figs_path, "metrics_page" + str(i) + ".png")
             self.assertTrue(
-                os.path.exists(
-                    os.path.join(self.figs_path, "metrics_page" + str(i) + ".png")
-                )
+                os.path.exists(file)
             )
 
     def tearDown(self) -> None:
