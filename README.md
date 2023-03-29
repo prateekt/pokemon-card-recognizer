@@ -20,6 +20,8 @@ Example analysis of a booster pack opening video:
 <b>Installation:</b>
 
 ```
+make conda_dev
+conda activate card_rec_env
 pip install pokemon-card-recognizer
 ```    
 
