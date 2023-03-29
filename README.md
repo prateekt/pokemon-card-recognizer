@@ -32,3 +32,5 @@ You can use the prebuilt card references for various Pokemon card sets or build 
 python card_recognizer/reference/core/build.py [PTCGSDK_API_KEY]
 ```
 where `PTCGSDK_API_KEY` is your PTCGSDK API key. You can get one here: https://pokemontcg.io/.
+
+Note that building the reference can take an hour or more, depending on your system configuration.
