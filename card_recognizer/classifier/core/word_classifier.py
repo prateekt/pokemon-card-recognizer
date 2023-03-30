@@ -54,7 +54,7 @@ class WordClassifier(TextOp):
         self.set_classification_method(method=self.classification_method)
 
         # define input / output
-        self.input: Optional[List[List[str]]] = None
+        self.input: Optional[Union[List[List[str]], List[OCRImageResult], OCRPipelineResult]] = None
         self.output: Optional[CardPredictionResult] = None
 
     @staticmethod
@@ -185,9 +185,10 @@ class WordClassifier(TextOp):
                 ocr_words=self.input[0], include_probs=include_probs
             )
             if pred is None:
-                rtn = CardPredictionResult(predictions=[])
+                rtn = CardPredictionResult(predictions=[], num_frames=0)
             else:
-                rtn = CardPredictionResult(predictions=[pred])
+                pred.frame_index = 0
+                rtn = CardPredictionResult(predictions=[pred], num_frames=1)
         else:
             rtn = self._classify_multiple(
                 ocr_words=self.input, include_probs=include_probs, mechanism=mechanism

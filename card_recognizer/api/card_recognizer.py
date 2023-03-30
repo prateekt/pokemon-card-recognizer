@@ -1,5 +1,4 @@
 import os
-from enum import Enum
 from typing import Optional, Any
 
 from algo_ops.ops.op import Op
@@ -9,21 +8,11 @@ from ocr_ops.framework.op.ffmpeg_op import FFMPEGOp
 from ocr_ops.framework.pipeline.ocr_pipeline import OCRMethod
 from ocr_ops.instances import ocr
 
+from card_recognizer.api.mode import Mode
 from card_recognizer.classifier.core.word_classifier import WordClassifier
 from card_recognizer.pulls_estimator.pulls_estimator import PullsEstimator
 from card_recognizer.pulls_estimator.pulls_summary import PullsSummary
 from card_recognizer.reference.core.build import ReferenceBuild
-
-
-# CardRecognizerPipeline mode enum
-class Mode(Enum):
-    SINGLE_IMAGE = 1
-    IMAGE_DIR = 2
-    VIDEO = 3
-    PULLS_IMAGE_DIR = 4
-    PULLS_VIDEO = 5
-    BOOSTER_PULLS_IMAGE_DIR = 6
-    BOOSTER_PULLS_VIDEO = 7
 
 
 class CardRecognizer(Pipeline):
@@ -54,9 +43,9 @@ class CardRecognizer(Pipeline):
         if mode == Mode.VIDEO:
             ops = [FFMPEGOp(), self.ocr_pipeline, self.classifier]
         elif mode == Mode.SINGLE_IMAGE:
-            ops = [self.ocr_pipeline, self.classifier]
+            ops = [self.ocr_pipeline, self.classifier, PullsSummary(operating_mode=mode)]
         elif mode == Mode.IMAGE_DIR:
-            ops = [self.ocr_pipeline, self.classifier]
+            ops = [self.ocr_pipeline, self.classifier, PullsSummary(operating_mode=mode)]
         elif mode == Mode.PULLS_IMAGE_DIR:
             ops = [
                 self.ocr_pipeline,
@@ -67,7 +56,7 @@ class CardRecognizer(Pipeline):
                     run_tol=run_tol,
                     num_cards_to_select=None,
                 ),
-                PullsSummary(),
+                PullsSummary(operating_mode=mode),
             ]
         elif mode == Mode.PULLS_VIDEO:
             ops = [
@@ -81,7 +70,7 @@ class CardRecognizer(Pipeline):
                     num_cards_to_select=None,
                     figs_paging=True,
                 ),
-                PullsSummary(),
+                PullsSummary(operating_mode=mode),
             ]
         elif mode == Mode.BOOSTER_PULLS_IMAGE_DIR:
             ops = [
@@ -92,7 +81,7 @@ class CardRecognizer(Pipeline):
                     min_run_conf=min_run_conf,
                     run_tol=run_tol,
                 ),
-                PullsSummary(),
+                PullsSummary(operating_mode=mode),
             ]
         elif mode == Mode.BOOSTER_PULLS_VIDEO:
             ops = [
@@ -104,7 +93,7 @@ class CardRecognizer(Pipeline):
                     min_run_conf=min_run_conf,
                     run_tol=run_tol,
                 ),
-                PullsSummary(),
+                PullsSummary(operating_mode=mode),
             ]
         else:
             raise ValueError("Unsupported mode: " + str(mode))

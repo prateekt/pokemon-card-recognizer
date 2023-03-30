@@ -3,8 +3,11 @@ from typing import List, Optional
 
 from algo_ops.ops.text import TextOp
 
+from card_recognizer.api.card_recognizer import Mode
 from card_recognizer.classifier.core.card_prediction_result import CardPredictionResult
 from card_recognizer.reference.core.build import ReferenceBuild
+from card_recognizer.reference.core.card_reference import CardReference
+from card_recognizer.run_finding.interval import Run
 
 
 class PullsSummary(TextOp):
@@ -14,20 +17,62 @@ class PullsSummary(TextOp):
 
     def __init__(
         self,
+        operating_mode: Mode,
         summary_file: Optional[str] = None,
     ):
         """
+        param mode: The operating mode of the card recognizer.
         param summary_file: Path to where summary file should be written. If None, no summary file is written.
-        param input_file: If applicable, path to input file being processed (e.g. a video file).
         """
 
         # set params
         super().__init__(func=self.make_pulls_summary)
+        self.operating_mode = operating_mode
         self.summary_file = summary_file
 
         # define input/output types
         self.input: Optional[CardPredictionResult] = None
         self.output: Optional[List[str]] = None
+
+    def _format_pull_display_str(self, run: Run, reference: CardReference) -> str:
+        """
+        Formats a pull display string for a single pull.
+
+        param run: The run to format
+        param reference: The reference build
+
+        Returns:
+            Formatted pull string
+        """
+
+        # obtain pull info
+        card_name = str(reference.cards[run.card_index].name)
+        card_number = str(reference.cards[run.card_index].number)
+        run_interval = str(run.interval)
+
+        if self.operating_mode != Mode.SINGLE_IMAGE:
+            run_str = " [" + run_interval + "]"
+        else:
+            run_str = ""
+
+        # format pull string
+        if reference.name == 'master':
+            set_name = reference.cards[run.card_index].set.name
+            return (
+                card_name
+                + " (" + set_name + " #"
+                + card_number
+                + ")"
+                + run_str
+            )
+        else:
+            return (
+                card_name
+                + " (#"
+                + card_number
+                + ")"
+                + run_str
+            )
 
     def make_pulls_summary(
         self,
@@ -48,16 +93,14 @@ class PullsSummary(TextOp):
         else:
             raise ValueError("Unspecified reference.")
 
-        # obtain run card summary
-        unique_card_names = [
-            reference.cards[run.card_index].name
-            + " (#"
-            + str(reference.cards[run.card_index].number)
-            + ") ["
-            + str(run.interval)
-            + "]"
-            for run in card_predictions.runs
-        ]
+        # obtain run card summary as a list of strings
+        if len(card_predictions.runs) != 0:
+            unique_card_names = [
+                self._format_pull_display_str(run=run, reference=reference)
+                for run in card_predictions.runs
+            ]
+        else:
+            unique_card_names = []
 
         # write row to summary file (if specified)
         if self.summary_file is not None:

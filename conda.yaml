@@ -1,4 +1,4 @@
-name: card_rec_env
+name: card_rec_env2
 channels:
   - defaults
 dependencies:

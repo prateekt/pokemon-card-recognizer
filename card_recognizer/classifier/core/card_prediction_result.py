@@ -17,16 +17,19 @@ class CardPrediction:
         card_index_in_reference: int,
         conf: float,
         frame_index: Optional[int] = None,
+        input_path: Optional[str] = None,
     ):
         """
         param card_index_in_reference: The predicted card's index in the reference
         param conf: The confidence score of the prediction
         param frame_index: The frame index (in a video or image stream) of the prediction
+        param input_path: The input path of the prediction (e.g. an image file)
         """
         self.card_index_in_reference: int = card_index_in_reference
         self.conf: float = conf
         self.frame_index: Optional[int] = frame_index
         self.all_probs: Optional[Sequence[float]] = None
+        self.input_path = input_path
 
     def __lt__(self, other):
         if self.frame_index is not None and other.frame_index is not None:
