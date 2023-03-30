@@ -95,7 +95,7 @@ class TestWordClassifier(unittest.TestCase):
         )
         output2 = classifier.exec(inp=ocr_pipeline_result)
         self.assertEqual(output2, classifier.output)
-        self.assertEqual(output2.num_frames, None)
+        self.assertEqual(output2.num_frames, 1)
         self.assertEqual(output2.reference_set, "Brilliant Stars")
         self.assertEqual(output2.unique_cards, [17])
         self.assertEqual(len(output2), 1)

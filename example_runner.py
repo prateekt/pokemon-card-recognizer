@@ -1,12 +1,12 @@
 import os
 from datetime import datetime
 
+import algo_ops.ops.settings as algo_ops_settings
+import ezplotly.settings as ezplotly_settings
 from algo_ops.dependency import sys_util
 from natsort import natsorted
 
 from card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
-import algo_ops.ops.settings as algo_ops_settings
-import ezplotly.settings as ezplotly_settings
 
 if __name__ == "__main__":
     # setup settings

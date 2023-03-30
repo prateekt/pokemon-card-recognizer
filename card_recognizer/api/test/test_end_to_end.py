@@ -162,4 +162,4 @@ class TestEndToEnd(unittest.TestCase):
         self.assertEqual(len(summary_df), 1)
         self.assertEqual(summary_df.columns.to_list(), ["input_path", "P_1"])
         self.assertEqual(summary_df.input_path[0], self.video_path)
-        self.assertEqual(summary_df.P_1[0], "Klara (#145) [1-2]")
+        self.assertEqual(summary_df.P_1[0], "Klara (Chilling Reign #145) [1-2]")
