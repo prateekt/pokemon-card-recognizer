@@ -46,22 +46,16 @@ class TestEndToEnd(unittest.TestCase):
         klara_path = os.path.join(self.single_frames_path, "klara.png")
         pred_result = recognizer.exec(inp=klara_path)
         self.assertTrue(isinstance(recognizer.input, str))
-        self.assertTrue(isinstance(recognizer.output, CardPredictionResult))
+        self.assertTrue(isinstance(recognizer.output, list))
         self.assertEqual(recognizer.input, klara_path)
         self.assertEqual(pred_result, recognizer.output)
 
         # check that there is only one result (Klara, frame 0),
         # and that the no-call frame was not returned as a result.
-        self.assertTrue(isinstance(pred_result, CardPredictionResult))
+        self.assertTrue(isinstance(pred_result, list))
         self.assertEqual(len(pred_result), 1)
-        card_pred = pred_result[0]
-        self.assertTrue(isinstance(card_pred, CardPrediction))
-        self.assertEqual(card_pred.frame_index, None)
-        self.assertEqual(pred_result.num_frames, None)
-        card = recognizer.classifier.reference.lookup_card_prediction(
-            card_prediction=card_pred
-        )
-        self.assertEqual(card.name, "Klara")
+        detected_card = pred_result[0]
+        self.assertEqual(detected_card, "Klara (Chilling Reign #145)")
 
         # test pickle
         recognizer.to_pickle("test.pkl")
