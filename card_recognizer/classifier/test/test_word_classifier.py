@@ -65,7 +65,7 @@ class TestWordClassifier(unittest.TestCase):
         self.assertTrue(isinstance(classifier.output, CardPredictionResult))
         self.assertEqual(classifier.input, [self.test_input])
         self.assertEqual(output, classifier.output)
-        self.assertEqual(output.num_frames, None)
+        self.assertEqual(output.num_frames, 1)
         self.assertEqual(output.reference_set, "Brilliant Stars")
         self.assertEqual(output.unique_cards, [17])
         self.assertEqual(len(output), 1)

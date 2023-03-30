@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from algo_ops.ops.text import TextOp
 
-from card_recognizer.api.card_recognizer import Mode
+from card_recognizer.api.operating_mode import OperatingMode
 from card_recognizer.classifier.core.card_prediction_result import CardPredictionResult
 from card_recognizer.reference.core.build import ReferenceBuild
 from card_recognizer.reference.core.card_reference import CardReference
@@ -17,7 +17,7 @@ class PullsSummary(TextOp):
 
     def __init__(
         self,
-        operating_mode: Mode,
+        operating_mode: OperatingMode,
         summary_file: Optional[str] = None,
     ):
         """
@@ -50,29 +50,17 @@ class PullsSummary(TextOp):
         card_number = str(reference.cards[run.card_index].number)
         run_interval = str(run.interval)
 
-        if self.operating_mode != Mode.SINGLE_IMAGE:
+        if self.operating_mode != OperatingMode.SINGLE_IMAGE:
             run_str = " [" + run_interval + "]"
         else:
             run_str = ""
 
         # format pull string
-        if reference.name == 'master':
+        if reference.name == "master":
             set_name = reference.cards[run.card_index].set.name
-            return (
-                card_name
-                + " (" + set_name + " #"
-                + card_number
-                + ")"
-                + run_str
-            )
+            return card_name + " (" + set_name + " #" + card_number + ")" + run_str
         else:
-            return (
-                card_name
-                + " (#"
-                + card_number
-                + ")"
-                + run_str
-            )
+            return card_name + " (#" + card_number + ")" + run_str
 
     def make_pulls_summary(
         self,

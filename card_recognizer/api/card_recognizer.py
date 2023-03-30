@@ -8,7 +8,7 @@ from ocr_ops.framework.op.ffmpeg_op import FFMPEGOp
 from ocr_ops.framework.pipeline.ocr_pipeline import OCRMethod
 from ocr_ops.instances import ocr
 
-from card_recognizer.api.mode import Mode
+from card_recognizer.api.operating_mode import OperatingMode
 from card_recognizer.classifier.core.word_classifier import WordClassifier
 from card_recognizer.pulls_estimator.pulls_estimator import PullsEstimator
 from card_recognizer.pulls_estimator.pulls_summary import PullsSummary
@@ -20,7 +20,7 @@ class CardRecognizer(Pipeline):
         self,
         set_name: Optional[str] = "master",
         classification_method: str = "shared_words",
-        mode: Mode = Mode.SINGLE_IMAGE,
+        mode: OperatingMode = OperatingMode.SINGLE_IMAGE,
         min_run_length: Optional[int] = 5,
         min_run_conf: Optional[float] = 0.1,
         run_tol: Optional[int] = 10,
@@ -40,13 +40,21 @@ class CardRecognizer(Pipeline):
         )
 
         # make pipeline
-        if mode == Mode.VIDEO:
+        if mode == OperatingMode.VIDEO:
             ops = [FFMPEGOp(), self.ocr_pipeline, self.classifier]
-        elif mode == Mode.SINGLE_IMAGE:
-            ops = [self.ocr_pipeline, self.classifier, PullsSummary(operating_mode=mode)]
-        elif mode == Mode.IMAGE_DIR:
-            ops = [self.ocr_pipeline, self.classifier, PullsSummary(operating_mode=mode)]
-        elif mode == Mode.PULLS_IMAGE_DIR:
+        elif mode == OperatingMode.SINGLE_IMAGE:
+            ops = [
+                self.ocr_pipeline,
+                self.classifier,
+                PullsSummary(operating_mode=mode),
+            ]
+        elif mode == OperatingMode.IMAGE_DIR:
+            ops = [
+                self.ocr_pipeline,
+                self.classifier,
+                PullsSummary(operating_mode=mode),
+            ]
+        elif mode == OperatingMode.PULLS_IMAGE_DIR:
             ops = [
                 self.ocr_pipeline,
                 self.classifier,
@@ -58,7 +66,7 @@ class CardRecognizer(Pipeline):
                 ),
                 PullsSummary(operating_mode=mode),
             ]
-        elif mode == Mode.PULLS_VIDEO:
+        elif mode == OperatingMode.PULLS_VIDEO:
             ops = [
                 FFMPEGOp(),
                 self.ocr_pipeline,
@@ -72,7 +80,7 @@ class CardRecognizer(Pipeline):
                 ),
                 PullsSummary(operating_mode=mode),
             ]
-        elif mode == Mode.BOOSTER_PULLS_IMAGE_DIR:
+        elif mode == OperatingMode.BOOSTER_PULLS_IMAGE_DIR:
             ops = [
                 self.ocr_pipeline,
                 self.classifier,
@@ -83,7 +91,7 @@ class CardRecognizer(Pipeline):
                 ),
                 PullsSummary(operating_mode=mode),
             ]
-        elif mode == Mode.BOOSTER_PULLS_VIDEO:
+        elif mode == OperatingMode.BOOSTER_PULLS_VIDEO:
             ops = [
                 FFMPEGOp(),
                 self.ocr_pipeline,

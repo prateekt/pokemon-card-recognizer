@@ -15,7 +15,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/prateekt/pokemon-card-recognizer",
     packages=setuptools.find_packages(),
-    package_data={'reference_data': ['card_recognizer/reference/data/ref_build']},
+    package_data={"reference_data": ["card_recognizer/reference/data/ref_build"]},
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3",

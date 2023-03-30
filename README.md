@@ -3,9 +3,10 @@
 Recognize a Pokemon Card in an image or video.
 
 ```python
-from card_recognizer.api.card_recognizer import CardRecognizer, Mode 
+from card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
+
 recognizer = CardRecognizer(
-    mode=Mode.PULLS_VIDEO
+    mode=OperatingMode.PULLS_VIDEO
 )
 pulls = recognizer.exec("/path/to/video")
 ```

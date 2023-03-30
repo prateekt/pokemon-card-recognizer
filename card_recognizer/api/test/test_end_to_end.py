@@ -6,7 +6,7 @@ import pandas as pd
 from algo_ops.dependency.tester_util import clean_paths
 from ocr_ops.framework.op.ffmpeg_op import FFMPEGOp
 
-from card_recognizer.api.card_recognizer import CardRecognizer, Mode
+from card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
 from card_recognizer.classifier.core.card_prediction_result import (
     CardPredictionResult,
     CardPrediction,
@@ -37,7 +37,7 @@ class TestEndToEnd(unittest.TestCase):
         """
 
         # init card recognizer
-        recognizer = CardRecognizer(set_name="master", mode=Mode.SINGLE_IMAGE)
+        recognizer = CardRecognizer(set_name="master", mode=OperatingMode.SINGLE_IMAGE)
         self.assertEqual(recognizer.input, None)
         self.assertEqual(recognizer.output, None)
         self.assertEqual(len(recognizer.execution_times), 0)
@@ -70,7 +70,7 @@ class TestEndToEnd(unittest.TestCase):
         """
         Tests card recognizer on directory of images.
         """
-        recognizer = CardRecognizer(set_name="master", mode=Mode.IMAGE_DIR)
+        recognizer = CardRecognizer(set_name="master", mode=OperatingMode.IMAGE_DIR)
         pred_result = recognizer.exec(inp=self.single_frames_path)
 
         # without filters, there should be two results. The first is Klara.
@@ -94,14 +94,14 @@ class TestEndToEnd(unittest.TestCase):
         """
         recognizer = CardRecognizer(
             set_name="master",
-            mode=Mode.BOOSTER_PULLS_IMAGE_DIR,
+            mode=OperatingMode.BOOSTER_PULLS_IMAGE_DIR,
             min_run_length=None,
             min_run_conf=None,
         )
         recognizer.set_output_path(output_path="out_figs")
         pred_result = recognizer.exec(inp=self.single_frames_path)
         self.assertEqual(len(pred_result), 2)
-        self.assertEqual(pred_result[0], "Klara (#145) [0-1]")
+        self.assertEqual(pred_result[0], "Klara (Chilling Reign #145) [0-1]")
 
         # test visualization capability and plot generation
         recognizer.vis()
@@ -130,7 +130,7 @@ class TestEndToEnd(unittest.TestCase):
         # setup recognizer
         recognizer = CardRecognizer(
             set_name="master",
-            mode=Mode.PULLS_VIDEO,
+            mode=OperatingMode.PULLS_VIDEO,
             min_run_length=None,
             min_run_conf=None,
         )
@@ -144,7 +144,7 @@ class TestEndToEnd(unittest.TestCase):
         pred_result = recognizer.exec(inp=self.video_path)
         self.assertEqual(recognizer.input, self.video_path)
         self.assertEqual(recognizer.output, pred_result)
-        self.assertEqual(pred_result, ["Klara (#145) [1-2]"])
+        self.assertEqual(pred_result, ["Klara (Chilling Reign #145) [1-2]"])
         self.assertEqual(len(pred_result), 1)
 
         # check created directory structure

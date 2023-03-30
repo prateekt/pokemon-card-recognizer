@@ -6,6 +6,7 @@ import pandas as pd
 from algo_ops.dependency.tester_util import clean_paths
 from algo_ops.pipeline.pipeline import Pipeline
 
+from card_recognizer.api.operating_mode import OperatingMode
 from card_recognizer.classifier.core.card_prediction_result import (
     CardPredictionResult,
     CardPrediction,
@@ -38,7 +39,9 @@ class TestPullsEstimator(unittest.TestCase):
         self.pulls_estimator = PullsEstimator(
             min_run_length=5, min_run_conf=0.1, output_figs_path="figs"
         )
-        self.pulls_summary = PullsSummary(summary_file="summary_test.tsv")
+        self.pulls_summary = PullsSummary(
+            summary_file="summary_test.tsv", operating_mode=OperatingMode.VIDEO
+        )
 
         # make synthetic card prediction series
         predictions = [

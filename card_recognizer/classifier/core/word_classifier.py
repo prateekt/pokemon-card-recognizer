@@ -54,7 +54,9 @@ class WordClassifier(TextOp):
         self.set_classification_method(method=self.classification_method)
 
         # define input / output
-        self.input: Optional[Union[List[List[str]], List[OCRImageResult], OCRPipelineResult]] = None
+        self.input: Optional[
+            Union[List[List[str]], List[OCRImageResult], OCRPipelineResult]
+        ] = None
         self.output: Optional[CardPredictionResult] = None
 
     @staticmethod
