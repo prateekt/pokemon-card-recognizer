@@ -5,7 +5,7 @@ from typing import List, Dict
 
 import ezplotly.settings as plot_settings
 from ordered_set import OrderedSet
-from pokemontcgsdk import Card
+from pokemontcgsdk import Card, Set
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
 from card_recognizer.infra.ptcgsdk.ptcgsdk import (
@@ -27,35 +27,7 @@ class ReferenceBuild:
         Get list of supported set names.
         """
         card_sets = OrderedSet(
-            [
-                "Base",
-                "Jungle",
-                "Fossil",
-                "Base Set 2",
-                "Team Rocket",
-                "Gym Heroes",
-                "Gym Challenge",
-                "Neo Genesis",
-                "Neo Discovery",
-                "Southern Islands",
-                "Neo Revelation",
-                "Neo Destiny",
-                "Forbidden Light",
-                "Cosmic Eclipse",
-                "Darkness Ablaze",
-                "Vivid Voltage",
-                "Shining Fates",
-                "Chilling Reign",
-                "Celebrations",
-                "Evolving Skies",
-                "Fusion Strike",
-                "Brilliant Stars",
-                "Astral Radiance",
-                "Pokémon GO",
-                "Lost Origin",
-                "Silver Tempest",
-                "Crown Zenith",
-            ]
+            [s.name for s in Set.all()]
         )
         return card_sets
 
