@@ -58,9 +58,9 @@ class PullsSummary(TextOp):
         # format pull string
         if reference.name == "master":
             set_name = reference.cards[run.card_index].set.name
-            return card_name + " (" + set_name + " #" + card_number + ")" + run_str
+            return {"card_name":card_name, "set_name":set_name, "card_number":card_number, "run_str":run_str}
         else:
-            return card_name + " (#" + card_number + ")" + run_str
+            return {"card_name":card_name, "card_number":card_number, "run_str":run_str}
 
     def make_pulls_summary(
         self,
