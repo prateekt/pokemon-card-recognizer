@@ -4,10 +4,10 @@ from typing import List, Optional
 from algo_ops.ops.text import TextOp
 
 from card_recognizer.api.operating_mode import OperatingMode
+from card_recognizer.classifier.core.card_frame_run import CardFrameRun
 from card_recognizer.classifier.core.card_prediction_result import CardPredictionResult
 from card_recognizer.reference.core.build import ReferenceBuild
 from card_recognizer.reference.core.card_reference import CardReference
-from card_recognizer.run_finding.interval import Run
 
 
 class PullsSummary(TextOp):
@@ -34,7 +34,9 @@ class PullsSummary(TextOp):
         self.input: Optional[CardPredictionResult] = None
         self.output: Optional[List[str]] = None
 
-    def _format_pull_display_str(self, run: Run, reference: CardReference) -> str:
+    def _format_pull_display_str(
+        self, run: CardFrameRun, reference: CardReference
+    ) -> str:
         """
         Formats a pull display string for a single pull.
 
