@@ -1,4 +1,4 @@
-name: Test Build
+name: Python Package using Conda
 
 on: [push]
 
@@ -10,14 +10,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Set up Python 3.9.16
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9.16'
     - name: Add conda to system path
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
         echo $CONDA/bin >> $GITHUB_PATH
-    - name: Build development conda
+    - name: Install dependencies
       run: |
-        make conda_dev
-        conda activate card_rec_env
+        conda env update --file conda.yml --name base
     - name: Lint with flake8
       run: |
         conda install flake8
