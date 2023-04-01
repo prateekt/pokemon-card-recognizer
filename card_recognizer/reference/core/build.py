@@ -7,6 +7,7 @@ import ezplotly.settings as plot_settings
 from ordered_set import OrderedSet
 from pokemontcgsdk import Card, Set
 
+from card_recognizer.classifier.core.card_prediction_result import CardPrediction
 from card_recognizer.classifier.core.word_classifier import WordClassifier
 from card_recognizer.infra.ptcgsdk.ptcgsdk import (
     query_set_cards,
@@ -85,6 +86,19 @@ class ReferenceBuild:
                 set_name=set_name
             )
         return ReferenceBuild.loaded_references[set_name]
+
+    @staticmethod
+    def lookup(card_prediction: CardPrediction) -> Card:
+        """
+        Lookup card in reference.
+
+        param card_prediction: The card prediction to lookup
+
+        Return:
+            Card object
+        """
+        card_ref = ReferenceBuild.get(set_name=card_prediction.reference_name)
+        return card_ref.lookup_card_prediction(card_prediction=card_prediction)
 
     @staticmethod
     def _load(set_name: str) -> CardReference:
