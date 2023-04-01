@@ -1,9 +1,10 @@
 from typing import Optional, List, Sequence, Dict, OrderedDict
 
 from algo_ops.pickleable_object.pickleable_object import PickleableObject
+from ocr_ops.run_finding.interval import Interval
+from ocr_ops.run_finding.run_finding import is_sorted, find_runs_with_tol
 
-from card_recognizer.run_finding.interval import Run, Interval
-from card_recognizer.run_finding.run_finding import find_runs_with_tol, is_sorted
+from card_recognizer.classifier.core.card_frame_run import CardFrameRun
 
 
 class CardPrediction:
@@ -87,9 +88,9 @@ class CardPredictionResult(PickleableObject):
         self.reference_set: Optional[str] = None
         self.unique_cards = self._tabulate_unique_cards()
         if num_frames is not None:
-            self.runs = self._find_runs(run_tol=run_tol)
+            self.runs: Optional[List[CardFrameRun]] = self._find_runs(run_tol=run_tol)
         else:
-            self.runs = None
+            self.runs: Optional[List[CardFrameRun]] = None
 
     def __getitem__(self, i):
         return self.predictions[i]
@@ -183,7 +184,7 @@ class CardPredictionResult(PickleableObject):
         )
         return unique_cards
 
-    def _find_runs(self, run_tol: int) -> List[Run]:
+    def _find_runs(self, run_tol: int) -> List[CardFrameRun]:
         """
         Finds runs of a card detection in consecutive frames.
 
@@ -194,7 +195,7 @@ class CardPredictionResult(PickleableObject):
         """
 
         # compute runs for each unique card
-        runs: List[Run] = list()
+        runs: List[CardFrameRun] = list()
         series = self.to_int_series()
         for card_index in self.unique_cards:
             intervals = find_runs_with_tol(
@@ -205,7 +206,7 @@ class CardPredictionResult(PickleableObject):
                     interval=interval, card_index=card_index
                 )
                 runs += [
-                    Run(
+                    CardFrameRun(
                         interval=interval,
                         card_index=card_index,
                         confidence_scores=confidence_scores,

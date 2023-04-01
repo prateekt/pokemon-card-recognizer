@@ -3,10 +3,10 @@ from typing import List, Optional
 import numpy as np
 from algo_ops.ops.text import TextOp
 
+from card_recognizer.classifier.core.card_frame_run import CardFrameRun
 from card_recognizer.classifier.core.card_prediction_result import (
     CardPredictionResult,
     CardPrediction,
-    Run,
 )
 from card_recognizer.pulls_estimator.plots import plot_pull_stats
 
@@ -81,7 +81,7 @@ class PullsEstimator(TextOp):
             figs_paging=self.figs_paging,
         )
 
-    def _apply_filter(self, runs: List[Run]) -> List[Run]:
+    def _apply_filter(self, runs: List[CardFrameRun]) -> List[CardFrameRun]:
         """
         Filters a list of card runs on run length and max confidence score.
 
@@ -90,7 +90,7 @@ class PullsEstimator(TextOp):
         Returns:
             keep: List of kept runs
         """
-        keep: List[Run] = list()
+        keep: List[CardFrameRun] = list()
         for run in runs:
             if (self.freq_t is not None and len(run) < self.freq_t) or (
                 self.conf_t is not None and run.max_confidence_score < self.conf_t
@@ -100,7 +100,7 @@ class PullsEstimator(TextOp):
                 keep.append(run)
         return keep
 
-    def _apply_selection(self, runs: List[Run]) -> List[Run]:
+    def _apply_selection(self, runs: List[CardFrameRun]) -> List[CardFrameRun]:
         """
         Chooses a number of top runs based on selection score.
 
@@ -116,14 +116,14 @@ class PullsEstimator(TextOp):
 
         # perform selection based on selection scores
         sorted_card_indices = np.argsort([-1.0 * run.selection_score for run in runs])
-        selected_runs: List[Run] = [
+        selected_runs: List[CardFrameRun] = [
             runs[index] for index in sorted_card_indices[0 : self.num_cards_to_select]
         ]
         return selected_runs
 
     @staticmethod
     def _make_result(
-        runs: List[Run], frame_card_prediction: CardPredictionResult
+        runs: List[CardFrameRun], frame_card_prediction: CardPredictionResult
     ) -> CardPredictionResult:
         """
         Packages runs to CardPredictionResult.
@@ -167,10 +167,12 @@ class PullsEstimator(TextOp):
         """
 
         # apply filter
-        kept_runs: List[Run] = self._apply_filter(runs=frame_card_predictions.runs)
+        kept_runs: List[CardFrameRun] = self._apply_filter(
+            runs=frame_card_predictions.runs
+        )
 
         # select cards based on selection score
-        selected_runs: List[Run] = self._apply_selection(runs=kept_runs)
+        selected_runs: List[CardFrameRun] = self._apply_selection(runs=kept_runs)
 
         # create output CardPredictionResult object
         return self._make_result(

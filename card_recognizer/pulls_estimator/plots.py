@@ -7,9 +7,9 @@ import ezplotly.settings as plot_settings
 import numpy as np
 from ezplotly import EZPlotlyPlot
 
+from card_recognizer.classifier.core.card_frame_run import CardFrameRun
 from card_recognizer.classifier.core.card_prediction_result import (
     CardPredictionResult,
-    Run,
 )
 from card_recognizer.reference.core.build import ReferenceBuild
 
@@ -66,7 +66,7 @@ def plot_pull_time_series(
 
 
 def plot_metrics(
-    runs: List[Run],
+    runs: List[CardFrameRun],
     frame_card_predictions: CardPredictionResult,
     outfile: Optional[str],
 ) -> None:
@@ -195,7 +195,7 @@ def plot_paged_metrics(
 
 
 def plot_error_surface(
-    runs: List[Run],
+    runs: List[CardFrameRun],
     outfile: Optional[str] = None,
 ) -> None:
     """
