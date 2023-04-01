@@ -55,6 +55,7 @@ class ReferenceBuild:
                 "Lost Origin",
                 "Silver Tempest",
                 "Crown Zenith",
+                "Scarlet & Violet"
             ]
         )
         return card_sets
