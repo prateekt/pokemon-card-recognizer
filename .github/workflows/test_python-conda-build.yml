@@ -17,6 +17,7 @@ jobs:
     - name: Build development conda
       run: |
         make conda_dev
+        conda activate card_rec_env
     - name: Lint with flake8
       run: |
         conda install flake8
