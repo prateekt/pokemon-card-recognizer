@@ -5,7 +5,7 @@ from typing import List, Dict
 
 import ezplotly.settings as plot_settings
 from ordered_set import OrderedSet
-from pokemontcgsdk import Card
+from pokemontcgsdk import Card, Set
 
 from card_recognizer.classifier.core.word_classifier import WordClassifier
 from card_recognizer.infra.ptcgsdk.ptcgsdk import (
@@ -26,37 +26,7 @@ class ReferenceBuild:
         """
         Get list of supported set names.
         """
-        card_sets = OrderedSet(
-            [
-                "Base",
-                "Jungle",
-                "Fossil",
-                "Base Set 2",
-                "Team Rocket",
-                "Gym Heroes",
-                "Gym Challenge",
-                "Neo Genesis",
-                "Neo Discovery",
-                "Southern Islands",
-                "Neo Revelation",
-                "Neo Destiny",
-                "Forbidden Light",
-                "Cosmic Eclipse",
-                "Darkness Ablaze",
-                "Vivid Voltage",
-                "Shining Fates",
-                "Chilling Reign",
-                "Celebrations",
-                "Evolving Skies",
-                "Fusion Strike",
-                "Brilliant Stars",
-                "Astral Radiance",
-                "Pokémon GO",
-                "Lost Origin",
-                "Silver Tempest",
-                "Crown Zenith",
-            ]
-        )
+        card_sets = OrderedSet([s.name for s in Set.all()])
         return card_sets
 
     @staticmethod
@@ -157,11 +127,19 @@ class ReferenceBuild:
         # loop over sets to build set-specific references
         master_set: List[Card] = list()
         for set_name in ReferenceBuild.supported_card_sets():
+            # extract set prefix and specify output path
+            set_prefix = set_name.lower().replace(" ", "_")
+            out_pkl_path = os.path.join(ReferenceBuild.get_path(), set_prefix + ".pkl")
+
+            # If reference already built, skip it. Allows recovery from failure.
+            if os.path.exists(out_pkl_path):
+                print("Skipping " + set_prefix)
+                continue
+
             # query cards in set
             print(set_name + ": Querying set...")
             cards = query_set_cards(set_name=set_name)
             master_set += cards
-            set_prefix = set_name.lower().replace(" ", "_")
 
             # download card images
             if download_images:
@@ -177,15 +155,17 @@ class ReferenceBuild:
                 os.path.join(ReferenceBuild.get_path()),
                 exist_ok=True,
             )
-            out_pkl_path = os.path.join(ReferenceBuild.get_path(), set_prefix + ".pkl")
             reference = CardReference(cards=cards, name=set_name)
             reference.to_pickle(out_pkl_path=out_pkl_path)
 
         # build master reference
         print("Building master reference...")
         out_pkl_path = os.path.join(ReferenceBuild.get_path(), "master.pkl")
-        master_reference = CardReference(cards=master_set, name="master")
-        master_reference.to_pickle(out_pkl_path=out_pkl_path)
+        if os.path.exists(out_pkl_path):
+            print("Skipping master")
+        else:
+            master_reference = CardReference(cards=master_set, name="master")
+            master_reference.to_pickle(out_pkl_path=out_pkl_path)
 
     @staticmethod
     def make_eval_plots() -> None:
@@ -196,11 +176,16 @@ class ReferenceBuild:
         print("Making Eval plots...")
         eval_plots_dir = os.path.join(ReferenceBuild.get_path_to_data(), "eval_figs")
         os.makedirs(eval_plots_dir, exist_ok=True)
+        print("Plotting word counts..")
         plot_word_counts(
             references=ReferenceBuild.load_all_card_references(),
             outfile=os.path.join(eval_plots_dir, "word_counts.png"),
         )
         for classifier_method in WordClassifier.get_supported_classifier_methods():
+            print(
+                "Plotting sensitivity curve for classifier_method: "
+                + str(classifier_method)
+            )
             plot_classifier_sensitivity_curve(
                 set_pkl_paths={
                     set_name: ReferenceBuild.get_set_pkl_path(set_name)
@@ -218,12 +203,16 @@ if __name__ == "__main__":
         print("USAGE: python build.py [PTCGSDK_API_KEY]")
     else:
         # setup
+        run_eval: bool = True
         plot_settings.SUPPRESS_PLOTS = True
         random.seed(0)
 
         # build reference
         ptcgsdk_api_key_val = sys.argv[0]
-        ReferenceBuild.build(ptcgsdk_api_key=ptcgsdk_api_key_val)
+        ReferenceBuild.build(
+            ptcgsdk_api_key=ptcgsdk_api_key_val, download_images=run_eval
+        )
 
         # evaluate plots
-        ReferenceBuild.make_eval_plots()
+        if run_eval:
+            ReferenceBuild.make_eval_plots()

@@ -46,7 +46,6 @@ class CardRecognizer(Pipeline):
             ops = [
                 self.ocr_pipeline,
                 self.classifier,
-                PullsSummary(operating_mode=mode),
             ]
         elif mode == OperatingMode.IMAGE_DIR:
             ops = [

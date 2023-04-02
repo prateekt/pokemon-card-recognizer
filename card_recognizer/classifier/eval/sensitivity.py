@@ -61,7 +61,7 @@ def _run_classifier_trial(
 
 
 def compute_classification_sensitivity(
-    classifier: WordClassifier, num_trials: int, num_max_words: int = 100
+    classifier: WordClassifier, num_trials: int, num_max_words: int = 60
 ) -> Tuple[np.array, np.array]:
     """
     Computes an accuracy by num random words curve. Used to test sensitivity of classifier. How many words does the

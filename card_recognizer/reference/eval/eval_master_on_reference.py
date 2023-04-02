@@ -4,6 +4,7 @@ from typing import List, Optional
 
 import ezplotly.settings as plot_settings
 import pandas as pd
+from card_recognizer.api.operating_mode import OperatingMode
 from natsort import natsorted
 from pokemontcgsdk import Card
 
@@ -45,28 +46,6 @@ def _eval_prediction(
     )
 
 
-def _correct_set_name(proposed_set_name: str) -> str:
-    """
-    Helper function to identify correct set name.
-    """
-    if proposed_set_name == "Team Rocket Returns":
-        return "Team Rocket"
-    elif proposed_set_name == "Celebrations: Classic Collection":
-        return "Celebrations"
-    elif proposed_set_name == "Brilliant Stars Trainer Gallery":
-        return "Brilliant Stars"
-    elif proposed_set_name == "Astral Radiance Trainer Gallery":
-        return "Astral Radiance"
-    elif proposed_set_name == "Lost Origin Trainer Gallery":
-        return "Lost Origin"
-    elif proposed_set_name == "Silver Tempest Trainer Gallery":
-        return "Silver Tempest"
-    elif proposed_set_name == "Crown Zenith Galarian Gallery":
-        return "Crown Zenith"
-    else:
-        return proposed_set_name
-
-
 def main():
     """
     Script to evaluate master model accuracy on all set card images. Reports an accuracy per set and per rule.
@@ -100,7 +79,7 @@ def main():
             # evaluate on card files
             card_files = [
                 os.path.join(
-                    _correct_set_name(card.set.name),
+                    card.set.name,
                     os.path.basename(card.images.large),
                 )
                 for card in pipeline.classifier.reference.cards
