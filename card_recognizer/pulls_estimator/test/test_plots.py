@@ -30,7 +30,10 @@ class TestPlotPaging(unittest.TestCase):
         num_frames = 33
         predictions = [
             CardPrediction(
-                card_index_in_reference=random.randint(0, 3), conf=0.9, frame_index=i
+                card_index_in_reference=random.randint(0, 3),
+                conf=0.9,
+                frame_index=i,
+                reference_name="master",
             )
             for i in range(num_frames)
         ]

@@ -15,17 +15,20 @@ class CardPrediction:
 
     def __init__(
         self,
+        reference_name: str,
         card_index_in_reference: int,
         conf: float,
         frame_index: Optional[int] = None,
         input_path: Optional[str] = None,
     ):
         """
+        param reference_name: The name of the reference used to make the prediction
         param card_index_in_reference: The predicted card's index in the reference
         param conf: The confidence score of the prediction
         param frame_index: The frame index (in a video or image stream) of the prediction
         param input_path: The input path of the prediction (e.g. an image file)
         """
+        self.reference_name = reference_name
         self.card_index_in_reference: int = card_index_in_reference
         self.conf: float = conf
         self.frame_index: Optional[int] = frame_index

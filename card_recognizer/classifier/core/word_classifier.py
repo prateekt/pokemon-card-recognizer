@@ -113,7 +113,9 @@ class WordClassifier(TextOp):
         else:
             # return prediction
             prediction = CardPrediction(
-                card_index_in_reference=card_number_prediction, conf=conf
+                card_index_in_reference=card_number_prediction,
+                conf=conf,
+                reference_name=self.reference.name,
             )
             if include_probs:
                 prediction.all_probs = probs
