@@ -162,7 +162,7 @@ class ReferenceBuild:
         print("Building master reference...")
         out_pkl_path = os.path.join(ReferenceBuild.get_path(), "master.pkl")
         if os.path.exists(out_pkl_path):
-            print('Skipping master')
+            print("Skipping master")
         else:
             master_reference = CardReference(cards=master_set, name="master")
             master_reference.to_pickle(out_pkl_path=out_pkl_path)
@@ -176,13 +176,16 @@ class ReferenceBuild:
         print("Making Eval plots...")
         eval_plots_dir = os.path.join(ReferenceBuild.get_path_to_data(), "eval_figs")
         os.makedirs(eval_plots_dir, exist_ok=True)
-        print('Plotting word counts..')
+        print("Plotting word counts..")
         plot_word_counts(
             references=ReferenceBuild.load_all_card_references(),
             outfile=os.path.join(eval_plots_dir, "word_counts.png"),
         )
         for classifier_method in WordClassifier.get_supported_classifier_methods():
-            print('Plotting sensitivity curve for classifier_method: ' + str(classifier_method))
+            print(
+                "Plotting sensitivity curve for classifier_method: "
+                + str(classifier_method)
+            )
             plot_classifier_sensitivity_curve(
                 set_pkl_paths={
                     set_name: ReferenceBuild.get_set_pkl_path(set_name)
@@ -206,7 +209,9 @@ if __name__ == "__main__":
 
         # build reference
         ptcgsdk_api_key_val = sys.argv[0]
-        ReferenceBuild.build(ptcgsdk_api_key=ptcgsdk_api_key_val, download_images=run_eval)
+        ReferenceBuild.build(
+            ptcgsdk_api_key=ptcgsdk_api_key_val, download_images=run_eval
+        )
 
         # evaluate plots
         if run_eval:

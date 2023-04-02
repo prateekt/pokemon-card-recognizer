@@ -33,7 +33,7 @@ class TestEndToEnd(unittest.TestCase):
 
     def test_end_to_end_klara(self) -> None:
         """
-        Tests card recognizer end to end on Klara image.
+        Tests card recognizer end-to-end on Klara single image.
         """
 
         # init card recognizer
@@ -46,16 +46,21 @@ class TestEndToEnd(unittest.TestCase):
         klara_path = os.path.join(self.single_frames_path, "klara.png")
         pred_result = recognizer.exec(inp=klara_path)
         self.assertTrue(isinstance(recognizer.input, str))
-        self.assertTrue(isinstance(recognizer.output, list))
+        self.assertTrue(isinstance(recognizer.output, CardPredictionResult))
         self.assertEqual(recognizer.input, klara_path)
         self.assertEqual(pred_result, recognizer.output)
 
         # check that there is only one result (Klara, frame 0),
         # and that the no-call frame was not returned as a result.
-        self.assertTrue(isinstance(pred_result, list))
+        self.assertTrue(isinstance(pred_result, CardPredictionResult))
         self.assertEqual(len(pred_result), 1)
-        detected_card = pred_result[0]
-        self.assertEqual(detected_card, "Klara (Chilling Reign #145)")
+        self.assertTrue(isinstance(pred_result[0], CardPrediction))
+        detected_card = recognizer.classifier.reference.lookup_card_prediction(
+            card_prediction=pred_result[0]
+        )
+        self.assertEqual(detected_card.name, "Klara")
+        self.assertEqual(detected_card.set.name, "Chilling Reign")
+        self.assertEqual(int(detected_card.number), 145)
 
         # test pickle
         recognizer.to_pickle("test.pkl")
@@ -90,11 +95,13 @@ class TestEndToEnd(unittest.TestCase):
             set_name="master",
             mode=OperatingMode.BOOSTER_PULLS_IMAGE_DIR,
             min_run_length=None,
-            min_run_conf=None,
+            min_run_conf=0.05,
         )
         recognizer.set_output_path(output_path="out_figs")
         pred_result = recognizer.exec(inp=self.single_frames_path)
-        self.assertEqual(len(pred_result), 2)
+
+        # With filters, only one result: Klara.
+        self.assertEqual(len(pred_result), 1)
         self.assertEqual(pred_result[0], "Klara (Chilling Reign #145) [0-1]")
 
         # test visualization capability and plot generation
@@ -126,7 +133,7 @@ class TestEndToEnd(unittest.TestCase):
             set_name="master",
             mode=OperatingMode.PULLS_VIDEO,
             min_run_length=None,
-            min_run_conf=None,
+            min_run_conf=0.05,
         )
         ffmpeg_op = recognizer.ops[list(recognizer.ops.keys())[0]]
         assert isinstance(ffmpeg_op, FFMPEGOp)

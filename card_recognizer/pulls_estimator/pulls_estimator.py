@@ -31,9 +31,9 @@ class PullsEstimator(TextOp):
         figs_paging: bool = False,
     ):
         """
-        param freq_t: The minimum length of a run to keep it as a card run detection (if None,
+        param min_run_length: The minimum length of a run to keep it as a card run detection (if None,
             turn off filter and allow all runs to pass)
-        param conf_t: The minimum confidence score of a run to keep it as a card run detection (if None,
+        param min_run_conf: The minimum confidence score of a run to keep it as a card run detection (if None,
             turn off filter and allow all runs to pass)
         param run_tol: The number of consecutive noisy frames to tolerate within a run
         param num_cards_to_select; The number of card pulls to estimate (if None, there is no limit)
@@ -43,8 +43,8 @@ class PullsEstimator(TextOp):
 
         # set params
         super().__init__(func=self.estimate_pull_series)
-        self.freq_t: Optional[int] = min_run_length
-        self.conf_t: Optional[float] = min_run_conf
+        self.min_run_length: Optional[int] = min_run_length
+        self.min_run_conf: Optional[float] = min_run_conf
         self.run_tol: Optional[int] = run_tol
         self.num_cards_to_select = num_cards_to_select
         self.output_fig_path = output_figs_path
@@ -92,8 +92,9 @@ class PullsEstimator(TextOp):
         """
         keep: List[CardFrameRun] = list()
         for run in runs:
-            if (self.freq_t is not None and len(run) < self.freq_t) or (
-                self.conf_t is not None and run.max_confidence_score < self.conf_t
+            if (self.min_run_length is not None and len(run) < self.min_run_length) or (
+                self.min_run_conf is not None
+                and run.max_confidence_score < self.min_run_conf
             ):
                 continue
             else:
