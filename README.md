@@ -1,6 +1,6 @@
 # Pokemon Card Recognizer
 
-Recognize a Pokemon Card in an image or video.
+Recognize a Pokémon Card in an image or video.
 
 ```python
 from card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
@@ -28,7 +28,7 @@ pip install pokemon-card-recognizer
 
 <b>Building Card Reference:</b>
 
-You can use the prebuilt card references for various Pokemon card sets or build it yourself using
+You can use the prebuilt card references for various Pokémon card sets or build it yourself using
 ```commandline
 python card_recognizer/reference/core/build.py [PTCGSDK_API_KEY]
 ```
