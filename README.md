@@ -5,10 +5,16 @@ Recognize a Pokémon Card in an image or video.
 ```python
 from card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
 
+# init and set output paths
 recognizer = CardRecognizer(
     mode=OperatingMode.PULLS_VIDEO
 )
+recognizer.set_summary_file(summary_file="summary.txt")
+recognizer.set_output_path(output_path="out_figs")
+
+# run recognizer on video and visualize results
 pulls = recognizer.exec("/path/to/video")
+recognizer.vis()
 ```
 
 Example analysis of a booster pack opening video:
@@ -26,6 +32,22 @@ conda activate card_rec_env
 pip install pokemon-card-recognizer
 ```    
 
+Note that the CardRecognizer works MUCH (~5x-10x) faster on NVIDIA GPU, so it is highly recommended that you have CUDA. If CUDA is available, the CardRecognizer will automatically use it. Otherwise, the CardRecognizer will default to CPU which is substantially slower and not recommended for batch processing.
+
+If processing video files, you may also need to download and install FFMPEG (https://ffmpeg.org/) which is used to uncompress videos into image frames.
+
+On linux:
+```commandline
+sudo apt update
+sudo apt install ffmpeg
+```
+
+Optional: The default OCR backend used by CardRecognizer is easy_ocr which is installed via the conda, but if you choose to use PyTesseract instead, you will need to install it:
+```commandline
+sudo apt install tesseract-ocr
+sudo apt install libtesseract-dev  
+```
+
 <b>Building Card Reference:</b>
 
 You can use the prebuilt card references for various Pokémon card sets or build it yourself using
@@ -34,4 +56,41 @@ python card_recognizer/reference/core/build.py [PTCGSDK_API_KEY]
 ```
 where `PTCGSDK_API_KEY` is your PTCGSDK API key. You can get one here: https://pokemontcg.io/.
 
-Note that building the reference can take an hour or more, depending on your system configuration.
+Note that building the reference can take an hour or more, depending on your system configuration. It is reccomeneded to use the prebuilt card references that come bundled with the pip package.
+
+<b>Example Usage to Recognize a Card in a Single Image:</b>
+
+```python
+from card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
+recognizer = CardRecognizer(
+    mode=OperatingMode.SINGLE_IMAGE,
+)
+pred_result = recognizer.exec("/path/to/image")
+detected_card = recognizer.classifier.reference.lookup_card_prediction(
+    card_prediction=pred_result[0]
+)
+print(detected_card.set)
+print(detected_card.name)
+print(detected_card.number)
+```
+<b>Useful Operating Modes for CardRecognizer: </b>
+
+```commandline
+# process a single image
+OperatingMode.SINGLE_IMAGE
+
+# process a directory of images
+OperatingMode.IMAGE_DIR
+
+# process a video file
+OperatingMode. VIDEO
+
+# process a video file where cards are being shown ("pulled") sequentially 
+(no assumption on # of cards shown in the video)
+OperatingMode.PULLS_VIDEO
+
+# process a video file where cards are being shown sequentially, 
+# coming from a booster pack (assumes 11 cards are being shown in the video and 
+# finds the best statistical estimation of 11 most likely shown cards).
+OperatingMode.BOOSTER_PULLS_VIDEO
+```
