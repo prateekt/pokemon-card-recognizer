@@ -91,17 +91,16 @@ Note that you can change "set_name" in the CardRecognizer constructor to whateve
 ```python
 from card_recognizer.reference.core.build import ReferenceBuild
 print(ReferenceBuild.supported_card_sets())
-``` 
-
+```
 <b>Building Card Reference:</b>
 
-The pypi package and GitHub source for pokemon-card-recognizer comes bundled with pre-rebuilt references for all major Pokémon card sets. If however, you want to rebuild the reference for some reason, you can do:
+The pypi package and GitHub source for pokemon-card-recognizer comes bundled with pre-rebuilt references for all major Pokémon card sets. It is recommended to use the pre-built references. If however, you want to rebuild the reference for some reason, you can do:
 
 ```commandline
 python card_recognizer/reference/core/build.py [PTCGSDK_API_KEY]
 ```
 where `PTCGSDK_API_KEY` is your PTCGSDK API key. You can get one here: https://pokemontcg.io/.
 
-Note that building the reference can take an hour or more, depending on your system configuration. It is recommended to use the prebuilt card references that come pre-bundled.
+Note that building and evaluating the reference can take an hour or more, depending on your system configuration. It is recommended to use the prebuilt card references that come pre-bundled.
 
 <b> *This API is unofficial, open-source, in development, and not affiliated with the Pokémon Company. </b>
