@@ -34,9 +34,21 @@ class CardRecognizer(Pipeline):
         )
 
         # load OCR pipeline
+        if mode in [
+            OperatingMode.IMAGE_DIR,
+            OperatingMode.VIDEO,
+            OperatingMode.PULLS_IMAGE_DIR,
+            OperatingMode.PULLS_VIDEO,
+            OperatingMode.BOOSTER_PULLS_IMAGE_DIR,
+            OperatingMode.BOOSTER_PULLS_VIDEO,
+        ]:
+            store_intermediate_images = False
+        else:
+            store_intermediate_images = True
         self.ocr_pipeline = ocr.basic_ocr_with_text_cleaning_pipeline(
             vocab_words=self.classifier.reference.vocab(),
             ocr_method=OCRMethod.EASYOCR,
+            store_intermediate_images=store_intermediate_images,
         )
 
         # make pipeline
