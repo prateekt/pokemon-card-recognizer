@@ -4,3 +4,4 @@ pokemontcgsdk
 bidict
 ordered_set
 requests
+Pillow==9.5.0
