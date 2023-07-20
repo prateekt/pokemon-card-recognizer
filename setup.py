@@ -7,7 +7,7 @@ with open("requirements.txt") as f:
 
 setuptools.setup(
     name="pokemon-card-recognizer",
-    version="0.0.1.3.7.5",
+    version="0.0.1.3.7.6",
     author="Prateek Tandon",
     author_email="prateek1.tandon@gmail.com",
     description="Pokemon TCG Card Recognizer",
@@ -22,6 +22,6 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.9.7",
+    python_requires=">=3.11.4",
     install_requires=required,
 )

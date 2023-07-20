@@ -2,14 +2,11 @@
 requires = [
     "setuptools>=42",
     "wheel",
-    "algo-ops",
     "ocr-ops",
-    "ezplotly",
-    "numpy",
     "pandas",
     "pokemontcgsdk",
     "bidict",
-    "natsort",
+    "ordered_set",
     "requests"
 ]
 build-backend = "setuptools.build_meta"
