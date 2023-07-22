@@ -4,7 +4,6 @@ from typing import List, Optional
 
 import ezplotly.settings as plot_settings
 import pandas as pd
-from card_recognizer.api.operating_mode import OperatingMode
 from natsort import natsorted
 from pokemontcgsdk import Card
 
