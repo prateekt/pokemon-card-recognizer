@@ -63,6 +63,9 @@ def main():
         images_path = os.path.join(
             ReferenceBuild.get_path_to_data(), "card_images", set_prefix
         )
+        if not os.path.exists(images_path):
+            print('Path ' + images_path + 'not found.')
+            continue
         input_files = natsorted(
             [os.path.join(images_path, file) for file in os.listdir(images_path)]
         )
