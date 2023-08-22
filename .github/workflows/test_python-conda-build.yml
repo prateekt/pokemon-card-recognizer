@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build-linux:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash -el {0}    
@@ -19,7 +19,13 @@ jobs:
         environment-file: conda.yaml
         python-version: 3.11.4
         auto-activate-base: false
-    - name: Git LFS Setup
+    - name: Install linux dependencies
+      run: |
+        sudo apt update
+        sudo apt install ffmpeg
+        sudo apt install tesseract-ocr
+        sudo apt install libtesseract-dev
+    - name: Git LFS Update
       run: |
         git lfs install
         git lfs pull
