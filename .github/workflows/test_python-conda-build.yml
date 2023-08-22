@@ -19,10 +19,9 @@ jobs:
         environment-file: conda.yaml
         python-version: 3.11.4
         auto-activate-base: false
-    - name: Install dependencies
+    - name: Install Depdenencies
       run: |
         brew update
-#        brew upgrade
         brew install ffmpeg
         brew install tesseract
 #        sudo apt update
