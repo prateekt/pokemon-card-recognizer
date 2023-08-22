@@ -19,6 +19,11 @@ jobs:
         environment-file: conda.yaml
         python-version: 3.11.4
         auto-activate-base: false
+    - name: Git LFS Setup
+      run: |
+        git lfs install
+        git lfs fetch
+        git lfs pull
     - name: Test with nose2
       run: |
         nose2
