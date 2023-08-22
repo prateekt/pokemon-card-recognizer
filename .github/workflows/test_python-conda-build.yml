@@ -22,7 +22,6 @@ jobs:
     - name: Git LFS Setup
       run: |
         git lfs install
-        git lfs fetch
         git lfs pull
     - name: Test with nose2
       run: |
