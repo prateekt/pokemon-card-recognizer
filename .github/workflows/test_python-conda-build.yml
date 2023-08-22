@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build-linux:
-    runs-on: ubuntu-latest-xl
+    runs-on: macos-latest-xl
     defaults:
       run:
         shell: bash -el {0}    
