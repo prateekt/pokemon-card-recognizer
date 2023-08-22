@@ -21,10 +21,14 @@ jobs:
         auto-activate-base: false
     - name: Install linux dependencies
       run: |
-        sudo apt update
-        sudo apt install ffmpeg
-        sudo apt install tesseract-ocr
-        sudo apt install libtesseract-dev
+        brew update
+        brew upgrade
+        brew install ffmpeg
+        brew install tesseract
+#        sudo apt update
+#        sudo apt install ffmpeg
+#        sudo apt install tesseract-ocr
+#        sudo apt install libtesseract-dev
     - name: Git LFS Update
       run: |
         git lfs install
