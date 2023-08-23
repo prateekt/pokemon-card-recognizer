@@ -60,14 +60,13 @@ def main():
         {rule: [] for rule in WordClassifier.get_supported_classifier_methods()}
     )
     for set_name in ReferenceBuild.supported_card_sets():
-
         # define paths
         set_prefix = set_name.lower().replace(" ", "_")
         images_path = os.path.join(
             ReferenceBuild.get_path_to_data(), "card_images", set_prefix
         )
         if not os.path.exists(images_path):
-            print('Path ' + images_path + 'not found.')
+            print("Path " + images_path + "not found.")
             continue
         input_files = natsorted(
             [os.path.join(images_path, file) for file in os.listdir(images_path)]
@@ -93,7 +92,9 @@ def main():
             gt = list()
             for input_file in input_files:
                 try:
-                    index = card_files.index(os.path.join(set_name, os.path.basename(input_file)))
+                    index = card_files.index(
+                        os.path.join(set_name, os.path.basename(input_file))
+                    )
                     gt.append(index)
                 except:
                     traceback.print_exc()

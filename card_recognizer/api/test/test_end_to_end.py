@@ -31,9 +31,9 @@ class TestEndToEnd(unittest.TestCase):
     def tearDown(self) -> None:
         self._clean_env()
 
-    def test_end_to_end_klara(self) -> None:
+    def test_end_to_end_single_image(self) -> None:
         """
-        Tests card recognizer end-to-end on Klara single image.
+        Tests card recognizer end-to-end on single image.
         """
 
         # init card recognizer
@@ -42,15 +42,15 @@ class TestEndToEnd(unittest.TestCase):
         self.assertEqual(recognizer.output, None)
         self.assertEqual(len(recognizer.execution_times), 0)
 
-        # test on klara image
-        klara_path = os.path.join(self.single_frames_path, "klara.png")
-        pred_result = recognizer.exec(inp=klara_path)
+        # test on image
+        image_path = os.path.join(self.single_frames_path, "card.png")
+        pred_result = recognizer.exec(inp=image_path)
         self.assertTrue(isinstance(recognizer.input, str))
         self.assertTrue(isinstance(recognizer.output, CardPredictionResult))
-        self.assertEqual(recognizer.input, klara_path)
+        self.assertEqual(recognizer.input, image_path)
         self.assertEqual(pred_result, recognizer.output)
 
-        # check that there is only one result (Klara, frame 0),
+        # check that there is only one result (frame 0),
         # and that the no-call frame was not returned as a result.
         self.assertTrue(isinstance(pred_result, CardPredictionResult))
         self.assertEqual(len(pred_result), 1)
@@ -58,9 +58,9 @@ class TestEndToEnd(unittest.TestCase):
         detected_card = recognizer.classifier.reference.lookup_card_prediction(
             card_prediction=pred_result[0]
         )
-        self.assertEqual(detected_card.name, "Klara")
-        self.assertEqual(detected_card.set.name, "Chilling Reign")
-        self.assertEqual(int(detected_card.number), 145)
+        self.assertEqual(detected_card.name, "Sprigatito")
+        self.assertEqual(detected_card.set.name, "Paldea Evolved")
+        self.assertEqual(int(detected_card.number), 12)
 
         # test pickle
         recognizer.to_pickle("test.pkl")
@@ -72,7 +72,7 @@ class TestEndToEnd(unittest.TestCase):
         recognizer = CardRecognizer(set_name="master", mode=OperatingMode.IMAGE_DIR)
         pred_result = recognizer.exec(inp=self.single_frames_path)
 
-        # without filters, there should be two results. The first is Klara.
+        # without filters, there should be two results. The first is the card.
         self.assertTrue(isinstance(pred_result, CardPredictionResult))
         self.assertEqual(len(pred_result), 2)
         card_pred = pred_result[0]
@@ -82,7 +82,7 @@ class TestEndToEnd(unittest.TestCase):
         card = recognizer.classifier.reference.lookup_card_prediction(
             card_prediction=card_pred
         )
-        self.assertEqual(card.name, "Klara")
+        self.assertEqual(card.name, "Sprigatito")
 
         # test pickle
         recognizer.to_pickle("test.pkl")
@@ -100,9 +100,9 @@ class TestEndToEnd(unittest.TestCase):
         recognizer.set_output_path(output_path="out_figs")
         pred_result = recognizer.exec(inp=self.single_frames_path)
 
-        # With filters, only one result: Klara.
+        # With filters, only one result.
         self.assertEqual(len(pred_result), 1)
-        self.assertEqual(pred_result[0], "Klara (Chilling Reign #145) [0-1]")
+        self.assertEqual(pred_result[0], "Sprigatito (Paldea Evolved #12) [0-1]")
 
         # test visualization capability and plot generation
         recognizer.vis()
@@ -130,7 +130,7 @@ class TestEndToEnd(unittest.TestCase):
 
         # setup recognizer
         recognizer = CardRecognizer(
-            set_name="master",
+            set_name="Chilling Reign",
             mode=OperatingMode.PULLS_VIDEO,
             min_run_length=None,
             min_run_conf=0.05,
@@ -145,7 +145,7 @@ class TestEndToEnd(unittest.TestCase):
         pred_result = recognizer.exec(inp=self.video_path)
         self.assertEqual(recognizer.input, self.video_path)
         self.assertEqual(recognizer.output, pred_result)
-        self.assertEqual(pred_result, ["Klara (Chilling Reign #145) [1-2]"])
+        self.assertEqual(pred_result, ["Klara (#145) [1-2]"])
         self.assertEqual(len(pred_result), 1)
 
         # check created directory structure
@@ -163,4 +163,4 @@ class TestEndToEnd(unittest.TestCase):
         self.assertEqual(len(summary_df), 1)
         self.assertEqual(summary_df.columns.to_list(), ["input_path", "P_1"])
         self.assertEqual(summary_df.input_path[0], self.video_path)
-        self.assertEqual(summary_df.P_1[0], "Klara (Chilling Reign #145) [1-2]")
+        self.assertEqual(summary_df.P_1[0], "Klara (#145) [1-2]")
