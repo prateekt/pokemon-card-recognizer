@@ -130,6 +130,7 @@ dmypy.json
 
 # Mac
 .DS_Store
+*.icloud
 
 # repo specific
 .idea/
