@@ -1,10 +1,11 @@
 import functools
 import os
+import traceback
 from typing import List, Optional
 
 import ezplotly.settings as plot_settings
+import numpy as np
 import pandas as pd
-from card_recognizer.api.operating_mode import OperatingMode
 from natsort import natsorted
 from pokemontcgsdk import Card
 
@@ -64,6 +65,9 @@ def main():
         images_path = os.path.join(
             ReferenceBuild.get_path_to_data(), "card_images", set_prefix
         )
+        if not os.path.exists(images_path):
+            print("Path " + images_path + "not found.")
+            continue
         input_files = natsorted(
             [os.path.join(images_path, file) for file in os.listdir(images_path)]
         )
@@ -84,10 +88,21 @@ def main():
                 )
                 for card in pipeline.classifier.reference.cards
             ]
-            gt = [
-                card_files.index(os.path.join(set_name, os.path.basename(input_file)))
-                for input_file in input_files
-            ]
+            fail = False
+            gt = list()
+            for input_file in input_files:
+                try:
+                    index = card_files.index(
+                        os.path.join(set_name, os.path.basename(input_file))
+                    )
+                    gt.append(index)
+                except:
+                    traceback.print_exc()
+                    fail = True
+            if fail:
+                # if fail, skip this set entirely
+                acc_results.append(np.nan)
+                continue
             eval_prediction_func = functools.partial(
                 _eval_prediction,
                 pipeline.classifier.reference.cards,
