@@ -1,8 +1,10 @@
 import functools
 import os
+import traceback
 from typing import List, Optional
 
 import ezplotly.settings as plot_settings
+import numpy as np
 import pandas as pd
 from natsort import natsorted
 from pokemontcgsdk import Card
@@ -58,6 +60,7 @@ def main():
         {rule: [] for rule in WordClassifier.get_supported_classifier_methods()}
     )
     for set_name in ReferenceBuild.supported_card_sets():
+
         # define paths
         set_prefix = set_name.lower().replace(" ", "_")
         images_path = os.path.join(
@@ -86,10 +89,19 @@ def main():
                 )
                 for card in pipeline.classifier.reference.cards
             ]
-            gt = [
-                card_files.index(os.path.join(set_name, os.path.basename(input_file)))
-                for input_file in input_files
-            ]
+            fail = False
+            gt = list()
+            for input_file in input_files:
+                try:
+                    index = card_files.index(os.path.join(set_name, os.path.basename(input_file)))
+                    gt.append(index)
+                except:
+                    traceback.print_exc()
+                    fail = True
+            if fail:
+                # if fail, skip this set entirely
+                acc_results.append(np.nan)
+                continue
             eval_prediction_func = functools.partial(
                 _eval_prediction,
                 pipeline.classifier.reference.cards,
