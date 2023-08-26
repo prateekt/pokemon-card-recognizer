@@ -16,10 +16,11 @@ build:
 	rm -rf dist
 	rm -rf build
 	rm -rf pokemon_card_recognizer.egg*
-	python setup.py sdist bdist_wheel
+	python3 -m build
+#	python setup.py sdist bdist_wheel
 
 deploy:
-	twine upload dist/*
+	twine upload dist/* --verbose
 
 clean:
 	rm -rf dist
