@@ -272,7 +272,7 @@ class TestPullsEstimator(unittest.TestCase):
         self.assertEqual(df.P_3[0], "Shroomish (#3) [30-36]")
 
         # test pickle
-        pulls_pipeline.to_pickle("test.pkl")
+        pulls_pipeline.to_pickle("test.pkl", compression="lzma")
         self.assertTrue(os.path.exists("test.pkl"))
 
     def tearDown(self) -> None:

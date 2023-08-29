@@ -63,9 +63,10 @@ class TestCardPredictionResult(unittest.TestCase):
             card_index_in_reference=3, conf=1.0, reference_name="master"
         )
         result = CardPredictionResult(predictions=[pred1, pred2, pred3])
-        result.to_pickle("test.pkl")
+        result.to_pickle("test.pkl", compression="lzma")
         self.assertTrue(os.path.exists("test.pkl"))
-        loaded_obj = CardPredictionResult.load_from_pickle(pkl_path="test.pkl")
+        loaded_obj = CardPredictionResult.load_from_pickle(
+            pkl_path="test.pkl", compression="lzma")
         self.assertTrue(isinstance(loaded_obj, CardPredictionResult))
         self.assertTrue(loaded_obj is not result)
         self.assertEqual(len(loaded_obj), len(result))
