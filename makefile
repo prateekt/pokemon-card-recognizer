@@ -14,17 +14,12 @@ eval_pipeline_on_reference:
 
 build:
 	rm -rf dist
-	rm -rf build
-	rm -rf pokemon_card_recognizer.egg*
-	python3 -m build
-#	python setup.py sdist bdist_wheel
+	hatch build
 
-deploy:
-	twine upload dist/* --verbose
+publish:
+	hatch publsh
 
 clean:
 	rm -rf dist
-	rm -rf build
-	rm -rf pokemon_card_recognizer.egg*
 	rm -rf .pytest_cache
 
