@@ -66,7 +66,8 @@ class TestCardPredictionResult(unittest.TestCase):
         result.to_pickle("test.pkl", compression="lzma")
         self.assertTrue(os.path.exists("test.pkl"))
         loaded_obj = CardPredictionResult.load_from_pickle(
-            pkl_path="test.pkl", compression="lzma")
+            pkl_path="test.pkl", compression="lzma"
+        )
         self.assertTrue(isinstance(loaded_obj, CardPredictionResult))
         self.assertTrue(loaded_obj is not result)
         self.assertEqual(len(loaded_obj), len(result))

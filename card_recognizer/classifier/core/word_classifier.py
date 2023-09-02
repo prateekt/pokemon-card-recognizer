@@ -37,7 +37,9 @@ class WordClassifier(TextOp):
         super().__init__(func=self.classify)
 
         # load reference and vocab
-        self.reference = CardReference.load_from_pickle(pkl_path=ref_pkl_path, compression="lzma")
+        self.reference = CardReference.load_from_pickle(
+            pkl_path=ref_pkl_path, compression="lzma"
+        )
         self.vect_method = vect_method
 
         # structures to help with inference

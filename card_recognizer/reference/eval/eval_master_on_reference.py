@@ -100,7 +100,7 @@ def main():
                     traceback.print_exc()
                     fail = True
             if fail:
-                # if fail, skip this set entirely
+                # if fails, skip this set entirely
                 acc_results.append(np.nan)
                 continue
             eval_prediction_func = functools.partial(
