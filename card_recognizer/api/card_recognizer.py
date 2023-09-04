@@ -148,7 +148,7 @@ class CardRecognizer(Pipeline):
         if pulls_summary_op is not None:
             pulls_summary_op.summary_file = summary_file
 
-    def to_pickle(self, out_pkl_path: str) -> None:
+    def to_pickle(self, out_pkl_path: str, compression: Optional[str] = None) -> None:
         # temporarily remove un-pickleable elements
         easy_ocr_instance = None
         if isinstance(self.ocr_pipeline.ocr_op, EasyOCROp):
@@ -156,7 +156,7 @@ class CardRecognizer(Pipeline):
             self.ocr_pipeline.ocr_op.easy_ocr_reader = None
 
         # super call to pickle
-        super().to_pickle(out_pkl_path=out_pkl_path)
+        super().to_pickle(out_pkl_path=out_pkl_path, compression=compression)
 
         # restore state
         if isinstance(self.ocr_pipeline.ocr_op, EasyOCROp):

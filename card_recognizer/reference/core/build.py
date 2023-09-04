@@ -111,7 +111,9 @@ class ReferenceBuild:
             Set Card Reference
         """
         ref_build_path = ReferenceBuild.get_set_pkl_path(set_name=set_name)
-        return CardReference.load_from_pickle(pkl_path=ref_build_path)
+        return CardReference.load_from_pickle(
+            pkl_path=ref_build_path, compression="lzma"
+        )
 
     @staticmethod
     def load_all_card_references() -> Dict[str, CardReference]:
@@ -170,7 +172,7 @@ class ReferenceBuild:
                 exist_ok=True,
             )
             reference = CardReference(cards=cards, name=set_name)
-            reference.to_pickle(out_pkl_path=out_pkl_path)
+            reference.to_pickle(out_pkl_path=out_pkl_path, compression="lzma")
 
         # build master reference
         print("Building master reference...")
@@ -179,7 +181,7 @@ class ReferenceBuild:
             print("Skipping master")
         else:
             master_reference = CardReference(cards=master_set, name="master")
-            master_reference.to_pickle(out_pkl_path=out_pkl_path)
+            master_reference.to_pickle(out_pkl_path=out_pkl_path, compression="lzma")
 
     @staticmethod
     def make_eval_plots() -> None:
