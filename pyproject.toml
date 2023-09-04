@@ -28,7 +28,7 @@ dependencies = [
 ]
 
 [tool.hatch.build.targets.wheel.force-include]
-"card_recognizer/reference/data/ref_build.zip" = "card_recognizer/reference/data/ref_build.zip"
+"card_recognizer/reference/data/ref_build" = "card_recognizer/reference/data/ref_build"
 
 [tool.hatch.build.targets.sdist]
 exclude = [
