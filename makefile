@@ -17,7 +17,7 @@ build:
 	hatch build
 
 publish:
-	hatch publsh
+	hatch publish
 
 clean:
 	rm -rf dist
