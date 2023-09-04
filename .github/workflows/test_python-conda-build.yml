@@ -4,8 +4,7 @@ on: [push]
 
 jobs:
   build-macosx:
-#    runs-on: macos-13-xl
-    runs-on: ubuntu-latest
+    runs-on: macos-13-xl
     defaults:
       run:
         shell: bash -el {0}    
@@ -23,10 +22,13 @@ jobs:
         auto-activate-base: false
     - name: Install Dependencies
       run: |
-        sudo apt update
-        sudo apt install ffmpeg
-        sudo apt install tesseract-ocr
-        sudo apt install libtesseract-dev
+        brew update
+        brew install ffmpeg
+        brew install tesseract
+#        sudo apt update
+#        sudo apt install ffmpeg
+#        sudo apt install tesseract-ocr
+#        sudo apt install libtesseract-dev
     - name: Git LFS Update
       run: |
         git lfs install
