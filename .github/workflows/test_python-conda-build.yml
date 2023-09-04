@@ -22,7 +22,6 @@ jobs:
         auto-activate-base: false
     - name: Install Dependencies
       run: |
-        brew update
         brew install ffmpeg
         brew install tesseract
 #        sudo apt update
