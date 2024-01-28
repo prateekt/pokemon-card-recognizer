@@ -2,6 +2,7 @@ name: card_rec_env
 channels:
   - defaults
 dependencies:
+  - python=3.11.7
   - pip:
     - ocr-ops
     - pandas
