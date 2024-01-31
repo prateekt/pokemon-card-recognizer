@@ -5,8 +5,8 @@ from typing import Tuple, List
 import numpy as np
 from algo_ops.paraloop import paraloop
 
-from card_recognizer.classifier.core.word_classifier import WordClassifier
-from card_recognizer.eval.eval import is_correct_exclude_alt_art
+from pokemon_card_recognizer.classifier.core.word_classifier import WordClassifier
+from pokemon_card_recognizer.eval.eval import is_correct_exclude_alt_art
 
 
 def _run_classifier_trial(

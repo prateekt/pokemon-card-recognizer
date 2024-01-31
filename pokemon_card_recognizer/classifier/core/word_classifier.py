@@ -6,16 +6,16 @@ from algo_ops.ops.text import TextOp
 from algo_ops.paraloop import paraloop
 from ocr_ops.framework.op.result.ocr_result import OCRPipelineResult, OCRImageResult
 
-from card_recognizer.classifier.core.card_prediction_result import (
+from pokemon_card_recognizer.classifier.core.card_prediction_result import (
     CardPrediction,
     CardPredictionResult,
 )
-from card_recognizer.classifier.core.rules import (
+from pokemon_card_recognizer.classifier.core.rules import (
     classify_l1,
     classify_shared_words,
     classify_shared_words_rarity,
 )
-from card_recognizer.reference.core.card_reference import CardReference
+from pokemon_card_recognizer.reference.core.card_reference import CardReference
 
 
 class WordClassifier(TextOp):

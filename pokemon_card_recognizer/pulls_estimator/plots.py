@@ -7,11 +7,11 @@ import ezplotly.settings as plot_settings
 import numpy as np
 from ezplotly import EZPlotlyPlot
 
-from card_recognizer.classifier.core.card_frame_run import CardFrameRun
-from card_recognizer.classifier.core.card_prediction_result import (
+from pokemon_card_recognizer.classifier.core.card_frame_run import CardFrameRun
+from pokemon_card_recognizer.classifier.core.card_prediction_result import (
     CardPredictionResult,
 )
-from card_recognizer.reference.core.build import ReferenceBuild
+from pokemon_card_recognizer.reference.core.build import ReferenceBuild
 
 
 def _dedup(strs: List[str]) -> List[str]:

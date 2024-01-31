@@ -4,7 +4,7 @@ from algo_ops.pickleable_object.pickleable_object import PickleableObject
 from ocr_ops.run_finding.interval import Interval
 from ocr_ops.run_finding.run_finding import is_sorted, find_runs_with_tol
 
-from card_recognizer.classifier.core.card_frame_run import CardFrameRun
+from pokemon_card_recognizer.classifier.core.card_frame_run import CardFrameRun
 
 
 class CardPrediction:

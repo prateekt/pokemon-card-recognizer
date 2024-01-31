@@ -7,11 +7,11 @@ import pandas as pd
 from ezplotly import EZPlotlyPlot
 from scipy.stats import entropy
 
-from card_recognizer.classifier.core.word_classifier import WordClassifier
-from card_recognizer.classifier.eval.sensitivity import (
+from pokemon_card_recognizer.classifier.core.word_classifier import WordClassifier
+from pokemon_card_recognizer.classifier.eval.sensitivity import (
     compute_classification_sensitivity,
 )
-from card_recognizer.reference.core.card_reference import CardReference
+from pokemon_card_recognizer.reference.core.card_reference import CardReference
 
 
 def plot_word_entropies(

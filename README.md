@@ -3,7 +3,7 @@
 Recognize a Pokémon Card in an image or video.
 
 ```python
-from card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
+from pokemon_card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
 
 # init and set output paths
 recognizer = CardRecognizer(
@@ -51,7 +51,7 @@ sudo apt install libtesseract-dev
 <b>Example Usage to Recognize a Card in a Single Image:</b>
 
 ```python
-from card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
+from pokemon_card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
 recognizer = CardRecognizer(
     mode=OperatingMode.SINGLE_IMAGE,
     set_name="master"
@@ -89,7 +89,7 @@ OperatingMode.BOOSTER_PULLS_VIDEO
 
 Note that you can change "set_name" in the CardRecognizer constructor to whatever specific set reference (e.g. "base1", "jungle", etc) you want. For list of supported reference sets, view
 ```python
-from card_recognizer.reference.core.build import ReferenceBuild
+from pokemon_card_recognizer.reference.core.build import ReferenceBuild
 print(ReferenceBuild.supported_card_sets())
 ```
 <b>Building Card Reference:</b>
@@ -97,7 +97,7 @@ print(ReferenceBuild.supported_card_sets())
 The pypi package and GitHub source for pokemon-card-recognizer comes bundled with pre-rebuilt references for all major Pokémon card sets. It is recommended to use the pre-built references. If however, you want to rebuild the reference for some reason, you can do:
 
 ```commandline
-python card_recognizer/reference/core/build.py [PTCGSDK_API_KEY]
+python pokemon_card_recognizer/reference/core/build.py [PTCGSDK_API_KEY]
 ```
 where `PTCGSDK_API_KEY` is your PTCGSDK API key. You can get one here: https://pokemontcg.io/.
 

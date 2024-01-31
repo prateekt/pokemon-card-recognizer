@@ -7,15 +7,15 @@ import ezplotly.settings as plot_settings
 from ordered_set import OrderedSet
 from pokemontcgsdk import Card, Set
 
-from card_recognizer.classifier.core.card_prediction_result import CardPrediction
-from card_recognizer.classifier.core.word_classifier import WordClassifier
-from card_recognizer.infra.ptcgsdk.ptcgsdk import (
+from pokemon_card_recognizer.classifier.core.card_prediction_result import CardPrediction
+from pokemon_card_recognizer.classifier.core.word_classifier import WordClassifier
+from pokemon_card_recognizer.infra.ptcgsdk.ptcgsdk import (
     query_set_cards,
     download_card_images,
     init_api,
 )
-from card_recognizer.reference.core.card_reference import CardReference
-from card_recognizer.reference.eval.plots import (
+from pokemon_card_recognizer.reference.core.card_reference import CardReference
+from pokemon_card_recognizer.reference.eval.plots import (
     plot_word_counts,
     plot_classifier_sensitivity_curve,
 )

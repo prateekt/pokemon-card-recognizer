@@ -6,8 +6,8 @@ import pandas as pd
 from algo_ops.dependency.tester_util import clean_paths
 from ocr_ops.framework.op.ffmpeg_op import FFMPEGOp
 
-from card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
-from card_recognizer.classifier.core.card_prediction_result import (
+from pokemon_card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
+from pokemon_card_recognizer.classifier.core.card_prediction_result import (
     CardPredictionResult,
     CardPrediction,
 )

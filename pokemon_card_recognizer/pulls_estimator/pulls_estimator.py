@@ -3,12 +3,12 @@ from typing import List, Optional
 import numpy as np
 from algo_ops.ops.text import TextOp
 
-from card_recognizer.classifier.core.card_frame_run import CardFrameRun
-from card_recognizer.classifier.core.card_prediction_result import (
+from pokemon_card_recognizer.classifier.core.card_frame_run import CardFrameRun
+from pokemon_card_recognizer.classifier.core.card_prediction_result import (
     CardPredictionResult,
     CardPrediction,
 )
-from card_recognizer.pulls_estimator.plots import plot_pull_stats
+from pokemon_card_recognizer.pulls_estimator.plots import plot_pull_stats
 
 
 class PullsEstimator(TextOp):
