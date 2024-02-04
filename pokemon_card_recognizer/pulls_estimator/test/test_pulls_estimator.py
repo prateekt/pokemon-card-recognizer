@@ -6,13 +6,13 @@ import pandas as pd
 from algo_ops.dependency.tester_util import clean_paths
 from algo_ops.pipeline.pipeline import Pipeline
 
-from card_recognizer.api.operating_mode import OperatingMode
-from card_recognizer.classifier.core.card_prediction_result import (
+from pokemon_card_recognizer.api.operating_mode import OperatingMode
+from pokemon_card_recognizer.classifier.core.card_prediction_result import (
     CardPredictionResult,
     CardPrediction,
 )
-from card_recognizer.pulls_estimator.pulls_estimator import PullsEstimator
-from card_recognizer.pulls_estimator.pulls_summary import PullsSummary
+from pokemon_card_recognizer.pulls_estimator.pulls_estimator import PullsEstimator
+from pokemon_card_recognizer.pulls_estimator.pulls_summary import PullsSummary
 
 
 class TestPullsEstimator(unittest.TestCase):

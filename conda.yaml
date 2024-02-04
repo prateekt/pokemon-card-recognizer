@@ -11,3 +11,4 @@ dependencies:
     - ordered_set
     - requests
     - Pillow==9.5.0
+    - tqdm

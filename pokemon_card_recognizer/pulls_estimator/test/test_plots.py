@@ -5,11 +5,11 @@ import unittest
 import ezplotly.settings as plot_settings
 from algo_ops.dependency.tester_util import clean_paths
 
-from card_recognizer.classifier.core.card_prediction_result import (
+from pokemon_card_recognizer.classifier.core.card_prediction_result import (
     CardPrediction,
     CardPredictionResult,
 )
-from card_recognizer.pulls_estimator.plots import plot_paged_metrics
+from pokemon_card_recognizer.pulls_estimator.plots import plot_paged_metrics
 
 
 class TestPlotPaging(unittest.TestCase):

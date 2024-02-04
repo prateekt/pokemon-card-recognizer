@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from natsort import natsorted
 from pokemontcgsdk import Card
+from tqdm import tqdm
 
 from pokemon_card_recognizer.api.card_recognizer import CardRecognizer
 from pokemon_card_recognizer.classifier.core.card_prediction_result import (
@@ -20,7 +21,9 @@ from pokemon_card_recognizer.eval.eval import (
     is_correct_exclude_alt_art,
 )
 from pokemon_card_recognizer.reference.core.build import ReferenceBuild
-from pokemon_card_recognizer.reference.eval.plots import plot_classifier_rules_performance
+from pokemon_card_recognizer.reference.eval.plots import (
+    plot_classifier_rules_performance,
+)
 
 
 def _eval_prediction(
@@ -59,7 +62,8 @@ def main():
     results_df = pd.DataFrame(
         {rule: [] for rule in WordClassifier.get_supported_classifier_methods()}
     )
-    for set_name in ReferenceBuild.supported_card_sets():
+    for set_name in tqdm(ReferenceBuild.supported_card_sets()):
+        print(set_name)
         # define paths
         set_prefix = set_name.lower().replace(" ", "_")
         images_path = os.path.join(

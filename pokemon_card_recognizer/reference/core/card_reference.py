@@ -5,7 +5,9 @@ import numpy as np
 from algo_ops.pickleable_object.pickleable_object import PickleableObject
 from pokemontcgsdk import Card
 
-from pokemon_card_recognizer.classifier.core.card_prediction_result import CardPrediction
+from pokemon_card_recognizer.classifier.core.card_prediction_result import (
+    CardPrediction,
+)
 from pokemon_card_recognizer.classifier.core.vocab import Vocab
 
 

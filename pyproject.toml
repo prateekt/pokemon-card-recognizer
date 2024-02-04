@@ -24,7 +24,8 @@ dependencies = [
     "bidict",
     "ordered_set",
     "requests",
-    "Pillow==9.5.0"
+    "Pillow==9.5.0",
+    "tqdm",
 ]
 
 [tool.hatch.build.targets.wheel.force-include]

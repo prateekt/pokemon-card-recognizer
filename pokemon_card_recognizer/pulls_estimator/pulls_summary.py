@@ -5,7 +5,9 @@ from algo_ops.ops.text import TextOp
 
 from pokemon_card_recognizer.api.operating_mode import OperatingMode
 from pokemon_card_recognizer.classifier.core.card_frame_run import CardFrameRun
-from pokemon_card_recognizer.classifier.core.card_prediction_result import CardPredictionResult
+from pokemon_card_recognizer.classifier.core.card_prediction_result import (
+    CardPredictionResult,
+)
 from pokemon_card_recognizer.reference.core.build import ReferenceBuild
 from pokemon_card_recognizer.reference.core.card_reference import CardReference
 

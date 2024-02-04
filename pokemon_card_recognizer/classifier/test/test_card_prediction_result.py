@@ -4,11 +4,11 @@ import unittest
 from algo_ops.dependency.tester_util import clean_paths
 from pokemontcgsdk import Card
 
-from card_recognizer.classifier.core.card_prediction_result import (
+from pokemon_card_recognizer.classifier.core.card_prediction_result import (
     CardPrediction,
     CardPredictionResult,
 )
-from card_recognizer.reference.core.build import ReferenceBuild
+from pokemon_card_recognizer.reference.core.build import ReferenceBuild
 
 
 class TestCardPredictionResult(unittest.TestCase):

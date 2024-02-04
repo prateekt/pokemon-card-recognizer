@@ -9,12 +9,12 @@ from algo_ops.ops.op import Op
 from ocr_ops.framework.op.result.ocr_result import OCRImageResult, OCRPipelineResult
 from ocr_ops.run_finding.interval import Interval
 
-from card_recognizer.classifier.core.card_prediction_result import (
+from pokemon_card_recognizer.classifier.core.card_prediction_result import (
     CardPredictionResult,
     CardPrediction,
 )
-from card_recognizer.classifier.core.word_classifier import WordClassifier
-from card_recognizer.reference.core.build import ReferenceBuild
+from pokemon_card_recognizer.classifier.core.word_classifier import WordClassifier
+from pokemon_card_recognizer.reference.core.build import ReferenceBuild
 
 
 class TestWordClassifier(unittest.TestCase):
