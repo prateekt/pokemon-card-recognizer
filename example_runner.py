@@ -23,7 +23,7 @@ if __name__ == "__main__":
         "borg1",
         "Borg12TB",
         "card_recognizer_test_sets",
-        "paldean_fates_pokemon_center_etb_1-28-2024",
+        "paldean_fates_etb_cardshoplive_1-29-2024",
     )
     out_dir = os.sep + os.path.join("media", "borg1", "Borg12TB", "card_rec_results")
     pipeline.set_summary_file(
