@@ -6,7 +6,7 @@ import ezplotly.settings as ezplotly_settings
 from algo_ops.dependency import sys_util
 from natsort import natsorted
 
-from card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
+from pokemon_card_recognizer.api.card_recognizer import CardRecognizer, OperatingMode
 
 if __name__ == "__main__":
     # setup settings
@@ -16,14 +16,14 @@ if __name__ == "__main__":
 
     # init pipeline and paths
     pipeline = CardRecognizer(
-        set_name="Paldea Evolved", mode=OperatingMode.BOOSTER_PULLS_VIDEO
+        set_name="Paldean Fates", mode=OperatingMode.BOOSTER_PULLS_VIDEO
     )
     in_dir = os.sep + os.path.join(
         "media",
         "borg1",
         "Borg12TB",
         "card_recognizer_test_sets",
-        "paldea_evolved_etb_gamenerdz_6-18-2023",
+        "paldean_fates_etb_cardshoplive_1-29-2024",
     )
     out_dir = os.sep + os.path.join("media", "borg1", "Borg12TB", "card_rec_results")
     pipeline.set_summary_file(
