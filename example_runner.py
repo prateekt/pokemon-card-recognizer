@@ -23,13 +23,13 @@ if __name__ == "__main__":
         "borg1",
         "Borg12TB",
         "card_recognizer_test_sets",
-        "shrouded_fable_promo_pack_target_8-5-24",
+        "shrouded_fable_kingabit_box_gamestop_8-5-2024",
     )
     out_dir = os.sep + os.path.join("media", "borg1", "Borg12TB", "card_rec_results")
     pipeline.set_summary_file(
         summary_file=os.path.join(in_dir, "pulls_summary_" + timestamp + ".tsv")
     )
-    videos = natsorted(+`
+    videos = natsorted(
         [
             os.path.join(in_dir, video)
             for video in os.listdir(in_dir)
