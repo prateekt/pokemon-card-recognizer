@@ -1,0 +1,37 @@
+name: Python Package using Conda
+
+on: [push]
+
+jobs:
+  build-macosx:
+    runs-on: macos-13-xl
+    defaults:
+      run:
+        shell: bash -el {0}    
+    strategy:
+      max-parallel: 5
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        activate-environment: card_rec_env
+        environment-file: conda.yaml
+        python-version: 3.11.4
+        auto-activate-base: false
+    - name: Install Dependencies
+      run: |
+        brew install ffmpeg
+        brew install tesseract
+#        sudo apt update
+#        sudo apt install ffmpeg
+#        sudo apt install tesseract-ocr
+#        sudo apt install libtesseract-dev
+    - name: Git LFS Update
+      run: |
+        git lfs install
+        git lfs pull
+    - name: Test with nose2
+      run: |
+        nose2
