@@ -48,6 +48,20 @@ sudo apt install tesseract-ocr
 sudo apt install libtesseract-dev  
 ```
 
+On macos:
+
+``` commandline
+brew install tesseract git-lfs
+
+git lfs install
+
+git clone https://github.com/prateekt/pokemon-card-recognizer
+
+cd pokemon-card-recognizer
+
+git lfs pull
+```
+
 <b>Example Usage to Recognize a Card in a Single Image:</b>
 
 ```python
