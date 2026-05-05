@@ -25,7 +25,7 @@ dependencies = [
     "bidict",
     "ordered_set",
     "requests",
-    "Pillow==9.5.0",
+    "Pillow==12.2.0",
     "tqdm",
 ]
 
